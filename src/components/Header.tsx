@@ -506,23 +506,23 @@ export const Header: React.FC<HeaderProps> = ({
                             <Compass size={18} />
                           </div>
                           <div>
-                            <p className="text-xs font-bold flex items-center gap-1.5 text-neutral-950">
+                            <p className="text-sm font-bold flex items-center gap-1.5 text-neutral-950">
                               <span>{lang === "ar" ? "مطابق التثبيت للسيارات" : "Vehicle Fitment Matcher"}</span>
                               {isFindActive && <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />}
                             </p>
-                            <p className="text-[10px] text-[#8c6f2e]">
+                            <p className="text-xs text-[#8c6f2e]">
                               {lang === "ar" ? "اختر سيارتك وهاتفك خطوة بخطوة" : "2-Step Base + Holder System"}
                             </p>
                           </div>
                         </div>
-                        <ChevronRight size={14} className="text-[#c5a059] rtl:rotate-180 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
+                        <ChevronRight size={15} className="text-[#c5a059] rtl:rotate-180 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
                       </Link>
                     );
                   })()}
 
                   {/* Collections */}
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-2 px-1">
+                    <p className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2 px-1">
                       {lang === "ar" ? "التشكيلات والمنتجات" : "Collections"}
                     </p>
                     <div className="space-y-1">
@@ -542,7 +542,7 @@ export const Header: React.FC<HeaderProps> = ({
                             key={item.href}
                             href={item.href}
                             onClick={() => setMobileMenuOpen(false)}
-                            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-colors ${
+                            className={`flex items-center justify-between px-3.5 py-3 rounded-xl text-sm transition-colors ${
                               isItemActive
                                 ? "bg-neutral-100 text-neutral-950 font-bold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#c5a059]"
                                 : item.isCatalog
@@ -550,14 +550,14 @@ export const Header: React.FC<HeaderProps> = ({
                                 : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 font-medium"
                             }`}
                           >
-                            <span className="flex items-center gap-2">
-                              {ItemIcon && <ItemIcon size={14} className={isItemActive ? "text-[#c5a059]" : item.isCatalog ? "text-[#8c6f2e]" : "text-neutral-400"} />}
+                            <span className="flex items-center gap-2.5">
+                              {ItemIcon && <ItemIcon size={16} className={isItemActive ? "text-[#c5a059]" : item.isCatalog ? "text-[#8c6f2e]" : "text-neutral-400"} />}
                               <span>{item.label}</span>
                             </span>
                             {isItemActive ? (
                               <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] shrink-0" />
                             ) : (
-                              <ChevronRight size={14} className="text-neutral-300 rtl:rotate-180" />
+                              <ChevronRight size={15} className="text-neutral-300 rtl:rotate-180" />
                             )}
                           </Link>
                         );
@@ -567,7 +567,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                   {/* Company & Content */}
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-2 px-1">
+                    <p className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2 px-1">
                       {lang === "ar" ? "المحتوى والمجتمع" : "Experience"}
                     </p>
                     <div className="space-y-1">
@@ -585,20 +585,20 @@ export const Header: React.FC<HeaderProps> = ({
                             key={item.href}
                             href={item.href}
                             onClick={() => setMobileMenuOpen(false)}
-                            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-colors ${
+                            className={`flex items-center justify-between px-3.5 py-3 rounded-xl text-sm transition-colors ${
                               isItemActive
                                 ? "bg-neutral-100 text-neutral-950 font-bold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#c5a059]"
                                 : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 font-medium"
                             }`}
                           >
-                            <span className="flex items-center gap-2">
-                              <ItemIcon size={14} className={isItemActive ? "text-[#c5a059]" : "text-neutral-400"} />
+                            <span className="flex items-center gap-2.5">
+                              <ItemIcon size={16} className={isItemActive ? "text-[#c5a059]" : "text-neutral-400"} />
                               <span>{item.label}</span>
                             </span>
                             {isItemActive ? (
                               <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] shrink-0" />
                             ) : (
-                              <ChevronRight size={13} className="text-neutral-300 rtl:rotate-180" />
+                              <ChevronRight size={15} className="text-neutral-300 rtl:rotate-180" />
                             )}
                           </Link>
                         );
@@ -614,17 +614,17 @@ export const Header: React.FC<HeaderProps> = ({
                         <Link
                           href="/cart"
                           onClick={() => setMobileMenuOpen(false)}
-                          className={`w-full flex items-center justify-between p-3 rounded-xl text-xs font-semibold transition-colors ${
+                          className={`w-full flex items-center justify-between p-3.5 rounded-xl text-sm font-semibold transition-colors ${
                             isCartActive
                               ? "bg-neutral-100 text-neutral-950 border border-[#c5a059]/40"
                               : "bg-neutral-100 hover:bg-neutral-200 text-neutral-900"
                           }`}
                         >
-                          <span className="flex items-center gap-2">
-                            <ShoppingBag size={15} className={isCartActive ? "text-[#c5a059]" : ""} />
+                          <span className="flex items-center gap-2.5">
+                            <ShoppingBag size={16} className={isCartActive ? "text-[#c5a059]" : ""} />
                             <span>{lang === "ar" ? "عرض سلة المشتريات" : "View Shopping Cart"}</span>
                           </span>
-                          <span className="px-2 py-0.5 rounded-full bg-[#c5a059] text-neutral-950 text-[10px] font-black">
+                          <span className="px-2 py-0.5 rounded-full bg-[#c5a059] text-neutral-950 text-xs font-black">
                             {cartCount}
                           </span>
                         </Link>

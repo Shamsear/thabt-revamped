@@ -195,15 +195,15 @@ export default function OrderSuccessPage() {
                         />
                       </div>
                       <div>
-                        <p className="font-medium text-neutral-900">
+                        <p className="font-medium text-neutral-900 text-sm">
                           {lang === "ar" ? item.product.name_ar : item.product.name}
                         </p>
-                        <p className="text-[10px] text-neutral-400">
+                        <p className="text-xs text-neutral-500">
                           {lang === "ar" ? "الكمية: " : "Quantity: "} {item.quantity}
                         </p>
                       </div>
                     </div>
-                    <span className="font-semibold text-neutral-950 shrink-0">
+                    <span className="font-semibold text-neutral-950 shrink-0 text-sm">
                       {formatPrice(item.product.price * item.quantity)}
                     </span>
                   </div>
@@ -211,12 +211,12 @@ export default function OrderSuccessPage() {
             </div>
 
             {/* Totals */}
-            <div className="pt-4 border-t border-neutral-100 space-y-2 text-xs">
-              <div className="flex items-center justify-between text-neutral-500">
+            <div className="pt-4 border-t border-neutral-100 space-y-2.5 text-sm sm:text-xs">
+              <div className="flex items-center justify-between text-neutral-600">
                 <span>{lang === "ar" ? "الشحن والتوصيل:" : "Shipping:"}</span>
                 <span className="text-emerald-700 font-semibold">{lang === "ar" ? "شحن مجاني" : "Free Delivery"}</span>
               </div>
-              <div className="pt-2 flex items-center justify-between text-sm font-semibold text-neutral-950">
+              <div className="pt-2 flex items-center justify-between text-base font-semibold text-neutral-950">
                 <span>{lang === "ar" ? "الإجمالي المدفوع:" : "Total Paid:"}</span>
                 <span className="text-xl font-bold text-neutral-950">{formatPrice(orderInfo.total)}</span>
               </div>
@@ -227,7 +227,7 @@ export default function OrderSuccessPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold uppercase tracking-wider text-center transition-colors cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-sm sm:text-xs font-semibold text-center transition-colors cursor-pointer"
             >
               {lang === "ar" ? "العودة إلى الصفحة الرئيسية" : "Return to Homepage"}
             </Link>
