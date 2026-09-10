@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
 
 interface FooterProps {
@@ -8,6 +8,17 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ lang }) => {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -117,14 +128,18 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
         </a>
       </div>
 
-      {/* Back to Top - Desktop only to keep mobile uncluttered */}
+      {/* Back to Top / To Up Button - Available on Mobile and Desktop */}
       <button
         type="button"
         onClick={scrollToTop}
-        className="hidden sm:flex fixed bottom-5 right-18 rtl:right-auto rtl:left-18 z-30 p-2 text-neutral-400 hover:text-white bg-neutral-900 border border-neutral-800 rounded-full shadow-sm transition-all duration-200 active-press cursor-pointer"
-        aria-label="Back to top"
+        className={`fixed bottom-5 right-18 rtl:right-auto rtl:left-18 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-neutral-300 hover:text-white bg-neutral-900/95 hover:bg-neutral-900 border border-neutral-700/80 rounded-full shadow-lg backdrop-blur-xs transition-all duration-300 active-press cursor-pointer ${
+          showScrollTop
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+        aria-label={lang === "ar" ? "العودة إلى الأعلى" : "Back to top"}
       >
-        <ArrowUp size={14} />
+        <ArrowUp size={16} className="text-neutral-300 group-hover:text-white" />
       </button>
     </>
   );
