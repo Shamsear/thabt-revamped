@@ -1,13 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ArrowUp } from "lucide-react";
+import Link from "next/link";
+import { ArrowUp, MapPin, Phone, Mail, ChevronRight } from "lucide-react";
+import { useAppContext, SupportedLanguage } from "@/context/AppContext";
 
 interface FooterProps {
-  lang: "en" | "ar";
+  lang?: SupportedLanguage;
 }
 
-export const Footer: React.FC<FooterProps> = ({ lang }) => {
+export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
+  const context = useAppContext();
+  const lang = propLang || context.lang;
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -27,86 +31,113 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
     <>
       <footer className="bg-[#0b0d11] text-neutral-400 text-xs pt-16 pb-12 border-t border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-neutral-800/80">
-            {/* Brand with White & Gold Logo */}
-            <div className="md:col-span-1 space-y-3">
-              <img
-                src="/user/images/logo.png"
-                alt="Thabt"
-                className="h-8 w-auto object-contain brightness-110 mb-3"
-              />
-              <p className="text-[11px] leading-relaxed text-neutral-400">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-neutral-800/80">
+            {/* 1. Brand with White & Gold Logo */}
+            <div className="lg:col-span-2 space-y-3">
+              <Link href="/">
+                <img
+                  src="/user/images/logo.png"
+                  alt="Thabt"
+                  className="h-8 w-auto object-contain brightness-110 mb-3"
+                />
+              </Link>
+              <p className="text-[11px] leading-relaxed text-neutral-400 max-w-sm">
                 {lang === "ar"
-                  ? "حلول وقواعد التثبيت الأصلية لمركبات الدفع الرباعي والهواتف في قطر ودول الخليج."
-                  : "Precision-engineered vehicle mounts and device holders for Qatar and the GCC."}
+                  ? "حلول وقواعد التثبيت الأصلية لمركبات الدفع الرباعي والهواتف في قطر ودول الخليج. هندسة سويدية دقيقة بدون حفر أو إتلاف ديكور السيارة."
+                  : "Precision-engineered vehicle mounts and device holders for Qatar and the GCC. Swedish fitment design without drilling or dashboard damage."}
               </p>
-              <div className="pt-2 text-[11px] space-y-1">
-                <p className="hover:text-white transition">info@thabt.qa</p>
-                <p dir="ltr" className="font-mono text-neutral-300 hover:text-[#c5a059] transition">+974 4483 2731</p>
+              <div className="pt-2 text-[11px] space-y-1.5 text-neutral-300">
+                <div className="flex items-center gap-2">
+                  <Mail size={13} className="text-[#c5a059]" />
+                  <a href="mailto:info@thabt.qa" className="hover:text-white transition">info@thabt.qa</a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone size={13} className="text-[#c5a059]" />
+                  <span dir="ltr" className="font-mono text-neutral-300 hover:text-[#c5a059] transition">+974 4483 2731</span>
+                </div>
               </div>
             </div>
 
-            {/* Collections */}
+            {/* 2. Collections */}
             <div>
-              <h4 className="text-[11px] uppercase tracking-widest text-[#c5a059] font-semibold mb-3">
-                {lang === "ar" ? "الفئات" : "Collections"}
+              <h4 className="text-[11px] uppercase tracking-widest text-[#c5a059] font-semibold mb-3.5">
+                {lang === "ar" ? "التشكيلات" : "Collections"}
               </h4>
               <ul className="space-y-2 text-[11px]">
-                <li><a href="#pro-clips" className="hover:text-white transition">{lang === "ar" ? "قواعد برو كليبس" : "ProClips Mounts"}</a></li>
-                <li><a href="#device-holders" className="hover:text-white transition">{lang === "ar" ? "حوامل الأجهزة" : "Device Holders"}</a></li>
-                <li><a href="#leather-mount" className="hover:text-white transition">{lang === "ar" ? "حوامل جلدية" : "Leather Mounts"}</a></li>
-                <li><a href="#motorbike-mount" className="hover:text-white transition">{lang === "ar" ? "حوامل الدراجات" : "Motorbike Mounts"}</a></li>
-                <li><a href="#antenna-accessories" className="hover:text-white transition">{lang === "ar" ? "الهوائيات والإكسسوارات" : "Antenna & Off-Road"}</a></li>
+                <li><Link href="/categories/pro-clips" className="hover:text-white transition">{lang === "ar" ? "قواعد برو كليبس" : "ProClips Mounts"}</Link></li>
+                <li><Link href="/categories/device-holders" className="hover:text-white transition">{lang === "ar" ? "حوامل الأجهزة" : "Device Holders"}</Link></li>
+                <li><Link href="/mountx" className="hover:text-white text-[#c5a059] transition font-medium">{lang === "ar" ? "ماونت إكس ألمنيوم" : "MountX All-Terrain"}</Link></li>
+                <li><Link href="/categories/leather-mount" className="hover:text-white transition">{lang === "ar" ? "حوامل جلدية" : "Leather Mounts"}</Link></li>
+                <li><Link href="/categories/motorbike-mount" className="hover:text-white transition">{lang === "ar" ? "حوامل الدراجات" : "Motorbike Mounts"}</Link></li>
+                <li><Link href="/categories/antenna-accessories" className="hover:text-white transition">{lang === "ar" ? "الهوائيات والإكسسوارات" : "Antenna & Off-Road"}</Link></li>
               </ul>
             </div>
 
-            {/* Showrooms */}
+            {/* 3. Navigation & Tools */}
             <div>
-              <h4 className="text-[11px] uppercase tracking-widest text-[#c5a059] font-semibold mb-3">
+              <h4 className="text-[11px] uppercase tracking-widest text-[#c5a059] font-semibold mb-3.5">
+                {lang === "ar" ? "استكشف ثقة" : "Explore"}
+              </h4>
+              <ul className="space-y-2 text-[11px]">
+                <li><Link href="/find" className="hover:text-white transition">{lang === "ar" ? "مطابقة نوع السيارة" : "Vehicle Fitment Matcher"}</Link></li>
+                <li><Link href="/search" className="hover:text-white transition">{lang === "ar" ? "كتالوج المنتجات" : "Product Catalog"}</Link></li>
+                <li><Link href="/gallery" className="hover:text-white transition">{lang === "ar" ? "معرض التركيبات" : "Customer Builds"}</Link></li>
+                <li><Link href="/careers" className="hover:text-white transition">{lang === "ar" ? "الوظائف وبيئة العمل" : "Careers at Thabt"}</Link></li>
+                <li><Link href="/faqs" className="hover:text-white transition">{lang === "ar" ? "الأسئلة الشائعة" : "FAQ & Specs"}</Link></li>
+                <li><Link href="/contact-us" className="hover:text-white transition">{lang === "ar" ? "معارض الدوحة" : "Doha Showrooms"}</Link></li>
+              </ul>
+            </div>
+
+            {/* 4. Showrooms & Social */}
+            <div>
+              <h4 className="text-[11px] uppercase tracking-widest text-[#c5a059] font-semibold mb-3.5">
                 {lang === "ar" ? "معارض الدوحة" : "Doha Showrooms"}
               </h4>
               <div className="space-y-3 text-[11px]">
                 <div>
-                  <p className="text-neutral-200 font-medium">{lang === "ar" ? "الريان القديم" : "Old Rayan"}</p>
-                  <p className="text-neutral-500">Unit 16, Building 419, Street 990, Zone 52</p>
+                  <p className="text-neutral-200 font-medium">{lang === "ar" ? "فرع الريان القديم" : "Old Rayan Branch"}</p>
+                  <p className="text-neutral-500 text-[10px]">Unit 16, Building 419, Street 990, Zone 52</p>
                 </div>
                 <div>
-                  <p className="text-neutral-200 font-medium">{lang === "ar" ? "أم صلال محمد" : "Umm Salal"}</p>
-                  <p className="text-neutral-500">Unit 10, Building 191, Street 750, Zone 71</p>
+                  <p className="text-neutral-200 font-medium">{lang === "ar" ? "فرع أم صلال محمد" : "Umm Salal Branch"}</p>
+                  <p className="text-neutral-500 text-[10px]">Unit 10, Building 191, Street 750, Zone 71</p>
                 </div>
               </div>
-            </div>
 
-            {/* Concierge & Social */}
-            <div>
-              <h4 className="text-[11px] uppercase tracking-widest text-[#c5a059] font-semibold mb-3">
-                {lang === "ar" ? "التواصل والمتابعة" : "Connect"}
-              </h4>
-              <p className="text-[11px] text-neutral-400 mb-3 leading-relaxed">
-                {lang === "ar" ? "تابع حساباتنا لمعرفة جديد الموديلات:" : "Follow our official channels for new releases:"}
-              </p>
-              <div className="flex items-center gap-3">
-                <a href="https://www.instagram.com/thabt.qa/" target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-[#c5a059] text-[11px] transition">Instagram</a>
-                <span className="text-neutral-700">•</span>
-                <a href="https://www.tiktok.com/@thabt.gcc" target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-[#c5a059] text-[11px] transition">TikTok</a>
-                <span className="text-neutral-700">•</span>
-                <a href="https://www.youtube.com/@Thabt.Digital.Solutions" target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-[#c5a059] text-[11px] transition">YouTube</a>
+              <div className="pt-4">
+                <div className="flex items-center gap-3">
+                  <a href="https://www.instagram.com/thabt.qa/" target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-[#c5a059] text-[11px] transition">Instagram</a>
+                  <span className="text-neutral-700">•</span>
+                  <a href="https://www.tiktok.com/@thabt.gcc" target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-[#c5a059] text-[11px] transition">TikTok</a>
+                  <span className="text-neutral-700">•</span>
+                  <a href="https://www.youtube.com/@Thabt.Digital.Solutions" target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-[#c5a059] text-[11px] transition">YouTube</a>
+                </div>
               </div>
             </div>
           </div>
 
+          {/* Bottom Bar: Copyright & Legal */}
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
             <p>© {new Date().getFullYear()} Thabt (Gulf Digital Solution). All rights reserved.</p>
             <div className="flex items-center gap-4">
-              <a href="#" className="hover:text-neutral-300 transition">{lang === "ar" ? "الشروط" : "Terms"}</a>
-              <a href="#" className="hover:text-neutral-300 transition">{lang === "ar" ? "الخصوصية" : "Privacy"}</a>
-              <a href="#" className="hover:text-neutral-300 transition">{lang === "ar" ? "الضمان" : "Warranty"}</a>
+              <Link href="/terms-and-conditions" className="hover:text-neutral-300 transition">
+                {lang === "ar" ? "الشروط والأحكام" : "Terms & Conditions"}
+              </Link>
+              <Link href="/privacy-policy" className="hover:text-neutral-300 transition">
+                {lang === "ar" ? "سياسة الخصوصية" : "Privacy Policy"}
+              </Link>
+              <Link href="/cookie-policy" className="hover:text-neutral-300 transition">
+                {lang === "ar" ? "ملفات تعريف الارتباط" : "Cookie Policy"}
+              </Link>
+              <Link href="/faqs" className="hover:text-neutral-300 transition">
+                {lang === "ar" ? "الضمان والإرجاع" : "Warranty"}
+              </Link>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* Unobtrusive WhatsApp Concierge */}
+      {/* WhatsApp Concierge floating button */}
       <div className="fixed bottom-5 right-5 rtl:right-auto rtl:left-5 z-40">
         <a
           href="https://api.whatsapp.com/send?phone=97450400314"
@@ -128,7 +159,7 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
         </a>
       </div>
 
-      {/* Back to Top / To Up Button - Available on Mobile and Desktop */}
+      {/* Back to Top / To Up Button */}
       <button
         type="button"
         onClick={scrollToTop}

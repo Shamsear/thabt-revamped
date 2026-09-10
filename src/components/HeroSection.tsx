@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
 import { motion, LayoutGroup } from "framer-motion";
 import { CustomSelect } from "@/components/CustomSelect";
@@ -17,6 +18,7 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"vehicle" | "device">("vehicle");
 
   const [selectedVehicleBrand, setSelectedVehicleBrand] = useState("Toyota");
@@ -31,9 +33,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const targetElement = document.getElementById("hardware");
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: "smooth" });
+    if (activeTab === "vehicle") {
+      router.push(`/search?brand=${encodeURIComponent(selectedVehicleBrand)}`);
+    } else {
+      router.push(`/search?q=${encodeURIComponent(selectedDeviceBrand)}`);
     }
   };
 
@@ -129,11 +132,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                   aria-hidden={activeTab !== "vehicle"}
                 >
                   <form onSubmit={handleSearchSubmit} className="space-y-3 sm:space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
+                    <div className="flex items-center justify-between gap-1">
+                      <h2 className="text-[10px] sm:text-[11px] uppercase tracking-normal sm:tracking-wider text-neutral-500 font-semibold whitespace-nowrap">
                         {lang === "ar" ? "ما هي السيارة التي تستخدمها؟" : "What car are you using?"}
                       </h2>
-                      <span className="text-[10px] sm:text-[11px] text-[#c5a059] font-medium">
+                      <span className="text-[10px] sm:text-[11px] text-[#c5a059] font-medium whitespace-nowrap shrink-0">
                         {lang === "ar" ? "تطابق مصنعي 100%" : "100% Factory Match"}
                       </span>
                     </div>
@@ -189,14 +192,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                     <div className="pt-1">
                       <button
                         type="submit"
-                        className="w-full py-3 sm:py-3 px-5 rounded-xl sm:rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-xs uppercase tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
+                        className="w-full py-3 px-3 sm:px-5 rounded-xl sm:rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-[11px] sm:text-xs uppercase tracking-wide sm:tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
                       >
-                        <span>
+                        <span className="whitespace-nowrap truncate">
                           {lang === "ar"
                             ? `عرض قاعدة ${selectedVehicleBrand} المخصصة`
                             : `View Exact Fit for ${selectedVehicleBrand}`}
                         </span>
-                        <ArrowRight size={14} className="rtl:rotate-180 transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
+                        <ArrowRight size={14} className="rtl:rotate-180 transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 shrink-0" />
                       </button>
                     </div>
                   </form>
@@ -212,11 +215,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                   aria-hidden={activeTab !== "device"}
                 >
                   <form onSubmit={handleSearchSubmit} className="space-y-3 sm:space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
+                    <div className="flex items-center justify-between gap-1">
+                      <h2 className="text-[10px] sm:text-[11px] uppercase tracking-normal sm:tracking-wider text-neutral-500 font-semibold whitespace-nowrap">
                         {lang === "ar" ? "ما هو الجهاز الذي تستخدمه؟" : "What device are you using?"}
                       </h2>
-                      <span className="text-[10px] sm:text-[11px] text-[#c5a059] font-medium">
+                      <span className="text-[10px] sm:text-[11px] text-[#c5a059] font-medium whitespace-nowrap shrink-0">
                         {lang === "ar" ? "يدعم MagSafe" : "MagSafe Qi2 Ready"}
                       </span>
                     </div>
@@ -252,14 +255,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                     <div className="pt-1">
                       <button
                         type="submit"
-                        className="w-full py-3 sm:py-3 px-5 rounded-xl sm:rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-xs uppercase tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
+                        className="w-full py-3 px-3 sm:px-5 rounded-xl sm:rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-[11px] sm:text-xs uppercase tracking-wide sm:tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
                       >
-                        <span>
+                        <span className="whitespace-nowrap truncate">
                           {lang === "ar"
                             ? `عرض حامل ${selectedDeviceBrand}`
                             : `View Compatible ${selectedDeviceBrand} Holder`}
                         </span>
-                        <ArrowRight size={14} className="rtl:rotate-180 transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
+                        <ArrowRight size={14} className="rtl:rotate-180 transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 shrink-0" />
                       </button>
                     </div>
                   </form>
@@ -291,20 +294,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
             transition={{ duration: 0.4, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-5"
           >
-            <div className="relative rounded-2xl overflow-hidden bg-neutral-100 border border-neutral-200/80 shadow-md group">
-              {/* Image Frame: Full uncropped view on mobile, cinematic studio height on desktop */}
-              <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[350px] xl:h-[390px] overflow-hidden bg-neutral-100 flex items-center justify-center">
+            <div className="relative rounded-2xl overflow-hidden bg-white border border-neutral-200/80 shadow-md group">
+              {/* Image Frame: Exact 16:9 ratio to fit home-3.png without any overflow, crop, or white space */}
+              <div className="relative w-full aspect-[16/9] overflow-hidden bg-white">
                 <img
                   src="/home-3.png"
                   alt="ProClip Cockpit Fit"
-                  className="w-full h-full object-contain sm:object-cover sm:object-center group-hover:scale-[1.025] transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] transform-gpu will-change-transform"
+                  className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] transform-gpu will-change-transform block"
                 />
-                {/* Contrast gradient overlay only on desktop where technical plaque floats */}
-                <div className="hidden lg:block absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
               </div>
 
-              {/* Inset Technical Note Card - Stacked cleanly below photo on mobile, floating overlay on desktop */}
-              <div className="p-3.5 sm:p-4 bg-white border-t border-neutral-100 lg:border-t-0 lg:absolute lg:bottom-2.5 xl:bottom-3 lg:left-2.5 xl:left-3 lg:right-2.5 xl:right-3 lg:p-3 sm:lg:p-3.5 lg:rounded-xl lg:bg-white/98 lg:border lg:border-neutral-200/90 text-neutral-900 lg:shadow-[0_4px_24px_rgba(0,0,0,0.08)] transform-gpu">
+              {/* Inset Technical Note Card: Cleanly stacked directly below the exact image frame */}
+              <div className="p-3.5 sm:p-4 bg-white border-t border-neutral-100 text-neutral-900">
                 <motion.div
                   key={activeTab === "vehicle" ? `${selectedVehicleBrand}-${selectedVehicleModel}` : `${selectedDeviceBrand}-${selectedDeviceModel}`}
                   initial={{ opacity: 0.75 }}

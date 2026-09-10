@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClientScripts } from "@/components/ClientScripts";
+import { AppProvider } from "@/context/AppContext";
+import { GlobalModals } from "@/components/GlobalModals";
 
 export const metadata: Metadata = {
   title: "Thabt – Premium ProClips Device Holders & Mounts | GCC & Middle East Delivery",
@@ -42,7 +44,10 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
       </head>
       <body className="antialiased">
-        {children}
+        <AppProvider>
+          {children}
+          <GlobalModals />
+        </AppProvider>
         <ClientScripts />
       </body>
     </html>
