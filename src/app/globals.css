@@ -198,3 +198,14 @@
   transform: scaleX(1);
 }
 
+/* Touch Device Active Tap Enhancements: Provides immediate visual feedback when tapped on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .group:active img {
+    transform: scale(1.05);
+  }
+  .group:active {
+    border-color: #c5a059 !important;
+  }
+}
+
+
