@@ -44,16 +44,16 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ categories, la
             <a
               key={cat.id}
               id={cat.slug}
-              href={`#${cat.slug}`}
-              className="group bg-neutral-50/60 hover:bg-white rounded-2xl p-6 border border-neutral-200/60 hover:border-neutral-300 hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 ease-out flex flex-col justify-between scroll-mt-24 cursor-pointer"
+              href="#hardware"
+              className="group bg-neutral-50/60 hover:bg-white active:bg-white rounded-2xl p-6 border border-neutral-200/60 hover:border-neutral-300 active:border-[#c5a059] hover:shadow-lg active:shadow-md hover:-translate-y-1.5 active:scale-[0.98] transition-all duration-300 ease-out flex flex-col justify-between scroll-mt-24 cursor-pointer select-none"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-neutral-900 group-hover:text-[#c5a059] transition-colors duration-200">
+                <span className="text-xs font-semibold text-neutral-900 group-hover:text-[#c5a059] group-active:text-[#c5a059] transition-colors duration-200">
                   {lang === "ar" ? cat.category_ar : cat.category}
                 </span>
                 <ArrowUpRight
                   size={15}
-                  className="text-neutral-400 group-hover:text-[#c5a059] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200"
+                  className="text-neutral-400 group-hover:text-[#c5a059] group-active:text-[#c5a059] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-active:translate-x-0.5 group-active:-translate-y-0.5 transition-all duration-200"
                 />
               </div>
 
@@ -61,7 +61,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ categories, la
                 <img
                   src={cat.image}
                   alt={cat.category}
-                  className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500 ease-out"
+                  className="max-h-full max-w-full object-contain group-hover:scale-105 group-active:scale-105 transition-transform duration-500 ease-out"
                 />
               </div>
 
