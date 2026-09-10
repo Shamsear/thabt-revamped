@@ -1,14 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 interface WhyMountSectionProps {
   lang: "en" | "ar";
 }
 
 export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
-  const [activeStep, setActiveStep] = useState<string>("01");
-  const [activeSpec, setActiveSpec] = useState<string>("01");
   const steps = [
     {
       num: "01",
@@ -78,83 +76,57 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
 
         {/* 2-Part System Display */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-10 sm:mb-12">
-          {steps.map((step) => {
-            const isActive = activeStep === step.num;
-            return (
-              <div
-                key={step.num}
-                role="button"
-                tabIndex={0}
-                onClick={() => setActiveStep(isActive ? "" : step.num)}
-                className={`bg-white rounded-2xl p-6 sm:p-8 border shadow-xs transition-all duration-300 ease-out flex flex-col justify-between group cursor-pointer active-press select-none ${
-                  isActive
-                    ? "border-[#c5a059] shadow-lg -translate-y-1 ring-1 ring-[#c5a059]/30"
-                    : "border-neutral-200/80 hover:shadow-lg hover:-translate-y-1 hover:border-neutral-300/90 active:border-[#c5a059]"
-                }`}
-              >
-                <div className="h-48 flex items-center justify-center p-4 mb-6">
-                  <img
-                    src={step.image}
-                    alt={step.title}
-                    className={`max-h-full max-w-full object-contain transition-transform duration-500 ease-out ${
-                      isActive ? "scale-105" : "group-hover:scale-105 group-active:scale-105"
-                    }`}
-                  />
-                </div>
-
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[11px] font-mono text-[#c5a059] font-semibold">
-                      {step.num}
-                    </span>
-                    <span className="text-[11px] text-neutral-400 uppercase tracking-wider font-medium">
-                      // {step.tag}
-                    </span>
-                  </div>
-                  <h3 className={`text-base sm:text-lg font-semibold mb-2 transition-colors duration-200 ${
-                    isActive ? "text-[#b38e46]" : "text-neutral-900 group-hover:text-[#c5a059] group-active:text-[#c5a059]"
-                  }`}>
-                    {step.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
-                    {step.desc}
-                  </p>
-                </div>
+          {steps.map((step) => (
+            <div
+              key={step.num}
+              className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/80 hover:border-[#c5a059] active:border-[#c5a059] shadow-xs hover:shadow-lg active:shadow-md hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 ease-out flex flex-col justify-between group cursor-pointer active-press select-none"
+            >
+              <div className="h-48 flex items-center justify-center p-4 mb-6">
+                <img
+                  src={step.image}
+                  alt={step.title}
+                  className="max-h-full max-w-full object-contain group-hover:scale-105 group-active:scale-105 transition-transform duration-500 ease-out"
+                />
               </div>
-            );
-          })}
+
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[11px] font-mono text-[#c5a059] font-semibold">
+                    {step.num}
+                  </span>
+                  <span className="text-[11px] text-neutral-400 uppercase tracking-wider font-medium">
+                    // {step.tag}
+                  </span>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-[#c5a059] group-active:text-[#c5a059] mb-2 transition-colors duration-200">
+                  {step.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
+                  {step.desc}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* 4 Minimalist Engineering Standards: 2x2 grid on mobile, 4-col on desktop */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 pt-8 sm:pt-10 border-t border-neutral-200/80">
-          {specs.map((item) => {
-            const isActive = activeSpec === item.num;
-            return (
-              <div
-                key={item.num}
-                role="button"
-                tabIndex={0}
-                onClick={() => setActiveSpec(isActive ? "" : item.num)}
-                className={`space-y-1 p-3 sm:p-3.5 rounded-xl transition-all duration-200 cursor-pointer select-none active-press border ${
-                  isActive
-                    ? "bg-white shadow-md border-[#c5a059] -translate-y-0.5 ring-1 ring-[#c5a059]/20"
-                    : "bg-white/60 sm:bg-transparent hover:bg-white hover:shadow-xs border-neutral-200/50 sm:border-transparent hover:border-neutral-200/80 active:border-[#c5a059] active:bg-white"
-                }`}
-              >
-                <span className={`text-[11px] sm:text-xs font-mono tracking-wider font-semibold transition-colors duration-200 ${
-                  isActive ? "text-[#b38e46]" : "text-[#c5a059]"
-                }`}>
-                  {item.num}
-                </span>
-                <h4 className={`text-xs sm:text-sm font-semibold leading-snug transition-colors ${
-                  isActive ? "text-[#b38e46]" : "text-neutral-900"
-                }`}>
-                  {item.title}
-                </h4>
-                <p className="text-[11px] sm:text-xs text-neutral-500 leading-relaxed">{item.desc}</p>
-              </div>
-            );
-          })}
+          {specs.map((item) => (
+            <div
+              key={item.num}
+              className="group space-y-1 p-3 sm:p-3.5 rounded-xl bg-white/70 hover:bg-white active:bg-white border border-neutral-200/60 hover:border-[#c5a059] active:border-[#c5a059] shadow-2xs hover:shadow-md active:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer select-none active-press"
+            >
+              <span className="text-[11px] sm:text-xs font-mono text-[#c5a059] group-hover:text-[#b38e46] group-active:text-[#b38e46] tracking-wider font-semibold transition-colors duration-200">
+                {item.num}
+              </span>
+              <h4 className="text-xs sm:text-sm font-semibold text-neutral-900 group-hover:text-[#0b0d11] group-active:text-[#b38e46] leading-snug transition-colors duration-200">
+                {item.title}
+              </h4>
+              <p className="text-[11px] sm:text-xs text-neutral-500 leading-relaxed">
+                {item.desc}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

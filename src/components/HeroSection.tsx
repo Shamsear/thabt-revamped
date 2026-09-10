@@ -269,15 +269,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
 
             {/* Feature Badges: Clean 3-tile grid on mobile, inline checkmark row on desktop */}
             <div className="grid grid-cols-3 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-1.5 text-[11px] sm:text-xs text-neutral-600 pt-0.5">
-              <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-1.5 bg-neutral-100/80 sm:bg-transparent py-2 px-1 sm:p-0 rounded-xl sm:rounded-none border border-neutral-200/50 sm:border-transparent">
+              <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-1.5 bg-neutral-100/80 sm:bg-transparent py-2 px-1 sm:p-0 rounded-xl sm:rounded-none border border-neutral-200/50 sm:border-transparent hover:border-[#c5a059]/50 active:border-[#c5a059] active:bg-white active:shadow-2xs transition-all duration-200 cursor-pointer active-press select-none">
                 <Check size={13} className="text-[#c5a059] shrink-0" />
                 <span className="leading-tight font-medium sm:font-normal">{lang === "ar" ? "تركيب بلمسة" : "30s Snap Fit"}</span>
               </div>
-              <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-1.5 bg-neutral-100/80 sm:bg-transparent py-2 px-1 sm:p-0 rounded-xl sm:rounded-none border border-neutral-200/50 sm:border-transparent">
+              <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-1.5 bg-neutral-100/80 sm:bg-transparent py-2 px-1 sm:p-0 rounded-xl sm:rounded-none border border-neutral-200/50 sm:border-transparent hover:border-[#c5a059]/50 active:border-[#c5a059] active:bg-white active:shadow-2xs transition-all duration-200 cursor-pointer active-press select-none">
                 <Check size={13} className="text-[#c5a059] shrink-0" />
                 <span className="leading-tight font-medium sm:font-normal">{lang === "ar" ? "بدون حفر" : "Zero Holes"}</span>
               </div>
-              <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-1.5 bg-neutral-100/80 sm:bg-transparent py-2 px-1 sm:p-0 rounded-xl sm:rounded-none border border-neutral-200/50 sm:border-transparent">
+              <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-1.5 bg-neutral-100/80 sm:bg-transparent py-2 px-1 sm:p-0 rounded-xl sm:rounded-none border border-neutral-200/50 sm:border-transparent hover:border-[#c5a059]/50 active:border-[#c5a059] active:bg-white active:shadow-2xs transition-all duration-200 cursor-pointer active-press select-none">
                 <Check size={13} className="text-[#c5a059] shrink-0" />
                 <span className="leading-tight font-medium sm:font-normal">{lang === "ar" ? "حرارة 60°م" : "60°C Proof"}</span>
               </div>

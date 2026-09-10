@@ -98,7 +98,7 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
             </p>
 
             {/* Featured Rank Callout Plaque */}
-            <div className="bg-white border border-[#c5a059]/30 rounded-2xl p-5 sm:p-6 shadow-xs relative overflow-hidden">
+            <div className="bg-white border border-[#c5a059]/30 hover:border-[#c5a059] active:border-[#c5a059] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md active:shadow-md active:scale-[0.99] transition-all duration-200 relative overflow-hidden cursor-pointer select-none active-press">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
                 {/* Large Gold Rank Emblem */}
                 <div className="flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br from-[#c5a059] to-[#b38e46] text-neutral-950 font-extrabold text-3xl sm:text-4xl shadow-sm shrink-0">
@@ -126,13 +126,13 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
               {metrics.map((m, idx) => (
                 <div
                   key={idx}
-                  className="bg-white border border-neutral-200/80 hover:border-[#c5a059]/40 rounded-xl p-3 sm:p-3.5 transition-colors duration-200 shadow-2xs hover:shadow-xs"
+                  className="bg-white border border-neutral-200/80 hover:border-[#c5a059] active:border-[#c5a059] active:bg-[#faf6ed]/40 rounded-xl p-3 sm:p-3.5 transition-all duration-200 shadow-2xs hover:shadow-xs active:shadow-md hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer select-none active-press group"
                 >
-                  <div className="flex items-center gap-1.5 mb-1 text-neutral-500 text-[11px] font-medium">
+                  <div className="flex items-center gap-1.5 mb-1 text-neutral-500 group-hover:text-[#c5a059] group-active:text-[#b38e46] text-[11px] font-medium transition-colors">
                     {m.icon}
                     <span>{m.label}</span>
                   </div>
-                  <div className="text-base sm:text-lg font-bold text-neutral-900 tracking-tight">
+                  <div className="text-base sm:text-lg font-bold text-neutral-900 group-hover:text-[#b38e46] group-active:text-[#b38e46] tracking-tight transition-colors">
                     {m.val}
                   </div>
                 </div>
