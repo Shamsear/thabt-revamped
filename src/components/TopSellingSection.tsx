@@ -99,7 +99,7 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
               1024: { slidesPerView: 3.2, spaceBetween: 24 },
               1280: { slidesPerView: 4, spaceBetween: 24 },
             }}
-            className="pb-2"
+            className="!pt-4 !pb-6 !px-1 -mt-3 -mb-4"
           >
             {products.map((product) => {
               const inStock = product.stock > 0;
@@ -107,14 +107,14 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
 
               return (
                 <SwiperSlide key={product.id} className="h-auto">
-                  <div className="h-full flex flex-col justify-between bg-white rounded-2xl p-6 border border-neutral-200/80 hover:border-neutral-900 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-out group">
+                  <div className="h-full flex flex-col justify-between bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/80 hover:border-neutral-900 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-out group">
                     <div>
                       {/* Product Photo Showcase */}
-                      <div className="h-52 w-full flex items-center justify-center p-6 bg-neutral-50/80 rounded-xl mb-5 transition-colors group-hover:bg-neutral-50 overflow-hidden">
+                      <div className="h-48 sm:h-52 w-full rounded-xl mb-4 sm:mb-5 bg-neutral-100 overflow-hidden relative">
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500 ease-out"
+                          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
                         />
                       </div>
 
