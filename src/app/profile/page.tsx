@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
+import { CustomSelect } from "@/components/CustomSelect";
 import { MOCK_ORDERS } from "@/data/mockData";
 import {
   User,
@@ -23,6 +24,12 @@ export default function ProfilePage() {
   const { lang, formatPrice } = useAppContext();
 
   const [activeTab, setActiveTab] = useState<"orders" | "addresses" | "garage">("orders");
+  const [orderStatusFilter, setOrderStatusFilter] = useState("all");
+
+  const filteredOrders =
+    orderStatusFilter === "all"
+      ? MOCK_ORDERS
+      : MOCK_ORDERS.filter((o) => o.status.toLowerCase().includes(orderStatusFilter.toLowerCase()));
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900 flex flex-col">
@@ -116,7 +123,30 @@ export default function ProfilePage() {
           {/* Tab 1: Orders */}
           {activeTab === "orders" && (
             <div className="space-y-4">
-              {MOCK_ORDERS.map((order) => (
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
+                <div>
+                  <h3 className="text-sm font-bold text-neutral-900">
+                    {lang === "ar" ? "سجل الطلبات والمشتريات" : "Order History & Status"}
+                  </h3>
+                  <p className="text-xs text-neutral-500">
+                    {lang === "ar" ? "تتبع مباشر لحالة التوصيل السريع بالخليج" : "Live package tracking and invoice history"}
+                  </p>
+                </div>
+                <div className="w-full sm:w-56 shrink-0">
+                  <CustomSelect
+                    value={orderStatusFilter}
+                    onChange={(val) => setOrderStatusFilter(val)}
+                    options={[
+                      { value: "all", label: lang === "ar" ? "جميع الحالات" : "All Order Statuses" },
+                      { value: "Out for Delivery", label: lang === "ar" ? "جاري التوصيل" : "Out for Delivery" },
+                      { value: "Delivered", label: lang === "ar" ? "تم الاستلام" : "Delivered" },
+                    ]}
+                    lang={lang}
+                  />
+                </div>
+              </div>
+
+              {filteredOrders.map((order) => (
                 <div
                   key={order.id}
                   className="bg-white rounded-3xl border border-neutral-200 p-6 shadow-xs space-y-4"

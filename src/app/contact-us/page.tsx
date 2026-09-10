@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
+import { CustomSelect } from "@/components/CustomSelect";
 import {
   MapPin,
   Phone,
@@ -26,6 +27,7 @@ export default function ContactUsPage() {
     email: "",
     phone: "",
     vehicle: "",
+    inquiryType: "fitment",
     message: "",
   });
 
@@ -33,7 +35,7 @@ export default function ContactUsPage() {
     e.preventDefault();
     setFormSubmitted(true);
     setTimeout(() => {
-      setFormData({ name: "", email: "", phone: "", vehicle: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", vehicle: "", inquiryType: "fitment", message: "" });
     }, 400);
   };
 
@@ -241,6 +243,37 @@ export default function ContactUsPage() {
                         className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059]"
                       />
                     </div>
+                  </div>
+
+                  <div>
+                    <CustomSelect
+                      label={lang === "ar" ? "نوع الاستفسار أو الخدمة المطلوبة" : "Inquiry Subject & Service"}
+                      value={formData.inquiryType}
+                      onChange={(val) => setFormData({ ...formData, inquiryType: val })}
+                      options={[
+                        {
+                          value: "fitment",
+                          label: lang === "ar" ? "استشارة توافق وتجهيز طبلون السيارة" : "Vehicle Fitment & Dashboard Consultation",
+                        },
+                        {
+                          value: "installation",
+                          label: lang === "ar" ? "حجز موعد تركيب بالمعرض (طريق سلوى / أم صلال)" : "Showroom Fitting Appointment",
+                        },
+                        {
+                          value: "order",
+                          label: lang === "ar" ? "متابعة شحنة وطلب متجر إلكتروني" : "Online Order & Express Shipping Tracking",
+                        },
+                        {
+                          value: "fleet",
+                          label: lang === "ar" ? "تجهيز أساطيل وطلبات الشركات" : "Corporate & Fleet Solutions",
+                        },
+                        {
+                          value: "warranty",
+                          label: lang === "ar" ? "الضمان والاستبدال الفوري" : "Warranty & Technical Support",
+                        },
+                      ]}
+                      lang={lang}
+                    />
                   </div>
 
                   <div>

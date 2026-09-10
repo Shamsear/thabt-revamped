@@ -5,11 +5,13 @@ import { createPortal } from "react-dom";
 import { ChevronDown, Check, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+export type SelectOption = string | { label: string; value: string };
+
 interface CustomSelectProps {
   label?: string;
   value: string;
   onChange: (value: string) => void;
-  options: string[];
+  options: SelectOption[];
   placeholder?: string;
   disabled?: boolean;
   disabledText?: string;
@@ -45,6 +47,12 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const getOptValue = (opt: SelectOption): string =>
+    typeof opt === "string" ? opt : opt.value;
+
+  const getOptLabel = (opt: SelectOption): string =>
+    typeof opt === "string" ? opt : opt.label;
 
   // Compute position relative to viewport
   const updatePosition = () => {
@@ -90,7 +98,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
 
   // Close when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       const target = event.target as Node;
       if (
         triggerRef.current &&
@@ -104,9 +112,12 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
 
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside, { passive: true });
     }
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isOpen]);
 
@@ -139,16 +150,25 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   }, [isOpen, options.length]);
 
   const filteredOptions = searchQuery.trim()
-    ? options.filter((opt) => opt.toLowerCase().includes(searchQuery.toLowerCase().trim()))
+    ? options.filter((opt) => {
+        const labelStr = getOptLabel(opt).toLowerCase();
+        const valStr = getOptValue(opt).toLowerCase();
+        const q = searchQuery.toLowerCase().trim();
+        return labelStr.includes(q) || valStr.includes(q);
+      })
     : options;
 
-  const handleSelect = (option: string) => {
-    onChange(option);
+  const handleSelect = (opt: SelectOption) => {
+    onChange(getOptValue(opt));
     setIsOpen(false);
     setSearchQuery("");
   };
 
-  const displayText = disabled && disabledText ? disabledText : value || placeholder;
+  const matchedOpt = options.find((opt) => getOptValue(opt) === value);
+  const displayText =
+    disabled && disabledText
+      ? disabledText
+      : (matchedOpt ? getOptLabel(matchedOpt) : value) || placeholder;
 
   return (
     <div className={`relative ${className}`}>
@@ -171,7 +191,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         }}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        className={`w-full flex items-center justify-between text-xs sm:text-sm rounded-lg px-3 py-2 sm:py-2.5 border transition-all duration-150 cursor-pointer select-none text-left rtl:text-right ${
+        className={`w-full flex items-center justify-between text-xs sm:text-sm rounded-xl px-3 py-2 sm:py-2.5 border transition-all duration-150 cursor-pointer select-none text-left rtl:text-right ${
           disabled
             ? "bg-neutral-100/80 border-neutral-200/60 text-neutral-400 cursor-not-allowed"
             : isOpen
@@ -218,7 +238,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: placement === "bottom" ? -6 : 6, scale: 0.98 }}
                   transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-                  className="bg-white border border-neutral-200/90 rounded-xl shadow-[0_16px_40px_rgba(0,0,0,0.16),0_0_1px_rgba(0,0,0,0.1)] overflow-hidden"
+                  className="bg-white border border-neutral-200/90 rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.16),0_0_1px_rgba(0,0,0,0.1)] overflow-hidden"
                   role="listbox"
                 >
                   {/* Search Input for Lists with > 7 items */}
@@ -235,7 +255,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           placeholder={lang === "ar" ? "ابحث هنا..." : "Search..."}
-                          className="w-full bg-white text-neutral-900 text-xs rounded-md pl-7 pr-3 rtl:pl-3 rtl:pr-7 py-1.5 border border-neutral-200 focus:outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059]/20"
+                          className="w-full bg-white text-neutral-900 text-xs rounded-xl pl-7 pr-3 rtl:pl-3 rtl:pr-7 py-1.5 border border-neutral-200 focus:outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059]/20"
                           onClick={(e) => e.stopPropagation()}
                         />
                       </div>
@@ -245,22 +265,24 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   {/* Scrollable Option Items */}
                   <div className="max-h-52 overflow-y-auto py-1">
                     {filteredOptions.length > 0 ? (
-                      filteredOptions.map((option) => {
-                        const isSelected = value === option;
+                      filteredOptions.map((opt) => {
+                        const optVal = getOptValue(opt);
+                        const optLbl = getOptLabel(opt);
+                        const isSelected = value === optVal;
                         return (
                           <button
-                            key={option}
+                            key={optVal}
                             type="button"
                             role="option"
                             aria-selected={isSelected}
-                            onClick={() => handleSelect(option)}
-                            className={`w-full flex items-center justify-between px-3.5 py-2 text-xs sm:text-sm text-left rtl:text-right transition-colors duration-100 cursor-pointer ${
+                            onClick={() => handleSelect(opt)}
+                            className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs sm:text-sm text-left rtl:text-right transition-colors duration-100 cursor-pointer ${
                               isSelected
                                 ? "bg-[#faf6ed] text-[#b38e46] font-semibold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#c5a059]"
                                 : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950"
                             }`}
                           >
-                            <span className="truncate">{option}</span>
+                            <span className="truncate">{optLbl}</span>
                             {isSelected && (
                               <Check
                                 size={14}

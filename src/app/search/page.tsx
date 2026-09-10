@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { CustomSelect } from "@/components/CustomSelect";
 import { useAppContext } from "@/context/AppContext";
 import { MOCK_ALL_PRODUCTS, MOCK_CATEGORIES, Product } from "@/data/mockData";
 import {
@@ -139,11 +140,10 @@ function SearchCatalogContent() {
                 <button
                   type="button"
                   onClick={() => setSelectedCategory("all")}
-                  className={`px-3 py-1.5 rounded-full font-medium whitespace-nowrap transition cursor-pointer ${
-                    selectedCategory === "all"
+                  className={`px-3 py-1.5 rounded-full font-medium whitespace-nowrap transition cursor-pointer ${selectedCategory === "all"
                       ? "bg-neutral-950 text-white"
                       : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-                  }`}
+                    }`}
                 >
                   {lang === "ar" ? "جميع الفئات" : "All Categories"}
                 </button>
@@ -153,11 +153,10 @@ function SearchCatalogContent() {
                     key={cat.slug}
                     type="button"
                     onClick={() => setSelectedCategory(cat.slug)}
-                    className={`px-3 py-1.5 rounded-full font-medium whitespace-nowrap transition cursor-pointer ${
-                      selectedCategory === cat.slug
+                    className={`px-3 py-1.5 rounded-full font-medium whitespace-nowrap transition cursor-pointer ${selectedCategory === cat.slug
                         ? "bg-neutral-950 text-white"
                         : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-                    }`}
+                      }`}
                   >
                     {lang === "ar" ? cat.category_ar : cat.category}
                   </button>
@@ -167,29 +166,31 @@ function SearchCatalogContent() {
               {/* Vehicle & Sort Dropdowns */}
               <div className="flex items-center gap-3 shrink-0 flex-wrap">
                 {/* Vehicle Filter */}
-                <select
-                  value={selectedBrand}
-                  onChange={(e) => setSelectedBrand(e.target.value)}
-                  className="bg-neutral-50 border border-neutral-200 text-neutral-700 text-xs rounded-xl px-3 py-2 font-medium focus:outline-none focus:border-[#c5a059]"
-                >
-                  <option value="all">{lang === "ar" ? "كل الماركات" : "All Vehicles"}</option>
-                  {vehicleBrands.map((b) => (
-                    <option key={b} value={b}>
-                      {b}
-                    </option>
-                  ))}
-                </select>
+                <div className="w-40 sm:w-48">
+                  <CustomSelect
+                    value={selectedBrand}
+                    onChange={(val) => setSelectedBrand(val)}
+                    options={[
+                      { label: lang === "ar" ? "كل الماركات" : "All Vehicles", value: "all" },
+                      ...vehicleBrands.map((b) => ({ label: b, value: b })),
+                    ]}
+                    lang={lang}
+                  />
+                </div>
 
                 {/* Sort Order */}
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className="bg-neutral-50 border border-neutral-200 text-neutral-700 text-xs rounded-xl px-3 py-2 font-medium focus:outline-none focus:border-[#c5a059]"
-                >
-                  <option value="featured">{lang === "ar" ? "الأكثر تميزاً" : "Featured"}</option>
-                  <option value="price-asc">{lang === "ar" ? "السعر: من الأقل للأعلى" : "Price: Low to High"}</option>
-                  <option value="price-desc">{lang === "ar" ? "السعر: من الأعلى للأقل" : "Price: High to Low"}</option>
-                </select>
+                <div className="w-40 sm:w-48">
+                  <CustomSelect
+                    value={sortBy}
+                    onChange={(val) => setSortBy(val as any)}
+                    options={[
+                      { label: lang === "ar" ? "الأكثر تميزاً" : "Featured", value: "featured" },
+                      { label: lang === "ar" ? "السعر: الأقل" : "Price: Low to High", value: "price-asc" },
+                      { label: lang === "ar" ? "السعر: الأعلى" : "Price: High to Low", value: "price-desc" },
+                    ]}
+                    lang={lang}
+                  />
+                </div>
 
                 {/* In Stock Toggle */}
                 <label className="flex items-center gap-1.5 text-xs text-neutral-600 cursor-pointer select-none">

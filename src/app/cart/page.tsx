@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
+import { CustomSelect } from "@/components/CustomSelect";
 import {
   Trash2,
   ChevronRight,
@@ -240,17 +241,22 @@ export default function CartPage() {
 
                   {/* Delivery Country Selector */}
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
-                      {lang === "ar" ? "وجهة التوصيل" : "Delivery Destination"}
-                    </label>
-                    <select
+                    <CustomSelect
+                      label={lang === "ar" ? "وجهة التوصيل" : "Delivery Destination"}
                       value={destination}
-                      onChange={(e) => setDestination(e.target.value as any)}
-                      className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2 text-xs font-semibold text-neutral-800 focus:outline-none focus:border-[#c5a059]"
-                    >
-                      <option value="QA">{lang === "ar" ? "دولة قطر (توصيل فوري 24 ساعة)" : "Qatar (24h Express Delivery)"}</option>
-                      <option value="GCC">{lang === "ar" ? "دول الخليج (DHL Express 2-4 أيام)" : "GCC Countries (DHL Express 2-4 Days)"}</option>
-                    </select>
+                      onChange={(val) => setDestination(val as any)}
+                      options={[
+                        {
+                          value: "QA",
+                          label: lang === "ar" ? "دولة قطر (توصيل فوري 24 ساعة)" : "Qatar (24h Express Delivery)",
+                        },
+                        {
+                          value: "GCC",
+                          label: lang === "ar" ? "دول الخليج (DHL Express 2-4 أيام)" : "GCC Countries (DHL Express 2-4 Days)",
+                        },
+                      ]}
+                      lang={lang}
+                    />
                   </div>
 
                   {/* Coupon Form */}

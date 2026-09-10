@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
+import { CustomSelect } from "@/components/CustomSelect";
 import {
   VEHICLE_BRANDS,
   VEHICLE_MODELS,
@@ -123,61 +124,42 @@ export default function FindPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {/* Brand */}
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
-                      {lang === "ar" ? "الشركة المصنعة" : "Make"}
-                    </label>
-                    <select
+                    <CustomSelect
+                      label={lang === "ar" ? "الشركة المصنعة" : "Make"}
                       value={selectedBrand}
-                      onChange={(e) => {
-                        const newBrand = e.target.value;
+                      onChange={(newBrand) => {
                         setSelectedBrand(newBrand);
                         const models = VEHICLE_MODELS[newBrand] || [];
                         if (models.length > 0) setSelectedModel(models[0]);
                       }}
-                      className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-neutral-800 focus:outline-none focus:border-[#c5a059] focus:bg-white transition"
-                    >
-                      {VEHICLE_BRANDS.map((brand) => (
-                        <option key={brand} value={brand}>
-                          {brand}
-                        </option>
-                      ))}
-                    </select>
+                      options={VEHICLE_BRANDS}
+                      placeholder={lang === "ar" ? "اختر الماركة" : "Select Make"}
+                      lang={lang}
+                    />
                   </div>
 
                   {/* Model */}
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
-                      {lang === "ar" ? "الموديل" : "Model"}
-                    </label>
-                    <select
+                    <CustomSelect
+                      label={lang === "ar" ? "الموديل" : "Model"}
                       value={selectedModel}
-                      onChange={(e) => setSelectedModel(e.target.value)}
-                      className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-neutral-800 focus:outline-none focus:border-[#c5a059] focus:bg-white transition"
-                    >
-                      {(VEHICLE_MODELS[selectedBrand] || ["Standard Trim"]).map((mod) => (
-                        <option key={mod} value={mod}>
-                          {mod}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(val) => setSelectedModel(val)}
+                      options={VEHICLE_MODELS[selectedBrand] || ["Standard Trim"]}
+                      placeholder={lang === "ar" ? "اختر الموديل" : "Select Model"}
+                      lang={lang}
+                    />
                   </div>
 
                   {/* Year */}
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
-                      {lang === "ar" ? "سنة الصنع" : "Year"}
-                    </label>
-                    <select
+                    <CustomSelect
+                      label={lang === "ar" ? "سنة الصنع" : "Year"}
                       value={selectedYear}
-                      onChange={(e) => setSelectedYear(e.target.value)}
-                      className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-neutral-800 focus:outline-none focus:border-[#c5a059] focus:bg-white transition"
-                    >
-                      {VEHICLE_YEARS.map((yr) => (
-                        <option key={yr} value={yr}>
-                          {yr}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(val) => setSelectedYear(val)}
+                      options={VEHICLE_YEARS}
+                      placeholder={lang === "ar" ? "اختر السنة" : "Select Year"}
+                      lang={lang}
+                    />
                   </div>
                 </div>
 
@@ -230,43 +212,30 @@ export default function FindPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                   {/* Device Brand */}
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
-                      {lang === "ar" ? "ماركة الهاتف" : "Phone Brand"}
-                    </label>
-                    <select
+                    <CustomSelect
+                      label={lang === "ar" ? "ماركة الهاتف" : "Phone Brand"}
                       value={selectedDeviceBrand}
-                      onChange={(e) => {
-                        const newDeviceBrand = e.target.value;
+                      onChange={(newDeviceBrand) => {
                         setSelectedDeviceBrand(newDeviceBrand);
                         const devModels = DEVICE_MODELS[newDeviceBrand] || [];
                         if (devModels.length > 0) setSelectedDeviceModel(devModels[0]);
                       }}
-                      className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-neutral-800 focus:outline-none focus:border-[#c5a059] focus:bg-white transition"
-                    >
-                      {DEVICE_BRANDS.map((brand) => (
-                        <option key={brand} value={brand}>
-                          {brand}
-                        </option>
-                      ))}
-                    </select>
+                      options={DEVICE_BRANDS}
+                      placeholder={lang === "ar" ? "اختر الماركة" : "Select Brand"}
+                      lang={lang}
+                    />
                   </div>
 
                   {/* Device Model */}
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
-                      {lang === "ar" ? "موديل الهاتف" : "Phone Model"}
-                    </label>
-                    <select
+                    <CustomSelect
+                      label={lang === "ar" ? "موديل الهاتف" : "Phone Model"}
                       value={selectedDeviceModel}
-                      onChange={(e) => setSelectedDeviceModel(e.target.value)}
-                      className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-neutral-800 focus:outline-none focus:border-[#c5a059] focus:bg-white transition"
-                    >
-                      {(DEVICE_MODELS[selectedDeviceBrand] || ["Universal Size"]).map((mod) => (
-                        <option key={mod} value={mod}>
-                          {mod}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(val) => setSelectedDeviceModel(val)}
+                      options={DEVICE_MODELS[selectedDeviceBrand] || ["Universal Size"]}
+                      placeholder={lang === "ar" ? "اختر الموديل" : "Select Model"}
+                      lang={lang}
+                    />
                   </div>
                 </div>
 

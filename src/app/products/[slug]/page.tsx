@@ -6,6 +6,7 @@ import { notFound, useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
+import { CustomSelect } from "@/components/CustomSelect";
 import { MOCK_ALL_PRODUCTS, Product } from "@/data/mockData";
 import {
   ChevronRight,
@@ -45,6 +46,7 @@ export default function ProductDetailPage({
   const [activeImage, setActiveImage] = useState(images[0]);
   const [quantity, setQuantity] = useState(1);
   const [addedSuccess, setAddedSuccess] = useState(false);
+  const [checkedVehicle, setCheckedVehicle] = useState("Toyota Land Cruiser LC300");
 
   // Companion recommended combo product
   const companionProduct: Product =
@@ -211,6 +213,43 @@ export default function ProductDetailPage({
 
               {/* Quantity Selector & Action Buttons */}
               <div className="bg-white rounded-2xl border border-neutral-200 p-5 space-y-4">
+                {/* Vehicle Fitment Verification Dropdown */}
+                <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="font-bold text-neutral-700 flex items-center gap-1.5">
+                      <Car size={13} className="text-[#c5a059]" />
+                      <span>{lang === "ar" ? "تحقق من تطابق سيارتك:" : "Check Vehicle Fitment:"}</span>
+                    </span>
+                    <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded text-[10px] border border-emerald-200">
+                      {lang === "ar" ? "تطابق دقيق 100%" : "Exact Match"}
+                    </span>
+                  </div>
+                  <CustomSelect
+                    value={checkedVehicle}
+                    onChange={(val) => setCheckedVehicle(val)}
+                    options={[
+                      { value: "Toyota Land Cruiser LC300", label: "Toyota Land Cruiser LC300 (2022-2025)" },
+                      { value: "Nissan Patrol Y62", label: "Nissan Patrol Y62 (2010-2025)" },
+                      { value: "GMC Sierra / Yukon", label: "GMC Sierra / Yukon (2021-2025)" },
+                      { value: "Lexus LX600", label: "Lexus LX600 (2022-2025)" },
+                      { value: "Defender 110/130", label: "Land Rover Defender (2020-2025)" },
+                      { value: "Universal GCC Fit", label: lang === "ar" ? "مقاس قياسي عام للخليج" : "Universal Fit for All Vehicles" },
+                    ]}
+                    placeholder={lang === "ar" ? "اختر سيارتك للتحقق..." : "Select vehicle to verify fitment..."}
+                    lang={lang}
+                  />
+                  {checkedVehicle && (
+                    <p className="text-[10px] text-emerald-700 font-medium flex items-center gap-1 pt-0.5">
+                      <CheckCircle2 size={11} className="shrink-0" />
+                      <span>
+                        {lang === "ar"
+                          ? `متطابق 100% مع مقصورة ${checkedVehicle} بدون أي تخريم`
+                          : `100% verified fit for ${checkedVehicle} dashboard seamlessly without drilling`}
+                      </span>
+                    </p>
+                  )}
+                </div>
+
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-neutral-700">
                     {lang === "ar" ? "الكمية المطلوبة:" : "Quantity:"}

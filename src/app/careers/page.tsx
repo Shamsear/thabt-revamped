@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
+import { CustomSelect } from "@/components/CustomSelect";
 import { MOCK_JOBS, JobOpening } from "@/data/mockData";
 import {
   Award,
@@ -26,6 +27,7 @@ export default function CareersPage() {
   const { lang } = useAppContext();
 
   const [selectedJob, setSelectedJob] = useState<JobOpening | null>(null);
+  const [preferredLocation, setPreferredLocation] = useState("Salwa Road HQ, Doha");
   const [applySuccess, setApplySuccess] = useState(false);
 
   const handleApplySubmit = (e: React.FormEvent) => {
@@ -270,6 +272,21 @@ export default function CareersPage() {
                       className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#c5a059]"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <CustomSelect
+                      label={lang === "ar" ? "مقر العمل المفضل" : "Preferred Work Location"}
+                      value={preferredLocation}
+                      onChange={(val) => setPreferredLocation(val)}
+                      options={[
+                        { value: "Salwa Road HQ, Doha", label: lang === "ar" ? "المقر الرئيسي - طريق سلوى، الدوحة" : "Salwa Road HQ, Doha" },
+                        { value: "Umm Salal Muhammed Branch", label: lang === "ar" ? "فرع أم صلال محمد، الدوحة" : "Umm Salal Muhammed Showroom" },
+                        { value: "Logistics & Fulfillment Center", label: lang === "ar" ? "مركز التجهيز والشحن اللوجستي" : "Logistics & Fulfillment Center" },
+                        { value: "Hybrid / Remote GCC", label: lang === "ar" ? "عمل عن بعد / هجين بالخليج" : "Remote / Hybrid (GCC)" },
+                      ]}
+                      lang={lang}
+                    />
                 </div>
 
                 <div>

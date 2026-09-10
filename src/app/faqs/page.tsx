@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
+import { CustomSelect } from "@/components/CustomSelect";
 import { MOCK_FAQS, FAQ } from "@/data/mockData";
 import {
   HelpCircle,
@@ -20,13 +21,18 @@ export default function FaqsPage() {
   const { lang } = useAppContext();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [openFaqId, setOpenFaqId] = useState<string | null>("1");
 
   // Extended FAQ dataset for complete public reference
-  const allFaqs: FAQ[] = [
-    ...MOCK_FAQS,
+  const allFaqs: (FAQ & { category?: string })[] = [
+    { ...MOCK_FAQS[0], category: "fitment" },
+    { ...MOCK_FAQS[1], category: "shipping" },
+    { ...MOCK_FAQS[2], category: "fitment" },
+    { ...MOCK_FAQS[3], category: "shipping" },
     {
       id: "5",
+      category: "fitment",
       question: "Will installing a ProClip base damage or scratch my car's dashboard?",
       question_ar: "هل يسبب تركيب قاعدة برو كليبس أي خدوش أو تلف لطبلون السيارة؟",
       answer: "No. ProClip bases are custom-molded to snap precisely into existing dashboard seams and panel gaps. There is zero drilling, no screws into trim, and no harsh glues or sticky suction cups that melt under GCC sun.",
@@ -34,6 +40,7 @@ export default function FaqsPage() {
     },
     {
       id: "6",
+      category: "warranty",
       question: "What is your official GCC replacement warranty policy?",
       question_ar: "ما هي سياسة الضمان والاستبدال الرسمية في دول الخليج؟",
       answer: "All genuine Thabt products include a 1-year official replacement warranty. If any mechanical defect or manufacturing flaw occurs, we replace the component free of charge at our Doha showroom or via courier across the GCC.",
@@ -41,6 +48,7 @@ export default function FaqsPage() {
     },
     {
       id: "7",
+      category: "fitment",
       question: "Can I transfer my device holder if I buy a new car?",
       question_ar: "هل يمكنني نقل حامل الهاتف إلى سيارة جديدة إذا غيرت سيارتي؟",
       answer: "Yes! That is the primary advantage of our 2-part modular system. You only need to purchase a new vehicle-specific base for your new car; your existing phone holder easily screws onto the new base.",
@@ -48,6 +56,7 @@ export default function FaqsPage() {
     },
     {
       id: "8",
+      category: "payment",
       question: "What payment methods do you support in Qatar and the GCC?",
       question_ar: "ما هي وسائل الدفع المدعومة في قطر ودول الخليج؟",
       answer: "We support Visa, MasterCard, QPay / NAPS debit cards, Apple Pay, and Cash/Card on Delivery within Qatar.",
@@ -56,16 +65,20 @@ export default function FaqsPage() {
   ];
 
   const filteredFaqs = useMemo(() => {
-    if (!searchQuery.trim()) return allFaqs;
-    const q = searchQuery.toLowerCase().trim();
-    return allFaqs.filter(
-      (f) =>
+    return allFaqs.filter((f) => {
+      if (selectedCategory !== "all" && f.category !== selectedCategory) {
+        return false;
+      }
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase().trim();
+      return (
         f.question.toLowerCase().includes(q) ||
         f.question_ar.includes(q) ||
         f.answer.toLowerCase().includes(q) ||
         f.answer_ar.includes(q)
-    );
-  }, [searchQuery, allFaqs]);
+      );
+    });
+  }, [searchQuery, selectedCategory, allFaqs]);
 
   const toggleFaq = (id: string) => {
     setOpenFaqId(openFaqId === id ? null : id);
@@ -104,16 +117,32 @@ export default function FaqsPage() {
             </p>
           </div>
 
-          {/* Search Bar */}
-          <div className="relative max-w-lg mx-auto mb-12">
-            <Search size={16} className="absolute left-3.5 rtl:left-auto rtl:right-3.5 top-3.5 text-neutral-400" />
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={lang === "ar" ? "ابحث في الأسئلة الشائعة..." : "Search questions or topics..."}
-              className="w-full bg-white border border-neutral-300 rounded-2xl pl-10 pr-4 rtl:pl-4 rtl:pr-10 py-3 text-xs sm:text-sm text-neutral-900 focus:outline-none focus:border-[#c5a059] shadow-xs"
-            />
+          {/* Search & Topic Custom Dropdown Bar */}
+          <div className="max-w-2xl mx-auto mb-10 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+            <div className="sm:col-span-5">
+              <CustomSelect
+                value={selectedCategory}
+                onChange={(val) => setSelectedCategory(val)}
+                options={[
+                  { value: "all", label: lang === "ar" ? "جميع أقسام الأسئلة" : "All FAQ Topics" },
+                  { value: "fitment", label: lang === "ar" ? "التركيب والتوافق الهندسي" : "Installation & Fitment" },
+                  { value: "shipping", label: lang === "ar" ? "الشحن والتوصيل للخليج" : "GCC Shipping & Delivery" },
+                  { value: "warranty", label: lang === "ar" ? "الضمان والاستبدال الرسمي" : "Official Warranty & Policy" },
+                  { value: "payment", label: lang === "ar" ? "الدفع والطلبات" : "Payments & Orders" },
+                ]}
+                lang={lang}
+              />
+            </div>
+            <div className="sm:col-span-7 relative">
+              <Search size={16} className="absolute left-3.5 rtl:left-auto rtl:right-3.5 top-3 text-neutral-400" />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={lang === "ar" ? "ابحث بالكلمات المفتاحية..." : "Search questions or keywords..."}
+                className="w-full bg-white border border-neutral-200/90 rounded-xl pl-10 pr-4 rtl:pl-4 rtl:pr-10 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] shadow-2xs"
+              />
+            </div>
           </div>
 
           {/* Accordion FAQ Cards */}

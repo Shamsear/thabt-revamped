@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context/AppContext";
+import { CustomSelect } from "@/components/CustomSelect";
 import {
   ShieldCheck,
   Lock,
@@ -169,19 +170,22 @@ export default function CheckoutPage() {
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">
                     {lang === "ar" ? "رقم الهاتف للتوصيل" : "Mobile Phone Number"}
                   </label>
-                  <div className="flex gap-2">
-                    <select
-                      value={formData.phoneCode}
-                      onChange={(e) => setFormData({ ...formData, phoneCode: e.target.value })}
-                      className="bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-neutral-800 focus:outline-none focus:border-[#c5a059]"
-                    >
-                      <option value="+974">QA (+974)</option>
-                      <option value="+966">KSA (+966)</option>
-                      <option value="+971">UAE (+971)</option>
-                      <option value="+965">KW (+965)</option>
-                      <option value="+973">BH (+973)</option>
-                      <option value="+968">OM (+968)</option>
-                    </select>
+                  <div className="flex gap-2 items-stretch">
+                    <div className="w-32 shrink-0">
+                      <CustomSelect
+                        value={formData.phoneCode}
+                        onChange={(val) => setFormData({ ...formData, phoneCode: val })}
+                        options={[
+                          { value: "+974", label: "QA (+974)" },
+                          { value: "+966", label: "KSA (+966)" },
+                          { value: "+971", label: "UAE (+971)" },
+                          { value: "+965", label: "KW (+965)" },
+                          { value: "+973", label: "BH (+973)" },
+                          { value: "+968", label: "OM (+968)" },
+                        ]}
+                        lang={lang}
+                      />
+                    </div>
                     <input
                       type="tel"
                       required
@@ -210,21 +214,20 @@ export default function CheckoutPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">
-                    {lang === "ar" ? "الدولة" : "Country"}
-                  </label>
-                  <select
+                  <CustomSelect
+                    label={lang === "ar" ? "الدولة" : "Country"}
                     value={formData.country}
-                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-neutral-800 focus:outline-none focus:border-[#c5a059]"
-                  >
-                    <option value="Qatar">{lang === "ar" ? "دولة قطر" : "Qatar"}</option>
-                    <option value="Saudi Arabia">{lang === "ar" ? "المملكة العربية السعودية" : "Saudi Arabia"}</option>
-                    <option value="United Arab Emirates">{lang === "ar" ? "الإمارات العربية المتحدة" : "United Arab Emirates"}</option>
-                    <option value="Kuwait">{lang === "ar" ? "دولة الكويت" : "Kuwait"}</option>
-                    <option value="Bahrain">{lang === "ar" ? "مملكة البحرين" : "Bahrain"}</option>
-                    <option value="Oman">{lang === "ar" ? "سلطنة عمان" : "Oman"}</option>
-                  </select>
+                    onChange={(val) => setFormData({ ...formData, country: val })}
+                    options={[
+                      { value: "Qatar", label: lang === "ar" ? "دولة قطر" : "Qatar" },
+                      { value: "Saudi Arabia", label: lang === "ar" ? "المملكة العربية السعودية" : "Saudi Arabia" },
+                      { value: "United Arab Emirates", label: lang === "ar" ? "الإمارات العربية المتحدة" : "United Arab Emirates" },
+                      { value: "Kuwait", label: lang === "ar" ? "دولة الكويت" : "Kuwait" },
+                      { value: "Bahrain", label: lang === "ar" ? "مملكة البحرين" : "Bahrain" },
+                      { value: "Oman", label: lang === "ar" ? "سلطنة عمان" : "Oman" },
+                    ]}
+                    lang={lang}
+                  />
                 </div>
 
                 {formData.country === "Qatar" ? (

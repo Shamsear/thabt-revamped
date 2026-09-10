@@ -15,6 +15,7 @@ import {
   Car,
   X,
 } from "lucide-react";
+import { CustomSelect } from "@/components/CustomSelect";
 
 export default function CategoryPage({
   params,
@@ -123,24 +124,23 @@ export default function CategoryPage({
                   <span>{lang === "ar" ? "تصفية حسب نوع سيارتك:" : "Filter by Vehicle:"}</span>
                 </label>
 
-                <select
-                  value={selectedVehicle}
-                  onChange={(e) => setSelectedVehicle(e.target.value)}
-                  className="bg-neutral-50 border border-neutral-300 rounded-xl px-3 py-1.5 text-xs font-semibold text-neutral-800 focus:outline-none focus:border-[#c5a059] cursor-pointer"
-                >
-                  <option value="all">{lang === "ar" ? "جميع السيارات" : "All Vehicles"}</option>
-                  {VEHICLE_BRANDS.map((brand) => (
-                    <option key={brand} value={brand}>
-                      {brand}
-                    </option>
-                  ))}
-                </select>
+                <div className="w-44 sm:w-52">
+                  <CustomSelect
+                    value={selectedVehicle}
+                    onChange={(val) => setSelectedVehicle(val)}
+                    options={[
+                      { label: lang === "ar" ? "جميع السيارات" : "All Vehicles", value: "all" },
+                      ...VEHICLE_BRANDS.map((b) => ({ label: b, value: b })),
+                    ]}
+                    lang={lang}
+                  />
+                </div>
 
                 {selectedVehicle !== "all" && (
                   <button
                     type="button"
                     onClick={() => setSelectedVehicle("all")}
-                    className="inline-flex items-center gap-1 text-[11px] font-medium text-neutral-500 hover:text-neutral-900 bg-neutral-100 px-2 py-1 rounded-lg cursor-pointer"
+                    className="inline-flex items-center gap-1 text-[11px] font-medium text-neutral-500 hover:text-neutral-900 bg-neutral-100 px-2.5 py-1.5 rounded-xl cursor-pointer"
                   >
                     <span>{selectedVehicle}</span>
                     <X size={12} />
@@ -149,16 +149,19 @@ export default function CategoryPage({
               </div>
 
               {/* Sort Order & Stock Toggle */}
-              <div className="flex items-center gap-3 shrink-0">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className="bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-1.5 text-xs font-medium text-neutral-700 focus:outline-none focus:border-[#c5a059]"
-                >
-                  <option value="featured">{lang === "ar" ? "الأكثر طلباً" : "Featured"}</option>
-                  <option value="price-asc">{lang === "ar" ? "السعر: الأقل" : "Price: Low to High"}</option>
-                  <option value="price-desc">{lang === "ar" ? "السعر: الأعلى" : "Price: High to Low"}</option>
-                </select>
+              <div className="flex items-center gap-3 shrink-0 flex-wrap">
+                <div className="w-40">
+                  <CustomSelect
+                    value={sortBy}
+                    onChange={(val) => setSortBy(val as any)}
+                    options={[
+                      { label: lang === "ar" ? "الأكثر طلباً" : "Featured", value: "featured" },
+                      { label: lang === "ar" ? "السعر: الأقل" : "Price: Low to High", value: "price-asc" },
+                      { label: lang === "ar" ? "السعر: الأعلى" : "Price: High to Low", value: "price-desc" },
+                    ]}
+                    lang={lang}
+                  />
+                </div>
 
                 <label className="flex items-center gap-1.5 text-xs text-neutral-600 cursor-pointer select-none">
                   <input

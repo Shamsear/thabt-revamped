@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
+import { CustomSelect } from "@/components/CustomSelect";
 import { MOCK_GALLERY_ITEMS, GalleryItem } from "@/data/mockData";
 import {
   Camera,
@@ -64,7 +65,20 @@ export default function GalleryPage() {
           </div>
 
           {/* Filter Bar */}
-          <div className="flex items-center justify-center gap-2 mb-10 overflow-x-auto pb-2 scrollbar-none text-xs">
+          <div className="max-w-xs mx-auto mb-6 sm:hidden">
+            <CustomSelect
+              label={lang === "ar" ? "تصفية حسب نوع السيارة" : "Filter by Vehicle"}
+              value={selectedBrand}
+              onChange={(val) => setSelectedBrand(val)}
+              options={[
+                { value: "all", label: lang === "ar" ? "جميع السيارات" : "All Vehicles" },
+                ...brands.map((b) => ({ value: b, label: b })),
+              ]}
+              lang={lang}
+            />
+          </div>
+
+          <div className="hidden sm:flex items-center justify-center gap-2 mb-10 overflow-x-auto pb-2 scrollbar-none text-xs">
             <button
               type="button"
               onClick={() => setSelectedBrand("all")}
