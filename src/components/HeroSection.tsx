@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArrowRight, ChevronDown, Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { motion, LayoutGroup } from "framer-motion";
+import { CustomSelect } from "@/components/CustomSelect";
 import {
   VEHICLE_BRANDS,
   VEHICLE_MODELS,
@@ -37,7 +38,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
   };
 
   return (
-    <section id="home-hero" className="relative w-full bg-white text-neutral-900 py-4 lg:py-0 lg:min-h-[calc(100dvh-4rem)] lg:flex lg:items-center border-b border-neutral-100 overflow-hidden">
+    <section id="home-hero" className="relative w-full bg-white text-neutral-900 py-4 lg:py-0 lg:min-h-[calc(100dvh-4rem)] lg:flex lg:items-center border-b border-neutral-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
           {/* Left Column: Headline & The Front-and-Center Matcher Console (7 cols) */}
@@ -140,83 +141,42 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                     {/* 3 Dropdowns */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                       {/* Brand */}
-                      <div>
-                        <label className="block text-[11px] text-neutral-500 mb-1 font-medium">
-                          {lang === "ar" ? "السيارة" : "Vehicle"}
-                        </label>
-                        <div className="relative">
-                          <select
-                            value={selectedVehicleBrand}
-                            onChange={(e) => {
-                              const newBrand = e.target.value;
-                              setSelectedVehicleBrand(newBrand);
-                              const models = VEHICLE_MODELS[newBrand] || [];
-                              setSelectedVehicleModel(models[0] || "");
-                            }}
-                            className="w-full appearance-none bg-white text-neutral-900 text-xs sm:text-sm rounded-lg px-3 py-2 sm:py-2.5 border border-neutral-200 focus:border-[#c5a059] focus:outline-none transition-colors duration-150 cursor-pointer"
-                          >
-                            <option value="" disabled>
-                              {lang === "ar" ? "الماركة" : "Brand"}
-                            </option>
-                            {VEHICLE_BRANDS.map((b) => (
-                              <option key={b} value={b}>
-                                {b}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown size={13} className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 sm:top-3 text-neutral-400 pointer-events-none" />
-                        </div>
-                      </div>
+                      <CustomSelect
+                        label={lang === "ar" ? "السيارة" : "Vehicle"}
+                        value={selectedVehicleBrand}
+                        onChange={(newBrand) => {
+                          setSelectedVehicleBrand(newBrand);
+                          const models = VEHICLE_MODELS[newBrand] || [];
+                          setSelectedVehicleModel(models[0] || "");
+                        }}
+                        options={VEHICLE_BRANDS}
+                        placeholder={lang === "ar" ? "الماركة" : "Brand"}
+                        lang={lang}
+                      />
 
                       {/* Model */}
-                      <div>
-                        <label className="block text-[11px] text-neutral-500 mb-1 font-medium">
-                          {lang === "ar" ? "الموديل" : "Vehicle Model"}
-                        </label>
-                        <div className="relative">
-                          <select
-                            value={selectedVehicleModel}
-                            onChange={(e) => setSelectedVehicleModel(e.target.value)}
-                            disabled={!selectedVehicleBrand}
-                            className="w-full appearance-none bg-white text-neutral-900 text-xs sm:text-sm rounded-lg px-3 py-2 sm:py-2.5 border border-neutral-200 focus:border-[#c5a059] focus:outline-none transition-colors duration-150 cursor-pointer disabled:bg-neutral-100 disabled:text-neutral-400"
-                          >
-                            <option value="" disabled>
-                              {lang === "ar" ? "الموديل" : "Model"}
-                            </option>
-                            {availableVehicleModels.map((m) => (
-                              <option key={m} value={m}>
-                                {m}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown size={13} className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 sm:top-3 text-neutral-400 pointer-events-none" />
-                        </div>
-                      </div>
+                      <CustomSelect
+                        label={lang === "ar" ? "الموديل" : "Vehicle Model"}
+                        value={selectedVehicleModel}
+                        onChange={(newModel) => setSelectedVehicleModel(newModel)}
+                        options={availableVehicleModels}
+                        placeholder={lang === "ar" ? "الموديل" : "Model"}
+                        disabled={!selectedVehicleBrand}
+                        disabledText={lang === "ar" ? "اختر الماركة أولاً" : "Select Brand First"}
+                        lang={lang}
+                      />
 
                       {/* Year */}
-                      <div>
-                        <label className="block text-[11px] text-neutral-500 mb-1 font-medium">
-                          {lang === "ar" ? "السنة" : "Vehicle Year"}
-                        </label>
-                        <div className="relative">
-                          <select
-                            value={selectedVehicleYear}
-                            onChange={(e) => setSelectedVehicleYear(e.target.value)}
-                            disabled={!selectedVehicleModel}
-                            className="w-full appearance-none bg-white text-neutral-900 text-xs sm:text-sm rounded-lg px-3 py-2 sm:py-2.5 border border-neutral-200 focus:border-[#c5a059] focus:outline-none transition-colors duration-150 cursor-pointer disabled:bg-neutral-100 disabled:text-neutral-400"
-                          >
-                            <option value="" disabled>
-                              {lang === "ar" ? "السنة" : "Year"}
-                            </option>
-                            {VEHICLE_YEARS.map((y) => (
-                              <option key={y} value={y}>
-                                {y}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown size={13} className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 sm:top-3 text-neutral-400 pointer-events-none" />
-                        </div>
-                      </div>
+                      <CustomSelect
+                        label={lang === "ar" ? "السنة" : "Vehicle Year"}
+                        value={selectedVehicleYear}
+                        onChange={(newYear) => setSelectedVehicleYear(newYear)}
+                        options={VEHICLE_YEARS}
+                        placeholder={lang === "ar" ? "السنة" : "Year"}
+                        disabled={!selectedVehicleModel}
+                        disabledText={lang === "ar" ? "اختر الموديل أولاً" : "Select Model First"}
+                        lang={lang}
+                      />
                     </div>
 
                     {/* Primary Action Button */}
@@ -257,58 +217,30 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {/* Device Brand */}
-                      <div>
-                        <label className="block text-[11px] text-neutral-500 mb-1 font-medium">
-                          {lang === "ar" ? "الجهاز" : "Device"}
-                        </label>
-                        <div className="relative">
-                          <select
-                            value={selectedDeviceBrand}
-                            onChange={(e) => {
-                              const newDevice = e.target.value;
-                              setSelectedDeviceBrand(newDevice);
-                              const models = DEVICE_MODELS[newDevice] || [];
-                              setSelectedDeviceModel(models[0] || "");
-                            }}
-                            className="w-full appearance-none bg-white text-neutral-900 text-xs sm:text-sm rounded-lg px-3 py-2 sm:py-2.5 border border-neutral-200 focus:border-[#c5a059] focus:outline-none transition-colors duration-150 cursor-pointer"
-                          >
-                            <option value="" disabled>
-                              {lang === "ar" ? "الماركة" : "Brand"}
-                            </option>
-                            {DEVICE_BRANDS.map((d) => (
-                              <option key={d} value={d}>
-                                {d}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown size={13} className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 sm:top-3 text-neutral-400 pointer-events-none" />
-                        </div>
-                      </div>
+                      <CustomSelect
+                        label={lang === "ar" ? "الجهاز" : "Device"}
+                        value={selectedDeviceBrand}
+                        onChange={(newDevice) => {
+                          setSelectedDeviceBrand(newDevice);
+                          const models = DEVICE_MODELS[newDevice] || [];
+                          setSelectedDeviceModel(models[0] || "");
+                        }}
+                        options={DEVICE_BRANDS}
+                        placeholder={lang === "ar" ? "الماركة" : "Brand"}
+                        lang={lang}
+                      />
 
                       {/* Device Model */}
-                      <div>
-                        <label className="block text-[11px] text-neutral-500 mb-1 font-medium">
-                          {lang === "ar" ? "موديل الجهاز" : "Device Model"}
-                        </label>
-                        <div className="relative">
-                          <select
-                            value={selectedDeviceModel}
-                            onChange={(e) => setSelectedDeviceModel(e.target.value)}
-                            disabled={!selectedDeviceBrand}
-                            className="w-full appearance-none bg-white text-neutral-900 text-xs sm:text-sm rounded-lg px-3 py-2 sm:py-2.5 border border-neutral-200 focus:border-[#c5a059] focus:outline-none transition-colors duration-150 cursor-pointer disabled:bg-neutral-100 disabled:text-neutral-400"
-                          >
-                            <option value="" disabled>
-                              {lang === "ar" ? "الموديل" : "Model"}
-                            </option>
-                            {availableDeviceModels.map((dm) => (
-                              <option key={dm} value={dm}>
-                                {dm}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown size={13} className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 sm:top-3 text-neutral-400 pointer-events-none" />
-                        </div>
-                      </div>
+                      <CustomSelect
+                        label={lang === "ar" ? "موديل الجهاز" : "Device Model"}
+                        value={selectedDeviceModel}
+                        onChange={(newModel) => setSelectedDeviceModel(newModel)}
+                        options={availableDeviceModels}
+                        placeholder={lang === "ar" ? "الموديل" : "Model"}
+                        disabled={!selectedDeviceBrand}
+                        disabledText={lang === "ar" ? "اختر الماركة أولاً" : "Select Brand First"}
+                        lang={lang}
+                      />
                     </div>
 
                     <div className="pt-1">
