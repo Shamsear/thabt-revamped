@@ -3,14 +3,11 @@
 import React, { useState } from "react";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
+import { BrandTickerSection } from "@/components/BrandTickerSection";
+import { TopSellingSection } from "@/components/TopSellingSection";
 import { WhyMountSection } from "@/components/WhyMountSection";
 import { CategorySection } from "@/components/CategorySection";
-import { FeaturesSection } from "@/components/FeaturesSection";
-import { BrandTickerSection } from "@/components/BrandTickerSection";
-import { MiddleBannerSection } from "@/components/MiddleBannerSection";
-import { TopSellingSection } from "@/components/TopSellingSection";
 import { VideoShowcaseSection } from "@/components/VideoShowcaseSection";
-import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { FaqSection } from "@/components/FaqSection";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
@@ -19,7 +16,6 @@ import {
   MOCK_CATEGORIES,
   MOCK_TOP_SELLERS,
   MOCK_BRANDS,
-  MOCK_REVIEWS,
   MOCK_FAQS,
   Product,
 } from "@/data/mockData";
@@ -33,6 +29,7 @@ export default function Home() {
   const [cartItems, setCartItems] = useState<{ product: Product; quantity: number }[]>([
     { product: MOCK_TOP_SELLERS[0], quantity: 1 },
   ]);
+
 
   const handleAddToCart = (product: Product) => {
     setCartItems((prev) => {
@@ -83,25 +80,19 @@ export default function Home() {
 
       {/* Main Content Sections */}
       <main>
-        {/* 1. Hero Section */}
+        {/* 1. Hero Section & Vehicle Matcher */}
         <HeroSection lang={lang} />
 
-        {/* 2. Why Quality Mounts are Essential */}
+        {/* 2. The Two-Part Architecture & Engineering Standards */}
         <WhyMountSection lang={lang} />
 
-        {/* 3. Product Categories */}
+        {/* 3. Product Collections */}
         <CategorySection categories={MOCK_CATEGORIES} lang={lang} />
 
-        {/* 4. What Thabt Mounts Bring To You (Features) */}
-        <FeaturesSection lang={lang} />
-
-        {/* 5. Brand Logos Marquee Ticker */}
+        {/* 4. Supported Marques Ribbon */}
         <BrandTickerSection brands={MOCK_BRANDS} lang={lang} />
 
-        {/* 6. Middle Page Banner */}
-        <MiddleBannerSection />
-
-        {/* 7. Top Selling Products Carousel */}
+        {/* 5. Selected Hardware Carousel */}
         <TopSellingSection
           products={MOCK_TOP_SELLERS}
           onAddToCart={handleAddToCart}
@@ -110,13 +101,10 @@ export default function Home() {
           lang={lang}
         />
 
-        {/* 8. Video Showcase */}
+        {/* 6. Video Field Demonstration */}
         <VideoShowcaseSection lang={lang} />
 
-        {/* 9. Customer Reviews Testimonials */}
-        <TestimonialsSection reviews={MOCK_REVIEWS} lang={lang} />
-
-        {/* 10. FAQs Accordion */}
+        {/* 7. Specifications & FAQs */}
         <FaqSection faqs={MOCK_FAQS} lang={lang} />
       </main>
 

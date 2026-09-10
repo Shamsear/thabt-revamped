@@ -196,13 +196,22 @@ export const MOCK_TOP_SELLERS: Product[] = [
 ];
 
 export const MOCK_BRANDS: BrandLogo[] = [
-  { id: "1", name: "Toyota", image: "https://www.thabt.qa/user/images/cars-logo/car-1.png" },
-  { id: "2", name: "Nissan", image: "https://www.thabt.qa/user/images/cars-logo/car-1.png" },
-  { id: "3", name: "Lexus", image: "https://www.thabt.qa/user/images/cars-logo/car-1.png" },
-  { id: "4", name: "Land Rover", image: "https://www.thabt.qa/user/images/cars-logo/car-1.png" },
-  { id: "5", name: "GMC", image: "https://www.thabt.qa/user/images/cars-logo/car-1.png" },
-  { id: "6", name: "Mercedes", image: "https://www.thabt.qa/user/images/cars-logo/car-1.png" }
+  { id: "1",  name: "Brand 1",  image: "/user/images/cars-logo/1751207625_68614ec950c78.png" },
+  { id: "2",  name: "Brand 2",  image: "/user/images/cars-logo/1751275129_68625679b5881.png" },
+  { id: "3",  name: "Brand 3",  image: "/user/images/cars-logo/1751275141_68625685ad932.png" },
+  { id: "4",  name: "Brand 4",  image: "/user/images/cars-logo/1751275153_68625691dca64.png" },
+  { id: "5",  name: "Brand 5",  image: "/user/images/cars-logo/1751275164_6862569ca5888.png" },
+  { id: "6",  name: "Brand 6",  image: "/user/images/cars-logo/1751275176_686256a820176.png" },
+  { id: "7",  name: "Brand 7",  image: "/user/images/cars-logo/1751275185_686256b183ce4.png" },
+  { id: "8",  name: "Brand 8",  image: "/user/images/cars-logo/1751275214_686256ce52538.png" },
+  { id: "9",  name: "Brand 9",  image: "/user/images/cars-logo/1751275226_686256da57f95.png" },
+  { id: "10", name: "Brand 10", image: "/user/images/cars-logo/1751275236_686256e449dad.png" },
+  { id: "11", name: "Brand 11", image: "/user/images/cars-logo/1751275246_686256eea1338.png" },
+  { id: "12", name: "Brand 12", image: "/user/images/cars-logo/1751275257_686256f950eef.png" },
+  { id: "13", name: "Brand 13", image: "/user/images/cars-logo/1751275269_68625705051ab.png" },
+  { id: "14", name: "Brand 14", image: "/user/images/cars-logo/1751275293_6862571d32510.png" },
 ];
+
 
 export const MOCK_REVIEWS: Review[] = [
   {

@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ide and temporary archives
+.agent/
+*.zip
+
+# sensitive customer/admin uploads
+/public/user/invoices/
+/public/admin/resume/
+
+

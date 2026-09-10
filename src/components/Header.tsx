@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, ShoppingCart, User, Globe, ChevronDown, Menu, X } from "lucide-react";
+import { Search, ShoppingBag, ChevronDown, Menu, X } from "lucide-react";
 
 interface HeaderProps {
   cartCount: number;
@@ -20,169 +20,173 @@ export const Header: React.FC<HeaderProps> = ({
   currency,
   setCurrency,
 }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currencyOpen, setCurrencyOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const currencies = ["QAR", "SAR", "AED", "KWD", "BHD", "OMR"];
-
-  const navLinks = [
-    { name: lang === "ar" ? "الرئيسية" : "Home", href: "#" },
-    { name: lang === "ar" ? "قواعد التثبيت" : "Mounting Bases", href: "#vehicle-selection" },
-    { name: lang === "ar" ? "حوامل الأجهزة" : "Device Holders", href: "#device-selection" },
-    { name: lang === "ar" ? "الفئات" : "Categories", href: "#categories" },
-    { name: lang === "ar" ? "اتصل بنا" : "Contact Us", href: "#footer" },
+  const currencies = [
+    { code: "QAR", name: "Qatar" },
+    { code: "SAR", name: "Saudi Arabia" },
+    { code: "AED", name: "UAE" },
+    { code: "KWD", name: "Kuwait" },
+    { code: "BHD", name: "Bahrain" },
+    { code: "OMR", name: "Oman" },
   ];
 
+  const categories = [
+    { name: lang === "ar" ? "قواعد برو كليبس" : "ProClips", slug: "pro-clips" },
+    { name: lang === "ar" ? "حوامل الأجهزة" : "Device Holders", slug: "device-holders" },
+    { name: lang === "ar" ? "حوامل جلدية" : "Leather", slug: "leather-mount" },
+    { name: lang === "ar" ? "حوامل الدراجات" : "Motorbike", slug: "motorbike-mount" },
+    { name: lang === "ar" ? "الهوائيات والإكسسوارات" : "Off-Road & Antenna", slug: "antenna-accessories" },
+  ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const targetElement = document.getElementById("hardware");
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
-      {/* Announcement Bar */}
-      <div className="bg-neutral-900 text-white text-xs py-2 px-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <span className="bg-amber-400 text-neutral-900 font-bold px-2 py-0.5 rounded-full text-[10px]">PROMO</span>
-            <span>{lang === "ar" ? "توصيل سريع لجميع دول الخليج (قطر، السعودية، الإمارات، الكويت، عمان، البحرين)" : "Fast GCC Delivery (Qatar, UAE, Saudi Arabia, Kuwait, Oman, Bahrain)"}</span>
-          </div>
-          <div className="hidden md:flex items-center gap-4">
-            {/* Currency Selector */}
-            <div className="relative group cursor-pointer flex items-center gap-1">
+    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-neutral-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
+        {/* Brand Logo (Black & Gold) */}
+        <a href="#" className="flex items-center shrink-0 mr-4 sm:mr-8 rtl:mr-0 rtl:ml-4 sm:rtl:ml-8">
+          <img
+            src="/user/images/black_logo.png"
+            alt="Thabt"
+            className="h-8 sm:h-9 w-auto object-contain"
+          />
+        </a>
+
+        {/* Spacious, Elegant Navigation Links with Subtle Gold Underline Animation */}
+        <nav className="hidden lg:flex items-center gap-9 text-sm text-neutral-600 font-medium">
+          {categories.map((cat) => (
+            <a
+              key={cat.slug}
+              href={`#${cat.slug}`}
+              className="hover:text-neutral-950 transition-colors duration-200 whitespace-nowrap hover-underline-gold py-1"
+            >
+              {cat.name}
+            </a>
+          ))}
+        </nav>
+
+        {/* Right Tools: Search, Currency, Language, Cart */}
+        <div className="flex items-center gap-3 sm:gap-5 shrink-0 ml-auto rtl:ml-0 rtl:mr-auto">
+          {/* Subtle Minimalist Expanding Search Input */}
+          <form onSubmit={handleSearch} className="hidden md:block relative w-48 lg:w-56 focus-within:w-64 transition-all duration-300 ease-out">
+            <Search
+              size={15}
+              className="absolute left-3.5 rtl:left-auto rtl:right-3.5 top-3 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-[#c5a059]"
+            />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={lang === "ar" ? "بحث عن سيارتك أو جهازك..." : "Search car or device..."}
+              className="w-full bg-neutral-100/70 hover:bg-neutral-100 text-xs text-neutral-900 placeholder-neutral-400 rounded-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-2 border border-transparent focus:outline-none focus:border-[#c5a059]/40 focus:ring-2 focus:ring-[#c5a059]/10 focus:bg-white transition-all duration-200"
+            />
+          </form>
+
+          {/* Hairline Divider */}
+          <div className="hidden sm:block h-4 w-px bg-neutral-200" />
+
+          {/* Currency Dropdown */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setCurrencyOpen(!currencyOpen)}
+              className="flex items-center gap-1 text-xs font-semibold text-neutral-700 hover:text-[#c5a059] transition cursor-pointer py-1.5"
+            >
               <span>{currency}</span>
-              <ChevronDown size={12} />
-              <div className="absolute right-0 top-full mt-1 bg-neutral-800 text-white shadow-lg rounded py-1 min-w-[80px] hidden group-hover:block border border-neutral-700 z-50">
-                {currencies.map((cur) => (
+              <ChevronDown size={13} className="text-neutral-400" />
+            </button>
+
+            {currencyOpen && (
+              <div
+                className="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-36 bg-white border border-neutral-200 rounded-xl shadow-xl py-1 z-50 animate-in fade-in duration-150"
+                onClick={() => setCurrencyOpen(false)}
+              >
+                {currencies.map((c) => (
                   <button
-                    key={cur}
-                    onClick={() => setCurrency(cur)}
-                    className="block w-full text-left px-3 py-1 text-xs hover:bg-amber-400 hover:text-neutral-900"
+                    key={c.code}
+                    onClick={() => setCurrency(c.code)}
+                    className={`w-full text-left rtl:text-right px-3.5 py-1.5 text-xs transition cursor-pointer flex items-center justify-between ${
+                      currency === c.code
+                        ? "bg-[#faf6ed] font-bold text-[#c5a059]"
+                        : "text-neutral-600 hover:bg-neutral-50"
+                    }`}
                   >
-                    {cur}
+                    <span>{c.code}</span>
+                    <span className="text-[10px] text-neutral-400">{c.name}</span>
                   </button>
                 ))}
               </div>
-            </div>
-
-            {/* Language Switcher */}
-            <button
-              onClick={() => setLang(lang === "en" ? "ar" : "en")}
-              className="flex items-center gap-1 hover:text-amber-400 transition"
-            >
-              <Globe size={13} />
-              <span>{lang === "en" ? "العربية" : "English"}</span>
-            </button>
+            )}
           </div>
-        </div>
-      </div>
 
-      {/* Main Header Container */}
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        {/* Mobile Menu Toggle */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 text-gray-700 hover:text-amber-500"
-        >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+          {/* Language Switcher */}
+          <button
+            onClick={() => setLang(lang === "en" ? "ar" : "en")}
+            className="text-xs font-medium text-neutral-600 hover:text-[#c5a059] transition cursor-pointer py-1.5"
+          >
+            {lang === "ar" ? "English" : "العربية"}
+          </button>
 
-        {/* Logo */}
-        <a href="#" className="flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="bg-amber-400 text-neutral-900 font-black text-2xl tracking-tighter px-3 py-1 rounded-lg shadow-sm">
-              THABT
-            </div>
-            <span className="text-xs uppercase tracking-widest text-gray-500 font-bold hidden sm:inline-block">
-              MOUNTS
-            </span>
-          </div>
-        </a>
-
-        {/* Search Bar */}
-        <div className="flex-1 max-w-md hidden md:block">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder={lang === "ar" ? "ابحث عن سيارة أو جهاز أو منتج..." : "Search for vehicle, device or product..."}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-gray-100 text-gray-800 text-sm rounded-full pl-4 pr-10 py-2 border border-transparent focus:border-amber-400 focus:bg-white focus:outline-none transition"
-            />
-            <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-500">
-              <Search size={18} />
-            </button>
-          </div>
-        </div>
-
-        {/* Action Icons */}
-        <div className="flex items-center gap-3">
-          <a href="#" className="hidden sm:flex items-center gap-1 text-gray-700 hover:text-amber-500 text-sm font-medium">
-            <User size={20} />
-            <span className="hidden lg:inline">{lang === "ar" ? "حسابي" : "Account"}</span>
-          </a>
-
-          {/* Cart Icon Trigger */}
+          {/* Shopping Bag with Gold Badge */}
           <button
             onClick={onOpenCart}
-            className="relative p-2 bg-amber-400 text-neutral-900 rounded-full hover:bg-amber-500 transition shadow-sm"
+            className="relative p-2 text-neutral-900 hover:text-[#c5a059] transition cursor-pointer flex items-center justify-center group"
+            aria-label="Shopping Bag"
           >
-            <ShoppingCart size={20} />
+            <ShoppingBag size={20} className="stroke-[1.6]" />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
+              <span className="absolute -top-0.5 -right-0.5 rtl:-right-auto rtl:-left-0.5 w-4 h-4 rounded-full bg-[#c5a059] text-neutral-950 text-[9px] font-black flex items-center justify-center shadow-xs">
                 {cartCount}
               </span>
             )}
           </button>
+
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-1.5 text-neutral-800 hover:text-neutral-950 cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
         </div>
       </div>
 
-      {/* Navigation Bar */}
-      <nav className="border-t border-gray-100 hidden lg:block bg-neutral-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 flex items-center gap-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="py-3 text-sm font-medium hover:text-amber-400 transition"
-            >
-              {link.name}
-            </a>
-          ))}
-        </div>
-      </nav>
-
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-neutral-900 text-white border-t border-neutral-800 px-4 py-4 space-y-3">
-          <div className="relative mb-3">
+        <div className="lg:hidden border-t border-neutral-100 bg-white px-6 py-5 space-y-4">
+          <form onSubmit={handleSearch} className="relative">
+            <Search size={15} className="absolute left-3 rtl:left-auto rtl:right-3 top-3 text-neutral-400" />
             <input
-              type="text"
-              placeholder={lang === "ar" ? "بحث..." : "Search..."}
-              className="w-full bg-neutral-800 text-white text-sm rounded-full pl-4 pr-10 py-2 border border-neutral-700 focus:outline-none"
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={lang === "ar" ? "بحث..." : "Search car or device..."}
+              className="w-full bg-neutral-100 text-sm rounded-xl pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-2.5 focus:outline-none"
             />
-            <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          </div>
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm hover:text-amber-400 border-b border-neutral-800"
-            >
-              {link.name}
-            </a>
-          ))}
-          <div className="flex justify-between items-center pt-2 text-xs text-gray-400">
-            <button onClick={() => setLang(lang === "en" ? "ar" : "en")} className="text-amber-400 font-bold">
-              {lang === "en" ? "العربية" : "English"}
-            </button>
-            <div className="flex gap-2">
-              {currencies.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setCurrency(c)}
-                  className={`px-2 py-0.5 rounded ${currency === c ? "bg-amber-400 text-black font-bold" : "bg-neutral-800"}`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
+          </form>
+
+          <div className="space-y-2 pt-2">
+            {categories.map((cat) => (
+              <a
+                key={cat.slug}
+                href={`#${cat.slug}`}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-sm font-medium text-neutral-800 hover:text-[#c5a059] py-2 border-b border-neutral-50"
+              >
+                {cat.name}
+              </a>
+            ))}
           </div>
         </div>
       )}

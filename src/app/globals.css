@@ -2,128 +2,181 @@
 
 @layer base {
   :root {
-    --primary-yellow: #ffc107;
-    --dark-bg: #1c1d1f;
-    --light-grey: #f8f9fa;
-    --border-color: #e5e7eb;
+    --font-latin: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-arabic: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    /* Luxury Automotive Color System: Obsidian, Studio White & Brushed Gold */
+    --brand-obsidian: #0b0d11;
+    --brand-graphite: #141820;
+    --brand-gold: #c5a059;
+    --brand-gold-hover: #b38e46;
+    --brand-gold-light: #faf6ed;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   body {
-    font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    color: #212529;
+    font-family: var(--font-latin);
     background-color: #ffffff;
+    color: #0b0d11;
     overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  [dir="rtl"] {
+    font-family: var(--font-arabic);
   }
 }
 
-/* Hero Wave CSS Keyframes */
-.hero-waves {
-  display: block;
-  width: 100%;
-  height: 60px;
-  max-height: 60px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+/* Custom Minimalist Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f4f4f5;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
 }
 
-.wave1 use {
-  animation: move-forever1 10s linear infinite;
-  fill: rgba(255, 255, 255, 0.7);
+/* Smooth Infinite Brand Ticker Animation */
+@keyframes ticker-slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
-.wave2 use {
-  animation: move-forever2 8s linear infinite;
-  fill: rgba(255, 255, 255, 0.4);
-}
-
-.wave3 use {
-  animation: move-forever3 6s linear infinite;
-  fill: #ffffff;
-}
-
-@keyframes move-forever1 {
-  0% { transform: translate(85px, 0%); }
-  100% { transform: translate(-90px, 0%); }
-}
-
-@keyframes move-forever2 {
-  0% { transform: translate(-90px, 0%); }
-  100% { transform: translate(85px, 0%); }
-}
-
-@keyframes move-forever3 {
-  0% { transform: translate(-90px, 0%); }
-  100% { transform: translate(85px, 0%); }
-}
-
-/* Pulsating Play Button Animation */
-.pulsating-play-btn {
-  width: 80px;
-  height: 80px;
-  background: #ffc107;
-  border-radius: 50%;
+.animate-ticker {
   display: flex;
+  width: max-content;
+  animation: ticker-slide 32s linear infinite;
+  will-change: transform;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
+[dir="rtl"] .animate-ticker {
+  animation-direction: reverse;
+}
+
+/* Luxury Brushed Gold Video Pulse Button */
+.pulsating-play-btn-luxury {
+  width: 68px;
+  height: 68px;
+  background: #c5a059;
+  border-radius: 50%;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
-  animation: pulse-ring 1.8s infinite;
-  cursor: pointer;
+  box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.4);
+  animation: pulse-ring-luxury 2s infinite cubic-bezier(0.24, 0, 0.38, 1);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+  will-change: transform, box-shadow;
 }
 
-@keyframes pulse-ring {
+.pulsating-play-btn-luxury:hover {
+  transform: scale(1.06);
+  background: #d4af37;
+}
+
+@keyframes pulse-ring-luxury {
   0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
+    box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.45);
   }
   70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 25px rgba(255, 193, 7, 0);
+    box-shadow: 0 0 0 20px rgba(197, 160, 89, 0);
   }
   100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+    box-shadow: 0 0 0 0 rgba(197, 160, 89, 0);
   }
 }
 
-/* Category & Product Card Hover Effects */
-.category-card, .top-selling-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Hide default floating swiper arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  display: none !important;
 }
 
-.category-card:hover, .top-selling-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+/* Smooth Accordion Expansion */
+.accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 280ms cubic-bezier(0.16, 1, 0.3, 1), opacity 180ms ease;
+  opacity: 0;
 }
 
-/* Feature Box Hover Effect */
-.feature-box {
-  background: #ffffff;
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
-  padding: 28px 20px;
-  transition: all 0.3s ease;
+.accordion-content.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
 }
 
-.feature-box:hover {
-  border-color: #ffc107;
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+.accordion-inner {
+  overflow: hidden;
 }
 
-/* Swiper Custom Arrow Colors */
-.swiper-button-next, .swiper-button-prev {
-  color: #1c1d1f !important;
-  background: rgba(255, 255, 255, 0.9);
-  width: 44px !important;
-  height: 44px !important;
-  border-radius: 50%;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+/* Subtle Shimmer & Glow Effects */
+@keyframes gold-glow-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.03);
+  }
 }
 
-.swiper-button-next::after, .swiper-button-prev::after {
-  font-size: 18px !important;
-  font-weight: bold;
+.animate-glow {
+  animation: gold-glow-pulse 4s ease-in-out infinite;
 }
+
+/* Tactile Active States */
+.active-press {
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.active-press:active {
+  transform: scale(0.97);
+}
+
+/* GPU-Accelerated Link Underline Animation */
+.hover-underline-gold {
+  position: relative;
+}
+.hover-underline-gold::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: var(--brand-gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+[dir="rtl"] .hover-underline-gold::after {
+  transform-origin: right;
+}
+.hover-underline-gold:hover::after {
+  transform: scaleX(1);
+}
+

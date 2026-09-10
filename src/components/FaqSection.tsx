@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { FAQ } from "@/data/mockData";
 import { ChevronDown } from "lucide-react";
 
@@ -18,64 +17,55 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ faqs, lang }) => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-white overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Section Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 tracking-tight mb-3">
-            {lang === "ar" ? "الأسئلة الشائعة" : "Frequently Asked Questions"}
+    <section className="py-12 sm:py-16 lg:py-20 bg-white text-neutral-900 border-b border-neutral-100">
+      <div className="max-w-4xl mx-auto px-4 sm:px-8">
+        <div className="mb-8 sm:mb-10">
+          <p className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2">
+            {lang === "ar" ? "إجابات شائعة" : "Specifications & FAQ"}
+          </p>
+          <h2 className="text-2xl sm:text-4xl font-light tracking-tight text-neutral-900">
+            {lang === "ar" ? (
+              <>
+                الأسئلة <span className="font-semibold">الشائعة</span>
+              </>
+            ) : (
+              <>
+                Frequently Asked <span className="font-semibold">Questions</span>
+              </>
+            )}
           </h2>
-          <div className="w-16 h-1 bg-amber-400 mx-auto rounded-full" />
-        </motion.div>
+        </div>
 
-        {/* Accordion Container */}
-        <div className="space-y-4">
-          {faqs.map((faq, idx) => {
+        <div className="divide-y divide-neutral-200/70">
+          {faqs.map((faq) => {
             const isOpen = openId === faq.id;
             return (
-              <motion.div
-                key={faq.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="bg-gray-50 border border-gray-200/90 rounded-2xl overflow-hidden"
-              >
+              <div key={faq.id} className="py-5">
                 <button
+                  type="button"
                   onClick={() => toggleFaq(faq.id)}
-                  className="w-full p-5 text-left flex items-center justify-between font-bold text-neutral-900 text-sm md:text-base hover:bg-gray-100/80 transition"
+                  className="w-full flex items-center justify-between text-left rtl:text-right py-2 cursor-pointer group"
+                  aria-expanded={isOpen}
                 >
-                  <span className="pr-4">{lang === "ar" ? faq.question_ar : faq.question}</span>
+                  <span className="text-sm sm:text-base font-medium text-neutral-900 group-hover:text-neutral-600 transition">
+                    {lang === "ar" ? faq.question_ar : faq.question}
+                  </span>
                   <ChevronDown
-                    size={20}
-                    className={`text-amber-500 transition-transform duration-300 flex-shrink-0 ${
-                      isOpen ? "rotate-180" : ""
+                    size={16}
+                    className={`text-neutral-400 transition-transform duration-200 shrink-0 ml-4 rtl:ml-0 rtl:mr-4 ${
+                      isOpen ? "rotate-180 text-neutral-900" : ""
                     }`}
                   />
                 </button>
 
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden border-t border-gray-200/60 bg-white"
-                    >
-                      <div className="p-5 text-gray-600 text-sm leading-relaxed">
-                        {lang === "ar" ? faq.answer_ar : faq.answer}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                <div className={`accordion-content ${isOpen ? "is-open" : ""}`}>
+                  <div className="accordion-inner">
+                    <div className="pt-3 pb-2 pr-8 rtl:pr-0 rtl:pl-8 text-xs sm:text-sm text-neutral-500 leading-relaxed">
+                      <p>{lang === "ar" ? faq.answer_ar : faq.answer}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>

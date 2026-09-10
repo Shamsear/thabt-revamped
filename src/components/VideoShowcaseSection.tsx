@@ -1,90 +1,59 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Play, X } from "lucide-react";
+import React from "react";
+import { Play } from "lucide-react";
 
 interface VideoShowcaseSectionProps {
   lang: "en" | "ar";
 }
 
 export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ lang }) => {
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
-
   return (
-    <section className="relative py-28 bg-neutral-950 text-white overflow-hidden flex items-center justify-center">
-      {/* Background Video Image Overlay */}
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay"
-        style={{ backgroundImage: `url('https://www.thabt.qa/admin/galleries/855497-c.jpg')` }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-neutral-950/90" />
+    <section id="video-showcase" className="py-12 sm:py-16 lg:py-20 bg-[#0b0d11] text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8">
+        <div className="max-w-2xl mb-8 sm:mb-10">
+          <p className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2">
+            {lang === "ar" ? "فيديو عملي" : "Field Demonstration"}
+          </p>
+          <h2 className="text-2xl sm:text-4xl font-light tracking-tight text-white">
+            {lang === "ar" ? (
+              <>
+                شاهد سرعة <span className="font-semibold text-white">التركيب الميكانيكي</span>
+              </>
+            ) : (
+              <>
+                30-Second <span className="font-semibold text-white">Installation</span>
+              </>
+            )}
+          </h2>
+        </div>
 
-      <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4 drop-shadow"
-        >
-          {lang === "ar"
-            ? "اكتشف حلول قواعد تثبيت ثابـت"
-            : "Discover Thabt Mounting Solutions"}
-        </motion.h2>
+        <div className="relative rounded-2xl overflow-hidden bg-neutral-900 border border-white/10 h-[280px] sm:h-[360px] lg:h-[400px] flex items-center justify-center">
+          <img
+            src="https://www.thabt.qa/admin/galleries/855497-c.jpg"
+            alt="Installation Demonstration"
+            className="absolute inset-0 w-full h-full object-cover opacity-35"
+          />
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-gray-300 text-sm md:text-base mb-8 max-w-xl mx-auto leading-relaxed"
-        >
-          {lang === "ar"
-            ? "استكشف منتجاتنا المبتكرة والموثوقة في هذا الفيديو التفصيلي للتثبيت في جميع أنواع المركبات."
-            : "Explore our innovative and reliable mounting products engineered for maximum vehicle stability."}
-        </motion.p>
-
-        {/* Pulsating Play Button */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex justify-center"
-        >
-          <button
-            onClick={() => setVideoModalOpen(true)}
-            aria-label="Play Showcase Video"
-            className="pulsating-play-btn"
-          >
-            <Play size={32} className="text-neutral-900 fill-neutral-900 ml-1" />
-          </button>
-        </motion.div>
-      </div>
-
-      {/* Video Modal Popup */}
-      {videoModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative w-full max-w-4xl bg-neutral-900 rounded-3xl overflow-hidden shadow-2xl border border-neutral-800">
-            <button
-              onClick={() => setVideoModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white bg-neutral-800/80 p-2 rounded-full z-10 transition"
+          <div className="relative z-10 flex flex-col items-center text-center p-6">
+            <a
+              href="https://www.youtube.com/watch?v=1y5NsASwck0"
+              target="_blank"
+              rel="noreferrer"
+              className="pulsating-play-btn-luxury cursor-pointer mb-5 text-neutral-950 flex items-center justify-center"
+              aria-label="Play video"
             >
-              <X size={24} />
-            </button>
-            <div className="aspect-video w-full">
-              <iframe
-                src="https://www.youtube.com/embed/1y5NsASwck0?autoplay=1"
-                title="Thabt Showcase Video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full border-0"
-              />
-            </div>
+              <Play size={24} className="ml-1 rtl:ml-0 rtl:mr-1 fill-neutral-950" />
+            </a>
+
+            <p className="text-xs text-neutral-400 max-w-sm">
+              {lang === "ar"
+                ? "شاهد كيف تثبت قواعد برو كليبس في فواصل لوحة القيادة الأصلية خلال ثوانٍ معدودة بدون أي أدوات."
+                : "Watch how custom ProClips lock into factory dashboard seams in seconds without tools."}
+            </p>
           </div>
         </div>
-      )}
+      </div>
     </section>
   );
 };

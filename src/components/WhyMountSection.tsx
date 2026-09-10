@@ -1,100 +1,128 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
-import { CheckCircle2, ShieldCheck, Smartphone, RefreshCw, Wrench } from "lucide-react";
 
 interface WhyMountSectionProps {
   lang: "en" | "ar";
 }
 
 export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
-  const bulletPoints = [
-    lang === "ar" ? "ضمان السلامة التامة أثناء القيادة" : "Ensure Safety While Driving",
-    lang === "ar" ? "الاستمتاع بالملاحة بدون استخدام اليدين" : "Enjoy Hands-Free Navigation",
-    lang === "ar" ? "حماية جهازك الذكي من السقوط والتلف" : "Protect Device From Damage",
-    lang === "ar" ? "الحفاظ على ترتيب وتماسك لوحة القيادة" : "Keep your dashboard organized",
+  const steps = [
+    {
+      num: "01",
+      tag: lang === "ar" ? "قاعدة لوحة القيادة المخصصة" : "Vehicle-Specific Base",
+      title: lang === "ar" ? "قاعدة تثبيت فواصل التابلوه" : "Dashboard Panel Seam Mount",
+      desc:
+        lang === "ar"
+          ? "تُصنع بدقة متناهية لكل طراز سيارة لتثبت داخل فواصل لوحة القيادة الأصلية بالضغط الميكانيكي. لا حفر، لا شريط لاصق، ولا أثر على الإطلاق عند الإزالة."
+          : "Engineered specifically for your vehicle model to snap into factory dashboard panel seams. Zero drilling, zero adhesives, and 100% reversible without a trace.",
+      image: "/user/images/mount-sc.png",
+    },
+    {
+      num: "02",
+      tag: lang === "ar" ? "حامل الجهاز المتوافق" : "Precision Device Mount",
+      title: lang === "ar" ? "حامل الجهاز وشاحن MagSafe" : "MagSafe Qi2 or Precision Grip",
+      desc:
+        lang === "ar"
+          ? "يثبت مباشرة على القاعدة: اختر بين شاحن MagSafe Qi2 المغناطيسي السريع، حامل القفل الميكانيكي، أو سلسلة الجلد الفاخر المصنوع يدوياً."
+          : "Locks directly onto the base: Choose between MagSafe Qi2 inductive charging, mechanical clamp, or luxury handcrafted leather.",
+      image: "/user/images/holder-sc.png",
+    },
   ];
 
-  const cards = [
+  const specs = [
     {
-      icon: <ShieldCheck className="w-8 h-8 text-amber-500" />,
-      title: lang === "ar" ? "قبضة متينة واستقرار فائق" : "Firm Grip And Stability",
-      desc: lang === "ar" ? "خامات عالية الجودة تضمن عدم اهتزاز الهاتف أثناء القيادة." : "Premium materials ensure zero phone shaking on bumpy roads.",
+      num: "01",
+      title: lang === "ar" ? "تثبيت ميكانيكي (1 مم)" : "1mm Seam Snap-Fit",
+      desc: lang === "ar" ? "تثبيت محكم بالضغط دون براغي أو غراء يترك أثراً." : "Precision lock into panel gaps. Zero screws, glue, or marks on trim.",
     },
     {
-      icon: <Smartphone className="w-8 h-8 text-amber-500" />,
-      title: lang === "ar" ? "توافق شامل مع جميع الأجهزة" : "Universal Compatibility",
-      desc: lang === "ar" ? "يتناسب مع معظم الهواتف الذكية والأجهزة اللوحية." : "Fits most smartphones and tablets effortlessly.",
+      num: "02",
+      title: lang === "ar" ? "مقاوم لحرارة الخليج 60°م" : "GCC 60°C Thermal Stability",
+      desc: lang === "ar" ? "بلاستيك سيارات مقاوم للأشعة فوق البنفسجية لا ينحني أو يذوب." : "UV-stabilized automotive ABS polymer engineered for desert sun.",
     },
     {
-      icon: <RefreshCw className="w-8 h-8 text-amber-500" />,
-      title: lang === "ar" ? "دوران وزاوية رؤية مرنة" : "Rotation And Adjustability",
-      desc: lang === "ar" ? "عدّل زاوية الرؤية بسهولة بين الوضع الأفقي والعمودي." : "Adjust your viewing angle seamlessly between portrait and landscape.",
+      num: "03",
+      title: lang === "ar" ? "ثبات تام على الكثبان" : "Desert Dunes Anti-Vibration",
+      desc: lang === "ar" ? "قفل ميكانيكي صلب يمنع اهتزاز الهاتف في أصعب الدروب." : "Rigid lock eliminates device wobble over washboard terrain.",
     },
     {
-      icon: <Wrench className="w-8 h-8 text-amber-500" />,
-      title: lang === "ar" ? "تركيب وإزالة سهلة للغاية" : "Easy Installation & Removal",
-      desc: lang === "ar" ? "تركيب سريع بدون الحاجة لأي أدوات أو حفر." : "Tool-free setup with no damage to vehicle interior.",
+      num: "04",
+      title: lang === "ar" ? "لا يعيق التكييف أو الرؤية" : "Unblocked Airflow & View",
+      desc: lang === "ar" ? "تصميم مدروس يحافظ على تدفق التبريد ومجال رؤية السائق." : "Maintains factory AC vent output and clear windshield sightlines.",
     },
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-gray-50 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Left Column: Heading & Bullet Checkmarks */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="lg:col-span-6 space-y-6"
-          >
-            <h2 className="text-2xl md:text-4xl font-extrabold text-neutral-900 leading-tight">
-              {lang === "ar"
-                ? "أجهزة التثبيت عالية الجودة أساسية لقيادة آمنة ومريحة"
-                : "Quality mounting devices are essential for every vehicle"}
-            </h2>
+    <section id="architecture" className="py-12 sm:py-16 lg:py-20 bg-neutral-50 text-neutral-900 border-b border-neutral-100">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8">
+        {/* Section Header */}
+        <div className="max-w-2xl mb-10 sm:mb-12">
+          <p className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2">
+            {lang === "ar" ? "هندسة التثبيت المزدوجة" : "The Two-Part Architecture"}
+          </p>
+          <h2 className="text-2xl sm:text-4xl font-light tracking-tight text-neutral-900">
+            {lang === "ar" ? (
+              <>
+                كيف يعمل <span className="font-semibold text-neutral-950">نظام ثابـت</span>
+              </>
+            ) : (
+              <>
+                How the <span className="font-semibold text-neutral-950">Thabt system</span> works.
+              </>
+            )}
+          </h2>
+        </div>
 
-            <div className="space-y-4 pt-2">
-              {bulletPoints.map((point, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: idx * 0.15 }}
-                  className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-gray-200/80 shadow-sm"
-                >
-                  <CheckCircle2 className="w-6 h-6 text-emerald-500 flex-shrink-0" />
-                  <span className="text-neutral-800 font-medium text-sm md:text-base">{point}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+        {/* 2-Part System Display */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-10 sm:mb-12">
+          {steps.map((step) => (
+            <div
+              key={step.num}
+              className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/80 shadow-xs hover:shadow-lg hover:-translate-y-1 hover:border-neutral-300/90 transition-all duration-300 ease-out flex flex-col justify-between group cursor-pointer"
+            >
+              <div className="h-48 flex items-center justify-center p-4 mb-6">
+                <img
+                  src={step.image}
+                  alt={step.title}
+                  className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500 ease-out"
+                />
+              </div>
 
-          {/* Right Column: 4 Cards Grid */}
-          <div className="lg:col-span-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {cards.map((card, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: idx * 0.15 }}
-                  className="bg-white p-6 rounded-3xl border border-gray-100 shadow-md hover:shadow-xl transition-all hover:-translate-y-1.5"
-                >
-                  <div className="bg-amber-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-4">
-                    {card.icon}
-                  </div>
-                  <h3 className="text-base font-bold text-neutral-900 mb-2">{card.title}</h3>
-                  <p className="text-xs md:text-sm text-gray-500 leading-relaxed">{card.desc}</p>
-                </motion.div>
-              ))}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[11px] font-mono text-[#c5a059] font-semibold">
+                    {step.num}
+                  </span>
+                  <span className="text-[11px] text-neutral-400 uppercase tracking-wider font-medium">
+                    // {step.tag}
+                  </span>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold text-neutral-900 mb-2 group-hover:text-[#c5a059] transition-colors duration-200">
+                  {step.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
+                  {step.desc}
+                </p>
+              </div>
             </div>
-          </div>
+          ))}
+        </div>
+
+        {/* 4 Minimalist Engineering Standards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-10 border-t border-neutral-200/80">
+          {specs.map((item) => (
+            <div
+              key={item.num}
+              className="space-y-1 p-3.5 rounded-xl transition-all duration-200 hover:bg-white hover:shadow-xs border border-transparent hover:border-neutral-200/80 cursor-default"
+            >
+              <span className="text-xs font-mono text-[#c5a059] tracking-wider font-semibold">
+                {item.num}
+              </span>
+              <h4 className="text-sm font-semibold text-neutral-900">{item.title}</h4>
+              <p className="text-xs text-neutral-500 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

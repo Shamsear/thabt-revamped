@@ -1,101 +1,131 @@
 "use client";
 
 import React from "react";
-import { Mail, Phone, MapPin, Send, Instagram, Facebook, Twitter, Youtube } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 
 interface FooterProps {
   lang: "en" | "ar";
 }
 
 export const Footer: React.FC<FooterProps> = ({ lang }) => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer id="footer" className="bg-neutral-950 text-gray-300 border-t border-neutral-800 pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-neutral-800">
-          {/* Brand & About */}
-          <div className="lg:col-span-4 space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="bg-amber-400 text-neutral-900 font-black text-2xl tracking-tighter px-3 py-1 rounded-lg">
-                THABT
+    <>
+      <footer className="bg-[#0b0d11] text-neutral-400 text-xs pt-16 pb-12 border-t border-neutral-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-neutral-800/80">
+            {/* Brand with White & Gold Logo */}
+            <div className="md:col-span-1 space-y-3">
+              <img
+                src="/user/images/logo.png"
+                alt="Thabt"
+                className="h-8 w-auto object-contain brightness-110 mb-3"
+              />
+              <p className="text-[11px] leading-relaxed text-neutral-400">
+                {lang === "ar"
+                  ? "حلول وقواعد التثبيت الأصلية لمركبات الدفع الرباعي والهواتف في قطر ودول الخليج."
+                  : "Precision-engineered vehicle mounts and device holders for Qatar and the GCC."}
+              </p>
+              <div className="pt-2 text-[11px] space-y-1">
+                <p className="hover:text-white transition">info@thabt.qa</p>
+                <p dir="ltr" className="font-mono text-neutral-300 hover:text-[#c5a059] transition">+974 4483 2731</p>
               </div>
-              <span className="text-xs uppercase tracking-widest text-gray-400 font-bold">MOUNTS</span>
             </div>
-            <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
-              {lang === "ar"
-                ? "ثابـت - الرواد في التثبيت الذكي والحلول المخصصة لمختلف السيارات والأجهزة في قطر ودول مجلس التعاون الخليجي."
-                : "Thabt - Premium customized mounting bases, phone holders, and vehicle accessories across Qatar & GCC."}
-            </p>
-            <div className="flex items-center gap-3 pt-2">
-              <a href="#" className="w-9 h-9 bg-neutral-900 border border-neutral-700 rounded-full flex items-center justify-center text-gray-400 hover:text-amber-400 hover:border-amber-400 transition">
-                <Instagram size={18} />
-              </a>
-              <a href="#" className="w-9 h-9 bg-neutral-900 border border-neutral-700 rounded-full flex items-center justify-center text-gray-400 hover:text-amber-400 hover:border-amber-400 transition">
-                <Facebook size={18} />
-              </a>
-              <a href="#" className="w-9 h-9 bg-neutral-900 border border-neutral-700 rounded-full flex items-center justify-center text-gray-400 hover:text-amber-400 hover:border-amber-400 transition">
-                <Twitter size={18} />
-              </a>
-              <a href="#" className="w-9 h-9 bg-neutral-900 border border-neutral-700 rounded-full flex items-center justify-center text-gray-400 hover:text-amber-400 hover:border-amber-400 transition">
-                <Youtube size={18} />
-              </a>
+
+            {/* Collections */}
+            <div>
+              <h4 className="text-[11px] uppercase tracking-widest text-[#c5a059] font-semibold mb-3">
+                {lang === "ar" ? "الفئات" : "Collections"}
+              </h4>
+              <ul className="space-y-2 text-[11px]">
+                <li><a href="#pro-clips" className="hover:text-white transition">{lang === "ar" ? "قواعد برو كليبس" : "ProClips Mounts"}</a></li>
+                <li><a href="#device-holders" className="hover:text-white transition">{lang === "ar" ? "حوامل الأجهزة" : "Device Holders"}</a></li>
+                <li><a href="#leather-mount" className="hover:text-white transition">{lang === "ar" ? "حوامل جلدية" : "Leather Mounts"}</a></li>
+                <li><a href="#motorbike-mount" className="hover:text-white transition">{lang === "ar" ? "حوامل الدراجات" : "Motorbike Mounts"}</a></li>
+                <li><a href="#antenna-accessories" className="hover:text-white transition">{lang === "ar" ? "الهوائيات والإكسسوارات" : "Antenna & Off-Road"}</a></li>
+              </ul>
             </div>
-          </div>
 
-          {/* Quick Links */}
-          <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-white font-bold text-sm uppercase tracking-wider">{lang === "ar" ? "روابط سريعة" : "Quick Links"}</h4>
-            <ul className="space-y-2 text-xs md:text-sm text-gray-400">
-              <li><a href="#" className="hover:text-amber-400 transition">{lang === "ar" ? "الرئيسية" : "Home"}</a></li>
-              <li><a href="#categories" className="hover:text-amber-400 transition">{lang === "ar" ? "الفئات" : "Categories"}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition">{lang === "ar" ? "المنتجات الأكثر مبيعاً" : "Top Sellers"}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition">{lang === "ar" ? "الشروط والأحكام" : "Terms & Conditions"}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition">{lang === "ar" ? "سياسة الخصوصية" : "Privacy Policy"}</a></li>
-            </ul>
-          </div>
-
-          {/* Product Categories */}
-          <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-white font-bold text-sm uppercase tracking-wider">{lang === "ar" ? "فئات المنتجات" : "Categories"}</h4>
-            <ul className="space-y-2 text-xs md:text-sm text-gray-400">
-              <li><a href="#" className="hover:text-amber-400 transition">{lang === "ar" ? "قواعد برو كليبس" : "ProClips Mounts"}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition">{lang === "ar" ? "حوامل الأجهزة الذكية" : "Device Holders"}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition">{lang === "ar" ? "الحوامل الجلدية الفاخرة" : "Leather Mounts"}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition">{lang === "ar" ? "حوامل الدراجات النارية" : "Motorbike Mounts"}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition">{lang === "ar" ? "الهوائيات والإكسسوارات" : "Antenna & Accessories"}</a></li>
-            </ul>
-          </div>
-
-          {/* Newsletter Form */}
-          <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-white font-bold text-sm uppercase tracking-wider">{lang === "ar" ? "النشرة البريدية" : "Newsletter"}</h4>
-            <p className="text-xs text-gray-400">{lang === "ar" ? "اشترك للحصول على أحدث العروض والخصومات الخاصة." : "Subscribe to receive special offers and product drops."}</p>
-            <form onSubmit={(e) => { e.preventDefault(); alert("Subscribed!"); }} className="space-y-2">
-              <div className="relative">
-                <input
-                  type="email"
-                  placeholder={lang === "ar" ? "بريدك الإلكتروني..." : "Enter your email..."}
-                  className="w-full bg-neutral-900 text-white text-xs rounded-full pl-4 pr-10 py-3 border border-neutral-800 focus:border-amber-400 focus:outline-none"
-                  required
-                />
-                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 bg-amber-400 text-neutral-900 p-2 rounded-full hover:bg-amber-500 transition">
-                  <Send size={14} />
-                </button>
+            {/* Showrooms */}
+            <div>
+              <h4 className="text-[11px] uppercase tracking-widest text-[#c5a059] font-semibold mb-3">
+                {lang === "ar" ? "معارض الدوحة" : "Doha Showrooms"}
+              </h4>
+              <div className="space-y-3 text-[11px]">
+                <div>
+                  <p className="text-neutral-200 font-medium">{lang === "ar" ? "الريان القديم" : "Old Rayan"}</p>
+                  <p className="text-neutral-500">Unit 16, Building 419, Street 990, Zone 52</p>
+                </div>
+                <div>
+                  <p className="text-neutral-200 font-medium">{lang === "ar" ? "أم صلال محمد" : "Umm Salal"}</p>
+                  <p className="text-neutral-500">Unit 10, Building 191, Street 750, Zone 71</p>
+                </div>
               </div>
-            </form>
+            </div>
+
+            {/* Concierge & Social */}
+            <div>
+              <h4 className="text-[11px] uppercase tracking-widest text-[#c5a059] font-semibold mb-3">
+                {lang === "ar" ? "التواصل والمتابعة" : "Connect"}
+              </h4>
+              <p className="text-[11px] text-neutral-400 mb-3 leading-relaxed">
+                {lang === "ar" ? "تابع حساباتنا لمعرفة جديد الموديلات:" : "Follow our official channels for new releases:"}
+              </p>
+              <div className="flex items-center gap-3">
+                <a href="https://www.instagram.com/thabt.qa/" target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-[#c5a059] text-[11px] transition">Instagram</a>
+                <span className="text-neutral-700">•</span>
+                <a href="https://www.tiktok.com/@thabt.gcc" target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-[#c5a059] text-[11px] transition">TikTok</a>
+                <span className="text-neutral-700">•</span>
+                <a href="https://www.youtube.com/@Thabt.Digital.Solutions" target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-[#c5a059] text-[11px] transition">YouTube</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
+            <p>© {new Date().getFullYear()} Thabt (Gulf Digital Solution). All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <a href="#" className="hover:text-neutral-300 transition">{lang === "ar" ? "الشروط" : "Terms"}</a>
+              <a href="#" className="hover:text-neutral-300 transition">{lang === "ar" ? "الخصوصية" : "Privacy"}</a>
+              <a href="#" className="hover:text-neutral-300 transition">{lang === "ar" ? "الضمان" : "Warranty"}</a>
+            </div>
           </div>
         </div>
+      </footer>
 
-        {/* Bottom Bar: Copyright */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} Thabt Mounts Qatar. All Rights Reserved.</p>
-          <div className="flex items-center gap-4">
-            <span className="hover:text-gray-400 cursor-pointer">Visa</span>
-            <span className="hover:text-gray-400 cursor-pointer">MasterCard</span>
-            <span className="hover:text-gray-400 cursor-pointer">QPay</span>
-            <span className="hover:text-gray-400 cursor-pointer">Apple Pay</span>
-          </div>
-        </div>
+      {/* Unobtrusive WhatsApp Concierge */}
+      <div className="fixed bottom-5 right-5 rtl:right-auto rtl:left-5 z-40">
+        <a
+          href="https://api.whatsapp.com/send?phone=97450400314"
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center justify-center w-11 h-11 bg-[#25D366] text-white rounded-full shadow-lg hover:scale-105 active-press transition-transform cursor-pointer"
+          aria-label="WhatsApp"
+        >
+          <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M18.1225 14.9458C17.8183 14.7895 16.3033 14.0473 16.0215 13.9469C15.7397 13.8409 15.5332 13.7907 15.3295 14.1032C15.123 14.4129 14.5371 15.102 14.3529 15.3113C14.1744 15.5178 13.993 15.5429 13.6889 15.3894C11.8808 14.4854 10.695 13.7767 9.50361 11.7315C9.18832 11.1874 9.8189 11.2265 10.4076 10.0518C10.5081 9.84534 10.4578 9.66956 10.3797 9.51331C10.3016 9.35706 9.68776 7.84478 9.43106 7.22815C9.18274 6.62826 8.92604 6.71197 8.7391 6.70081C8.56053 6.68965 8.35684 6.68965 8.15037 6.68965C7.9439 6.68965 7.61187 6.76777 7.33006 7.0719C7.04825 7.38161 6.25305 8.12659 6.25305 9.63887C6.25305 11.1511 7.35517 12.616 7.50584 12.8225C7.66209 13.0289 9.67381 16.1316 12.7625 17.4681C14.7157 18.3107 15.4802 18.3833 16.4567 18.2382C17.051 18.1489 18.2759 17.496 18.5298 16.7734C18.7837 16.0535 18.7837 15.4369 18.7084 15.3085C18.6331 15.1718 18.4266 15.0937 18.1225 14.9458Z"
+              fill="white"
+            />
+            <path
+              d="M24.0292 7.65625C23.3986 6.15792 22.4946 4.81306 21.3422 3.65792C20.198 2.50948 18.8395 1.5966 17.3439 0.970982C15.8093 0.326451 14.1798 0 12.5002 0H12.4444C10.7535 0.00837054 9.11567 0.343192 7.57549 1.00167C6.09267 1.63371 4.74699 2.54821 3.61344 3.6942C2.47226 4.84654 1.57661 6.18583 0.95719 7.67857C0.315449 9.22433 -0.00821224 10.8677 0.000158294 12.5586C0.00962607 14.4963 0.468048 16.4054 1.33944 18.1362V22.3772C1.33944 22.7176 1.47467 23.0441 1.71537 23.2848C1.95607 23.5255 2.28253 23.6607 2.62293 23.6607H6.86679C8.59752 24.5321 10.5067 24.9905 12.4444 25H12.5029C14.1743 25 15.7954 24.6763 17.3216 24.043C18.8097 23.4248 20.163 22.5226 21.306 21.3867C22.4583 20.2455 23.3651 18.9118 23.9985 17.4247C24.657 15.8845 24.9918 14.2467 25.0002 12.5558C25.0085 10.8566 24.6793 9.20759 24.0292 7.65625ZM19.8132 19.8772C17.8573 21.8136 15.2624 22.8795 12.5002 22.8795H12.4527C10.7702 22.8711 9.09893 22.4526 7.62293 21.6657L7.38855 21.5402H3.45998V17.6116L3.33442 17.3772C2.54759 15.9012 2.12906 14.2299 2.12069 12.5474C2.10953 9.76562 3.17259 7.15402 5.12293 5.18694C7.07047 3.21987 9.67371 2.1317 12.4555 2.12054H12.5029C13.898 2.12054 15.2513 2.39118 16.5264 2.9269C17.7708 3.44866 18.8869 4.19922 19.8467 5.15904C20.8037 6.11607 21.5571 7.23493 22.0788 8.47935C22.6201 9.76841 22.8908 11.1356 22.8852 12.5474C22.8685 15.3265 21.7775 17.9297 19.8132 19.8772Z"
+              fill="white"
+            />
+          </svg>
+        </a>
       </div>
-    </footer>
+
+      {/* Back to Top - Desktop only to keep mobile uncluttered */}
+      <button
+        type="button"
+        onClick={scrollToTop}
+        className="hidden sm:flex fixed bottom-5 right-18 rtl:right-auto rtl:left-18 z-30 p-2 text-neutral-400 hover:text-white bg-neutral-900 border border-neutral-800 rounded-full shadow-sm transition-all duration-200 active-press cursor-pointer"
+        aria-label="Back to top"
+      >
+        <ArrowUp size={14} />
+      </button>
+    </>
   );
 };
