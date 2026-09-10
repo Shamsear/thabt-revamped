@@ -13,6 +13,22 @@
     --brand-gold-light: #faf6ed;
   }
 
+  /* Universal removal of mobile tap highlights and native browser blue focus outlines */
+  *,
+  *::before,
+  *::after {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  *:focus:not(:focus-visible) {
+    outline: none !important;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--brand-gold);
+    outline-offset: 2px;
+  }
+
   html {
     scroll-behavior: smooth;
     text-rendering: optimizeLegibility;
@@ -20,6 +36,7 @@
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
     max-width: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -28,6 +45,7 @@
     color: #0b0d11;
     overflow-x: clip;
     max-width: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   [dir="rtl"] {
