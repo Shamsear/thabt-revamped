@@ -77,53 +77,57 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className={`min-h-screen bg-neutral-50 text-neutral-900 ${lang === "ar" ? "rtl" : "ltr"}`} dir={lang === "ar" ? "rtl" : "ltr"}>
+    <div className={`min-h-screen bg-[#fafaf9] text-neutral-900 ${lang === "ar" ? "rtl" : "ltr"}`} dir={lang === "ar" ? "rtl" : "ltr"}>
       {/* Focused Checkout Minimal Header */}
       <header className="bg-white border-b border-neutral-200/80 py-4 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link href="/">
             <img src="/user/images/black_logo.png" alt="Thabt" className="h-7 sm:h-8 w-auto object-contain" />
           </Link>
-          <div className="flex items-center gap-2 text-xs font-semibold text-neutral-600">
-            <Lock size={14} className="text-[#c5a059]" />
-            <span>{lang === "ar" ? "إتمام الشراء الآمن" : "Secure Checkout"}</span>
+          <div className="flex items-center gap-2 text-xs font-bold text-neutral-700 bg-[#faf6ed] border border-[#c5a059]/30 px-3 py-1.5 rounded-full">
+            <Lock size={13} className="text-[#c5a059]" />
+            <span>{lang === "ar" ? "إتمام الشراء الآمن والخاص" : "Secure Checkout Protocol"}</span>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
+      <main className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-12 relative">
+        {/* Subtle Ambient Gold Glow in Background */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[250px] bg-[#c5a059]/5 blur-[160px] pointer-events-none rounded-full" />
+
         {/* Progress Step Indicator */}
-        <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10 text-xs">
+        <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10 text-xs relative z-10">
           <div className="flex items-center gap-2 text-neutral-950 font-bold">
-            <span className="w-6 h-6 rounded-full bg-neutral-950 text-white flex items-center justify-center text-[10px]">
+            <span className="w-7 h-7 rounded-full bg-neutral-950 text-[#c5a059] border border-[#c5a059]/40 flex items-center justify-center text-[11px] font-black shadow-xs">
               1
             </span>
             <span>{lang === "ar" ? "العنوان والشحن" : "Shipping & Address"}</span>
           </div>
-          <div className="w-8 sm:w-16 h-px bg-neutral-300" />
+          <div className="w-8 sm:w-16 h-0.5 bg-[#c5a059]/40" />
           <div className="flex items-center gap-2 text-neutral-400 font-medium">
-            <span className="w-6 h-6 rounded-full bg-neutral-200 text-neutral-600 flex items-center justify-center text-[10px]">
+            <span className="w-7 h-7 rounded-full bg-white border border-neutral-200 text-neutral-400 flex items-center justify-center text-[11px] font-bold">
               2
             </span>
             <span>{lang === "ar" ? "الدفع التوضيحي" : "Payment Simulation"}</span>
           </div>
-          <div className="w-8 sm:w-16 h-px bg-neutral-300" />
+          <div className="w-8 sm:w-16 h-0.5 bg-neutral-200" />
           <div className="flex items-center gap-2 text-neutral-400 font-medium">
-            <span className="w-6 h-6 rounded-full bg-neutral-200 text-neutral-600 flex items-center justify-center text-[10px]">
+            <span className="w-7 h-7 rounded-full bg-white border border-neutral-200 text-neutral-400 flex items-center justify-center text-[11px] font-bold">
               3
             </span>
             <span>{lang === "ar" ? "تأكيد الطلب" : "Confirmation"}</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
           {/* Left Form: Contact & Address (7 cols) */}
           <div className="lg:col-span-7">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Contact Information */}
-              <div className="bg-white rounded-2xl border border-neutral-200 p-6 shadow-xs space-y-4">
-                <h2 className="text-base font-extrabold text-neutral-950">
-                  {lang === "ar" ? "بيانات العميل والتواصل" : "Contact Information"}
+              <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4">
+                <h2 className="text-base font-black text-neutral-950 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
+                  <span>{lang === "ar" ? "بيانات العميل والتواصل" : "Contact Information"}</span>
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -136,7 +140,7 @@ export default function CheckoutPage() {
                       required
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:bg-white transition"
+                      className="w-full bg-neutral-50 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/15 focus:bg-white transition"
                     />
                   </div>
                   <div>
@@ -148,7 +152,7 @@ export default function CheckoutPage() {
                       required
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:bg-white transition"
+                      className="w-full bg-neutral-50 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/15 focus:bg-white transition"
                     />
                   </div>
                 </div>
@@ -162,7 +166,7 @@ export default function CheckoutPage() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:bg-white transition"
+                    className="w-full bg-neutral-50 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/15 focus:bg-white transition"
                   />
                 </div>
 
@@ -190,21 +194,21 @@ export default function CheckoutPage() {
                       type="tel"
                       required
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="flex-1 bg-neutral-50 border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:bg-white transition"
+                      onChange={(e) => setFormData({ ...formData, phone} = { ...formData, phone: e.target.value })}
+                      className="flex-1 bg-neutral-50 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/15 focus:bg-white transition"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Delivery Address (Qatar Blue Plate Format) */}
-              <div className="bg-white rounded-2xl border border-neutral-200 p-6 shadow-xs space-y-4">
+              <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base font-extrabold text-neutral-950 flex items-center gap-2">
+                  <h2 className="text-base font-black text-neutral-950 flex items-center gap-2">
                     <MapPin size={18} className="text-[#c5a059]" />
                     <span>{lang === "ar" ? "عنوان التوصيل" : "Delivery Address"}</span>
                   </h2>
-                  <span className="text-[10px] text-[#9b7832] font-semibold bg-[#faf6ed] px-2.5 py-1 rounded-full border border-[#c5a059]/30">
+                  <span className="text-[10px] text-[#9b7832] font-bold bg-[#faf6ed] px-2.5 py-1 rounded-full border border-[#c5a059]/30">
                     {formData.country === "Qatar"
                       ? lang === "ar"
                         ? "عنوان قطر الوطني الأزرق"
@@ -232,9 +236,9 @@ export default function CheckoutPage() {
 
                 {formData.country === "Qatar" ? (
                   /* Qatar National Blue Plate 3-Box System */
-                  <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50/70 to-indigo-50/50 border border-blue-200 space-y-3">
-                    <p className="text-[11px] font-bold text-blue-900 flex items-center gap-1.5">
-                      <Building size={14} className="text-blue-600" />
+                  <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-50/70 to-[#faf6ed]/60 border border-blue-200/80 space-y-3">
+                    <p className="text-[11px] font-bold text-blue-950 flex items-center gap-1.5">
+                      <Building size={14} className="text-[#c5a059]" />
                       <span>{lang === "ar" ? "اللوحة الزرقاء لعنوان المبنى في قطر:" : "Qatar Blue Plate Address Numbers:"}</span>
                     </p>
                     <div className="grid grid-cols-3 gap-3">
@@ -248,7 +252,7 @@ export default function CheckoutPage() {
                           placeholder="e.g. 52"
                           value={formData.zoneNumber}
                           onChange={(e) => setFormData({ ...formData, zoneNumber: e.target.value })}
-                          className="w-full bg-white border border-blue-300 rounded-lg px-3 py-2 text-xs font-mono font-bold text-blue-950 focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-blue-300 rounded-xl px-3 py-2 text-xs font-mono font-bold text-blue-950 focus:outline-none focus:border-[#c5a059]"
                         />
                       </div>
                       <div>
@@ -261,7 +265,7 @@ export default function CheckoutPage() {
                           placeholder="e.g. 990"
                           value={formData.streetNumber}
                           onChange={(e) => setFormData({ ...formData, streetNumber: e.target.value })}
-                          className="w-full bg-white border border-blue-300 rounded-lg px-3 py-2 text-xs font-mono font-bold text-blue-950 focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-blue-300 rounded-xl px-3 py-2 text-xs font-mono font-bold text-blue-950 focus:outline-none focus:border-[#c5a059]"
                         />
                       </div>
                       <div>
@@ -274,7 +278,7 @@ export default function CheckoutPage() {
                           placeholder="e.g. 16"
                           value={formData.buildingNumber}
                           onChange={(e) => setFormData({ ...formData, buildingNumber: e.target.value })}
-                          className="w-full bg-white border border-blue-300 rounded-lg px-3 py-2 text-xs font-mono font-bold text-blue-950 focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white border border-blue-300 rounded-xl px-3 py-2 text-xs font-mono font-bold text-blue-950 focus:outline-none focus:border-[#c5a059]"
                         />
                       </div>
                     </div>
@@ -291,7 +295,7 @@ export default function CheckoutPage() {
                         required
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                        className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059]"
+                        className="w-full bg-neutral-50 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059]"
                       />
                     </div>
                     <div>
@@ -303,7 +307,7 @@ export default function CheckoutPage() {
                         required
                         value={formData.additionalNotes}
                         onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
-                        className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059]"
+                        className="w-full bg-neutral-50 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059]"
                       />
                     </div>
                   </div>
@@ -318,7 +322,7 @@ export default function CheckoutPage() {
                     value={formData.additionalNotes}
                     onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
                     placeholder={lang === "ar" ? "فيلا، شقة، علامة مميزة..." : "Villa no, landmark, preferred time..."}
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059]"
+                    className="w-full bg-neutral-50 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059]"
                   />
                 </div>
               </div>
@@ -327,19 +331,20 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 px-6 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-98 cursor-pointer disabled:opacity-70"
+                className="w-full py-4 px-6 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(197,160,89,0.3)] hover:shadow-md transition-all active:scale-98 cursor-pointer disabled:opacity-70"
               >
                 <span>{lang === "ar" ? "المتابعة لاختيار وسيلة الدفع" : "Continue to Payment Simulation"}</span>
-                <ArrowRight size={14} className="rtl:rotate-180 text-[#c5a059]" />
+                <ArrowRight size={14} className="rtl:rotate-180" />
               </button>
             </form>
           </div>
 
           {/* Right Summary Sidebar (5 cols) */}
           <div className="lg:col-span-5 sticky top-8 space-y-4">
-            <div className="bg-white rounded-2xl border border-neutral-200 p-6 shadow-xs">
-              <h3 className="text-sm font-extrabold text-neutral-950 pb-3 border-b border-neutral-100">
-                {lang === "ar" ? "طلبك" : "Your Order"} ({cartItems.length})
+            <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+              <h3 className="text-sm font-black text-neutral-950 pb-3 border-b border-neutral-100 flex items-center justify-between">
+                <span>{lang === "ar" ? "طلبك" : "Your Order"} ({cartItems.length})</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
               </h3>
 
               <div className="divide-y divide-neutral-100 max-h-72 overflow-y-auto py-2">
@@ -349,10 +354,10 @@ export default function CheckoutPage() {
                       <img
                         src={item.product.image}
                         alt={item.product.name}
-                        className="w-12 h-12 object-contain rounded-lg bg-neutral-50 border border-neutral-200 p-1 shrink-0"
+                        className="w-12 h-12 object-contain rounded-xl bg-gradient-to-b from-neutral-50 to-white border border-neutral-200/80 p-1 shrink-0"
                       />
                       <div>
-                        <p className="font-bold text-neutral-900 line-clamp-1 max-w-[180px]">
+                        <p className="font-bold text-neutral-950 line-clamp-1 max-w-[180px]">
                           {lang === "ar" ? item.product.name_ar : item.product.name}
                         </p>
                         <p className="text-[10px] text-neutral-400">
@@ -369,33 +374,33 @@ export default function CheckoutPage() {
 
               {/* Price totals */}
               <div className="pt-4 border-t border-neutral-100 space-y-2 text-xs">
-                <div className="flex items-center justify-between text-neutral-500">
+                <div className="flex items-center justify-between text-neutral-600">
                   <span>{lang === "ar" ? "المجموع الفرعي:" : "Subtotal:"}</span>
-                  <span className="font-semibold text-neutral-900">{formatPrice(cartSubtotalQar)}</span>
+                  <span className="font-bold text-neutral-950">{formatPrice(cartSubtotalQar)}</span>
                 </div>
-                <div className="flex items-center justify-between text-neutral-500">
+                <div className="flex items-center justify-between text-neutral-600">
                   <span>{lang === "ar" ? "رسوم الشحن:" : "Shipping:"}</span>
-                  <span className="font-semibold text-neutral-900">
+                  <span className="font-bold text-neutral-950">
                     {shippingCostQar === 0 ? (
-                      <span className="text-emerald-700 font-bold">{lang === "ar" ? "مجاني" : "Free"}</span>
+                      <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">{lang === "ar" ? "مجاني" : "Free"}</span>
                     ) : (
                       formatPrice(shippingCostQar)
                     )}
                   </span>
                 </div>
-                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between font-extrabold text-sm text-neutral-950">
-                  <span>{lang === "ar" ? "المجموع المستحق:" : "Total Payable:"}</span>
-                  <span className="text-[#9b7832] text-lg font-black">{formatPrice(orderTotalQar)}</span>
+                <div className="pt-3.5 border-t border-neutral-100 flex items-center justify-between">
+                  <span className="text-sm font-bold text-neutral-900">{lang === "ar" ? "المجموع المستحق:" : "Total Payable:"}</span>
+                  <span className="text-xl sm:text-2xl font-black text-neutral-950">{formatPrice(orderTotalQar)}</span>
                 </div>
               </div>
             </div>
 
             {/* Guarantee note */}
-            <div className="p-4 rounded-xl bg-neutral-100/70 border border-neutral-200/80 text-[11px] text-neutral-600 flex items-start gap-2.5">
-              <ShieldCheck size={16} className="text-[#c5a059] shrink-0 mt-0.5" />
+            <div className="p-4 rounded-2xl bg-[#faf6ed] border border-[#c5a059]/40 text-[11px] text-neutral-700 flex items-start gap-2.5 shadow-2xs">
+              <ShieldCheck size={18} className="text-[#c5a059] shrink-0 mt-0.5" />
               <div>
-                <p className="font-bold text-neutral-900">{lang === "ar" ? "ضمان الاستبدال والتركيب" : "Official Fitment Guarantee"}</p>
-                <p className="text-neutral-500 text-[10px] mt-0.5 leading-relaxed">
+                <p className="font-bold text-neutral-950">{lang === "ar" ? "ضمان الاستبدال والتركيب" : "Official Fitment Guarantee"}</p>
+                <p className="text-neutral-600 text-[10px] mt-0.5 leading-relaxed">
                   {lang === "ar"
                     ? "جميع قواعد برو كليبس وماونت إكس مغطاة بضمان رسمي من ثقة لمدة عام كامل."
                     : "All ProClips and MountX components include a 1-year replacement warranty across the GCC."}
