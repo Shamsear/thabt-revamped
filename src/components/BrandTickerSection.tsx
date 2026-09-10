@@ -23,17 +23,17 @@ export const BrandTickerSection: React.FC<BrandTickerSectionProps> = ({ brands, 
         <div className="absolute left-0 inset-y-0 w-8 sm:w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 inset-y-0 w-8 sm:w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
-        <div className="animate-ticker flex items-center gap-12 sm:gap-16 py-3">
-          {[...brands, ...brands, ...brands].map((b, idx) => (
+        <div className="animate-ticker flex items-center gap-6 sm:gap-8 md:gap-10 py-2">
+          {[...brands, ...brands, ...brands, ...brands].map((b, idx) => (
             <div
               key={`${b.id}-${idx}`}
-              className="flex items-center justify-center h-12 w-28 shrink-0 opacity-60 hover:opacity-100 transition-opacity duration-200 filter grayscale hover:grayscale-0 cursor-pointer"
+              className="flex items-center justify-center h-10 sm:h-12 w-14 sm:w-16 shrink-0 opacity-75 hover:opacity-100 transition-all duration-200 filter grayscale hover:grayscale-0 cursor-pointer"
               title={b.name}
             >
               <img
                 src={b.image}
                 alt={b.name}
-                className="max-h-full max-w-full object-contain"
+                className="max-h-8 sm:max-h-9 max-w-full object-contain"
               />
             </div>
           ))}

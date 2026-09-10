@@ -8,6 +8,7 @@ import { TopSellingSection } from "@/components/TopSellingSection";
 import { WhyMountSection } from "@/components/WhyMountSection";
 import { CategorySection } from "@/components/CategorySection";
 import { VideoShowcaseSection } from "@/components/VideoShowcaseSection";
+import { AwardSection } from "@/components/AwardSection";
 import { FaqSection } from "@/components/FaqSection";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
@@ -104,7 +105,10 @@ export default function Home() {
         {/* 6. Video Field Demonstration */}
         <VideoShowcaseSection lang={lang} />
 
-        {/* 7. Specifications & FAQs */}
+        {/* 7. Great Place To Work Qatar 2026 Certification */}
+        <AwardSection lang={lang} />
+
+        {/* 8. Specifications & FAQs */}
         <FaqSection faqs={MOCK_FAQS} lang={lang} />
       </main>
 
