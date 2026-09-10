@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Product } from "@/data/mockData";
 import { X, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,8 +25,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   currency,
   lang,
 }) => {
-  const [checkingOut, setCheckingOut] = React.useState(false);
-
   const totalAmount = cartItems.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0
@@ -149,47 +148,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </span>
               </div>
 
-              {checkingOut ? (
-                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200 space-y-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-neutral-900">
-                      {lang === "ar" ? "تأكيد الطلب السريع" : "Quick Order Confirmation"}
-                    </span>
-                    <button
-                      onClick={() => setCheckingOut(false)}
-                      className="text-neutral-400 hover:text-neutral-700 text-[11px] cursor-pointer"
-                    >
-                      {lang === "ar" ? "تراجع" : "Cancel"}
-                    </button>
-                  </div>
-                  <p className="text-[11px] text-neutral-500 leading-relaxed">
-                    {lang === "ar"
-                      ? "إتمام الطلب مباشرة عبر خدمة عملاء ثابـت في الدوحة مع التوصيل الفوري."
-                      : "Complete your order directly with Thabt Doha concierge for immediate dispatch."}
-                  </p>
-                  <a
-                    href={`https://api.whatsapp.com/send?phone=97450400314&text=${encodeURIComponent(
-                      `Hello Thabt, I would like to order: ${cartItems
-                        .map((i) => `${i.product.name} (Qty: ${i.quantity})`)
-                        .join(", ")} - Total: ${totalAmount} ${currency}`
-                    )}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition cursor-pointer"
-                  >
-                    <span>{lang === "ar" ? "إتمام الطلب عبر واتساب" : "Confirm via WhatsApp"}</span>
-                    <ArrowRight size={14} className="rtl:rotate-180" />
-                  </a>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setCheckingOut(true)}
-                  className="w-full bg-neutral-900 hover:bg-[#c5a059] hover:text-neutral-950 text-white text-xs uppercase tracking-widest font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer"
+              <div className="space-y-2.5">
+                <Link
+                  href="/cart"
+                  onClick={onClose}
+                  className="w-full bg-neutral-900 hover:bg-[#c5a059] hover:text-neutral-950 text-white text-xs uppercase tracking-widest font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer shadow-xs active:scale-98"
                 >
-                  <span>{lang === "ar" ? "متابعة الطلب" : "Proceed to Order"}</span>
+                  <ShoppingBag size={15} />
+                  <span>{lang === "ar" ? "الانتقال إلى سلة المشتريات" : "Go to Cart Page"}</span>
                   <ArrowRight size={14} className="rtl:rotate-180" />
-                </button>
-              )}
+                </Link>
+
+                <Link
+                  href="/checkout"
+                  onClick={onClose}
+                  className="w-full bg-[#faf6ed] hover:bg-[#f3ead3] text-[#9b7832] border border-[#c5a059]/40 text-xs uppercase tracking-wider font-bold py-2.5 px-6 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer active:scale-98"
+                >
+                  <span>{lang === "ar" ? "الدفع والشراء المباشر" : "Proceed to Checkout"}</span>
+                  <ArrowRight size={13} className="rtl:rotate-180" />
+                </Link>
+              </div>
 
               <p className="text-[10px] text-neutral-400 text-center">
                 {lang === "ar"
