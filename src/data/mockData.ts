@@ -196,7 +196,6 @@ export const MOCK_TOP_SELLERS: Product[] = [
 ];
 
 export const MOCK_BRANDS: BrandLogo[] = [
-  { id: "1",  name: "Brand 1",  image: "/user/images/cars-logo/1751207625_68614ec950c78.png" },
   { id: "2",  name: "Brand 2",  image: "/user/images/cars-logo/1751275129_68625679b5881.png" },
   { id: "3",  name: "Brand 3",  image: "/user/images/cars-logo/1751275141_68625685ad932.png" },
   { id: "4",  name: "Brand 4",  image: "/user/images/cars-logo/1751275153_68625691dca64.png" },

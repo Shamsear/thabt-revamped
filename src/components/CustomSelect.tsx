@@ -55,9 +55,12 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     const shouldFlip = spaceBelow < 220 && spaceAbove > spaceBelow;
 
     setPlacement(shouldFlip ? "top" : "bottom");
+    const menuWidth = Math.min(Math.max(rect.width, 220), window.innerWidth - 24);
+    const safeLeft = Math.max(12, Math.min(rect.left, window.innerWidth - menuWidth - 12));
+
     setCoords({
       top: shouldFlip ? rect.top : rect.bottom,
-      left: rect.left,
+      left: safeLeft,
       width: rect.width,
     });
   };

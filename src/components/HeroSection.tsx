@@ -38,7 +38,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
   };
 
   return (
-    <section id="home-hero" className="relative w-full bg-white text-neutral-900 py-4 lg:py-0 lg:min-h-[calc(100dvh-4rem)] lg:flex lg:items-center border-b border-neutral-100">
+    <section id="home-hero" className="relative w-full bg-white text-neutral-900 py-6 sm:py-8 lg:py-0 lg:min-h-[calc(100dvh-4rem)] lg:flex lg:items-center border-b border-neutral-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
           {/* Left Column: Headline & The Front-and-Center Matcher Console (7 cols) */}
@@ -46,13 +46,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-7 space-y-3 sm:space-y-3.5"
+            className="lg:col-span-7 space-y-4 sm:space-y-4.5 lg:space-y-3.5"
           >
             <div>
-              <p className="text-[11px] uppercase tracking-[0.22em] text-[#c5a059] font-semibold mb-1">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[#c5a059] font-semibold mb-1 sm:mb-1.5">
                 {lang === "ar" ? "قواعد تثبيت مخصصة بدون حفر" : "Vehicle-Specific Dashboard Mounts"}
               </p>
-              <h1 className="text-2xl sm:text-3xl lg:text-[2.15rem] xl:text-[2.4rem] font-light tracking-tight text-neutral-900 leading-[1.12]">
+              <h1 className="text-2xl sm:text-3xl lg:text-[2.15rem] xl:text-[2.4rem] font-light tracking-tight text-neutral-900 leading-snug sm:leading-[1.12]">
                 {lang === "ar" ? (
                   <>
                     قواعد تثبيت دقيقة. <br />
@@ -65,7 +65,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                   </>
                 )}
               </h1>
-              <p className="text-neutral-500 text-xs sm:text-sm font-normal leading-relaxed mt-1 max-w-xl">
+              <p className="text-neutral-500 text-xs sm:text-sm font-normal leading-relaxed mt-1.5 sm:mt-1 max-w-xl">
                 {lang === "ar"
                   ? "تثبيت محكم بالضغط داخل فواصل لوحة القيادة الأصلية. ثبات تام على الكثبان الرملية بدون أي تلف لمقصورة السيارة."
                   : "Precision snap-fit directly into factory dashboard panel seams. Unshakeable stability on desert dunes with zero drilling or adhesive damage."}
@@ -73,7 +73,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
             </div>
 
             {/* The Front-and-Center Selector Console */}
-            <div className="bg-neutral-50/90 border border-neutral-200/90 rounded-2xl p-3.5 sm:p-4.5 shadow-xs">
+            <div className="bg-neutral-50/90 border border-neutral-200/90 rounded-2xl p-4 sm:p-4.5 shadow-xs">
               {/* Tab Toggles with Calibrated Animated Gold Sliding Indicator */}
               <LayoutGroup id="heroTabSelector">
                 <div className="flex border-b border-neutral-200/80 mb-3 relative">
@@ -128,7 +128,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                   }`}
                   aria-hidden={activeTab !== "vehicle"}
                 >
-                  <form onSubmit={handleSearchSubmit} className="space-y-2.5">
+                  <form onSubmit={handleSearchSubmit} className="space-y-3 sm:space-y-2.5">
                     <div className="flex items-center justify-between">
                       <h2 className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
                         {lang === "ar" ? "ما هي السيارة التي تستخدمها؟" : "What car are you using?"}
@@ -138,52 +138,58 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                       </span>
                     </div>
 
-                    {/* 3 Dropdowns */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                      {/* Brand */}
-                      <CustomSelect
-                        label={lang === "ar" ? "السيارة" : "Vehicle"}
-                        value={selectedVehicleBrand}
-                        onChange={(newBrand) => {
-                          setSelectedVehicleBrand(newBrand);
-                          const models = VEHICLE_MODELS[newBrand] || [];
-                          setSelectedVehicleModel(models[0] || "");
-                        }}
-                        options={VEHICLE_BRANDS}
-                        placeholder={lang === "ar" ? "الماركة" : "Brand"}
-                        lang={lang}
-                      />
+                    {/* 3 Dropdowns: Compact 2-row layout on mobile, 3-column row on sm/lg */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                      {/* Brand: full-width on mobile */}
+                      <div className="col-span-2 sm:col-span-1">
+                        <CustomSelect
+                          label={lang === "ar" ? "السيارة" : "Vehicle"}
+                          value={selectedVehicleBrand}
+                          onChange={(newBrand) => {
+                            setSelectedVehicleBrand(newBrand);
+                            const models = VEHICLE_MODELS[newBrand] || [];
+                            setSelectedVehicleModel(models[0] || "");
+                          }}
+                          options={VEHICLE_BRANDS}
+                          placeholder={lang === "ar" ? "الماركة" : "Brand"}
+                          lang={lang}
+                        />
+                      </div>
 
-                      {/* Model */}
-                      <CustomSelect
-                        label={lang === "ar" ? "الموديل" : "Vehicle Model"}
-                        value={selectedVehicleModel}
-                        onChange={(newModel) => setSelectedVehicleModel(newModel)}
-                        options={availableVehicleModels}
-                        placeholder={lang === "ar" ? "الموديل" : "Model"}
-                        disabled={!selectedVehicleBrand}
-                        disabledText={lang === "ar" ? "اختر الماركة أولاً" : "Select Brand First"}
-                        lang={lang}
-                      />
+                      {/* Model: 1 column on mobile */}
+                      <div className="col-span-1">
+                        <CustomSelect
+                          label={lang === "ar" ? "الموديل" : "Vehicle Model"}
+                          value={selectedVehicleModel}
+                          onChange={(newModel) => setSelectedVehicleModel(newModel)}
+                          options={availableVehicleModels}
+                          placeholder={lang === "ar" ? "الموديل" : "Model"}
+                          disabled={!selectedVehicleBrand}
+                          disabledText={lang === "ar" ? "اختر الماركة أولاً" : "Select Brand First"}
+                          lang={lang}
+                        />
+                      </div>
 
-                      {/* Year */}
-                      <CustomSelect
-                        label={lang === "ar" ? "السنة" : "Vehicle Year"}
-                        value={selectedVehicleYear}
-                        onChange={(newYear) => setSelectedVehicleYear(newYear)}
-                        options={VEHICLE_YEARS}
-                        placeholder={lang === "ar" ? "السنة" : "Year"}
-                        disabled={!selectedVehicleModel}
-                        disabledText={lang === "ar" ? "اختر الموديل أولاً" : "Select Model First"}
-                        lang={lang}
-                      />
+                      {/* Year: 1 column on mobile */}
+                      <div className="col-span-1">
+                        <CustomSelect
+                          label={lang === "ar" ? "السنة" : "Vehicle Year"}
+                          value={selectedVehicleYear}
+                          onChange={(newYear) => setSelectedVehicleYear(newYear)}
+                          options={VEHICLE_YEARS}
+                          placeholder={lang === "ar" ? "السنة" : "Year"}
+                          disabled={!selectedVehicleModel}
+                          disabledText={lang === "ar" ? "اختر الموديل أولاً" : "Select Model First"}
+                          lang={lang}
+                        />
+                      </div>
                     </div>
 
                     {/* Primary Action Button */}
                     <div className="pt-1">
                       <button
                         type="submit"
-                        className="w-full py-2.5 sm:py-3 px-5 rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-xs uppercase tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
+                        className="w-full py-3 sm:py-3 px-5 rounded-xl sm:rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-xs uppercase tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
                       >
                         <span>
                           {lang === "ar"
@@ -205,7 +211,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                   }`}
                   aria-hidden={activeTab !== "device"}
                 >
-                  <form onSubmit={handleSearchSubmit} className="space-y-2.5">
+                  <form onSubmit={handleSearchSubmit} className="space-y-3 sm:space-y-2.5">
                     <div className="flex items-center justify-between">
                       <h2 className="text-[11px] uppercase tracking-wider text-neutral-500 font-semibold">
                         {lang === "ar" ? "ما هو الجهاز الذي تستخدمه؟" : "What device are you using?"}
@@ -215,7 +221,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div className="grid grid-cols-2 gap-2.5">
                       {/* Device Brand */}
                       <CustomSelect
                         label={lang === "ar" ? "الجهاز" : "Device"}
@@ -246,7 +252,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                     <div className="pt-1">
                       <button
                         type="submit"
-                        className="w-full py-2.5 sm:py-3 px-5 rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-xs uppercase tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
+                        className="w-full py-3 sm:py-3 px-5 rounded-xl sm:rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-xs uppercase tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
                       >
                         <span>
                           {lang === "ar"
@@ -261,20 +267,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
               </div>
             </div>
 
-            {/* Feature Line */}
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-neutral-500 pt-0.5">
-              <span className="flex items-center gap-1.5">
-                <Check size={14} className="text-[#c5a059]" />
-                {lang === "ar" ? "تركيب بلمسة يد واحدة" : "30-second snap fit"}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Check size={14} className="text-[#c5a059]" />
-                {lang === "ar" ? "بدون حفر أو تخريم" : "Zero holes or adhesives"}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Check size={14} className="text-[#c5a059]" />
-                {lang === "ar" ? "مقاوم لحرارة 60°م" : "GCC 60°C summer endurance"}
-              </span>
+            {/* Feature Badges: Clean 3-tile grid on mobile, inline checkmark row on desktop */}
+            <div className="grid grid-cols-3 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-1.5 text-[11px] sm:text-xs text-neutral-600 pt-0.5">
+              <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-1.5 bg-neutral-100/80 sm:bg-transparent py-2 px-1 sm:p-0 rounded-xl sm:rounded-none border border-neutral-200/50 sm:border-transparent">
+                <Check size={13} className="text-[#c5a059] shrink-0" />
+                <span className="leading-tight font-medium sm:font-normal">{lang === "ar" ? "تركيب بلمسة" : "30s Snap Fit"}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-1.5 bg-neutral-100/80 sm:bg-transparent py-2 px-1 sm:p-0 rounded-xl sm:rounded-none border border-neutral-200/50 sm:border-transparent">
+                <Check size={13} className="text-[#c5a059] shrink-0" />
+                <span className="leading-tight font-medium sm:font-normal">{lang === "ar" ? "بدون حفر" : "Zero Holes"}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-1.5 bg-neutral-100/80 sm:bg-transparent py-2 px-1 sm:p-0 rounded-xl sm:rounded-none border border-neutral-200/50 sm:border-transparent">
+                <Check size={13} className="text-[#c5a059] shrink-0" />
+                <span className="leading-tight font-medium sm:font-normal">{lang === "ar" ? "حرارة 60°م" : "60°C Proof"}</span>
+              </div>
             </div>
           </motion.div>
 
@@ -286,7 +292,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
             className="lg:col-span-5"
           >
             <div className="relative rounded-2xl overflow-hidden bg-neutral-100 border border-neutral-200/80 shadow-md group">
-              <div className="relative h-[280px] sm:h-[330px] lg:h-[350px] xl:h-[390px] w-full overflow-hidden">
+              <div className="relative h-[220px] sm:h-[300px] lg:h-[350px] xl:h-[390px] w-full overflow-hidden">
                 <img
                   src="/home-3.png"
                   alt="ProClip Cockpit Fit"

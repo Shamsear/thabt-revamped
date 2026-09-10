@@ -109,18 +109,18 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
           ))}
         </div>
 
-        {/* 4 Minimalist Engineering Standards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-10 border-t border-neutral-200/80">
+        {/* 4 Minimalist Engineering Standards: 2x2 grid on mobile, 4-col on desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 pt-8 sm:pt-10 border-t border-neutral-200/80">
           {specs.map((item) => (
             <div
               key={item.num}
-              className="space-y-1 p-3.5 rounded-xl transition-all duration-200 hover:bg-white hover:shadow-xs border border-transparent hover:border-neutral-200/80 cursor-default"
+              className="space-y-1 p-2.5 sm:p-3.5 rounded-xl bg-white/60 sm:bg-transparent transition-all duration-200 hover:bg-white hover:shadow-xs border border-neutral-200/50 sm:border-transparent hover:border-neutral-200/80 cursor-default"
             >
-              <span className="text-xs font-mono text-[#c5a059] tracking-wider font-semibold">
+              <span className="text-[11px] sm:text-xs font-mono text-[#c5a059] tracking-wider font-semibold">
                 {item.num}
               </span>
-              <h4 className="text-sm font-semibold text-neutral-900">{item.title}</h4>
-              <p className="text-xs text-neutral-500 leading-relaxed">{item.desc}</p>
+              <h4 className="text-xs sm:text-sm font-semibold text-neutral-900 leading-snug">{item.title}</h4>
+              <p className="text-[11px] sm:text-xs text-neutral-500 leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>

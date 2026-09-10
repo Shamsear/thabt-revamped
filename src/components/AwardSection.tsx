@@ -52,10 +52,15 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
             {/* Top Eyebrow Tag */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#faf6ed] border border-[#c5a059]/35 text-[#b38e46] text-xs font-medium tracking-wide shadow-2xs">
               <Trophy size={14} className="shrink-0 text-[#c5a059]" />
-              <span>
+              <span className="hidden sm:inline">
                 {isAr
                   ? "أفضل بيئات العمل في قطر™ 2026 · اعتماد رسمي · الفئة المتوسطة والصغيرة"
                   : "Best Workplaces Qatar™ 2026 · Official Certification · Small & Medium"}
+              </span>
+              <span className="inline sm:hidden">
+                {isAr
+                  ? "أفضل بيئات العمل في قطر™ 2026"
+                  : "Best Workplaces Qatar™ 2026"}
               </span>
             </div>
 
@@ -144,7 +149,7 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none" />
 
               {/* Trophy Image */}
-              <div className="relative aspect-[9/16] max-h-[440px] sm:max-h-[480px] w-full overflow-hidden flex items-center justify-center bg-neutral-100">
+              <div className="relative aspect-[9/16] max-h-[340px] sm:max-h-[480px] w-full overflow-hidden flex items-center justify-center bg-neutral-100">
                 <img
                   src="/user/images/thabt-best-workplaces-qatar-2026.jpg"
                   alt="Thabt Best Workplaces Qatar 2026 Trophy"

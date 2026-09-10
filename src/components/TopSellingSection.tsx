@@ -3,9 +3,10 @@
 import React, { useState } from "react";
 import { Product } from "@/data/mockData";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay } from "swiper/modules";
+import { Navigation, Autoplay, Mousewheel, FreeMode } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import "swiper/css/free-mode";
 import { Plus, ChevronLeft, ChevronRight, Check } from "lucide-react";
 
 interface TopSellingSectionProps {
@@ -85,16 +86,38 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
         {/* Swiper Carousel */}
         <div className="relative">
           <Swiper
-            modules={[Navigation, Autoplay]}
+            key={lang}
+            dir={lang === "ar" ? "rtl" : "ltr"}
+            modules={[Navigation, Autoplay, Mousewheel, FreeMode]}
             spaceBetween={24}
             slidesPerView={4}
             navigation={{
               prevEl: ".custom-swiper-prev",
               nextEl: ".custom-swiper-next",
             }}
-            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            autoplay={{ delay: 6000, disableOnInteraction: true, pauseOnMouseEnter: true }}
+            simulateTouch={false}
+            allowTouchMove={true}
+            mousewheel={{
+              forceToAxis: true,
+              releaseOnEdges: true,
+              sensitivity: 1,
+            }}
+            freeMode={{
+              enabled: true,
+              sticky: true,
+              momentum: true,
+              momentumRatio: 0.7,
+              momentumVelocityRatio: 0.7,
+            }}
+            touchEventsTarget="container"
+            touchRatio={1}
+            threshold={5}
+            resistance={true}
+            resistanceRatio={0.85}
+            speed={500}
             breakpoints={{
-              0: { slidesPerView: 1.1, spaceBetween: 16 },
+              0: { slidesPerView: 1.15, spaceBetween: 16 },
               640: { slidesPerView: 2.2, spaceBetween: 20 },
               1024: { slidesPerView: 3.2, spaceBetween: 24 },
               1280: { slidesPerView: 4, spaceBetween: 24 },
