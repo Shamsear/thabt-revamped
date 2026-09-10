@@ -143,34 +143,31 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
 
           {/* Right Column: Trophy Visual Showcase (5 cols) */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-sm sm:max-w-md rounded-2xl overflow-hidden bg-white border border-[#c5a059]/30 shadow-lg group">
+            <div className="relative w-full max-w-[290px] sm:max-w-[320px] lg:max-w-[340px] rounded-2xl overflow-hidden bg-[#0B0D11] border border-[#c5a059]/40 shadow-xl group">
               
-              {/* Subtle Gradient Inset */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none" />
-
-              {/* Trophy Image */}
-              <div className="relative aspect-[9/16] max-h-[340px] sm:max-h-[480px] w-full overflow-hidden flex items-center justify-center bg-neutral-100">
+              {/* Trophy Image: Full Uncropped 9:16 Presentation */}
+              <div className="relative aspect-[9/16] w-full overflow-hidden flex items-center justify-center bg-[#0B0D11]">
                 <img
                   src="/user/images/thabt-best-workplaces-qatar-2026.jpg"
                   alt="Thabt Best Workplaces Qatar 2026 Trophy"
-                  className="w-full h-full object-cover object-center group-hover:scale-[1.025] transition-transform duration-700 ease-out"
+                  className="w-full h-full object-contain object-center group-hover:scale-[1.02] transition-transform duration-700 ease-out"
                 />
               </div>
 
-              {/* Inset Technical Credential Plaque */}
-              <div className="absolute bottom-3 left-3 right-3 z-20 p-3 sm:p-3.5 rounded-xl bg-white/95 backdrop-blur-md border border-neutral-200/90 text-neutral-900 shadow-md">
+              {/* Technical Credential Plaque - Clean bottom bar outside photo view */}
+              <div className="p-3 sm:p-3.5 bg-neutral-950/95 border-t border-[#c5a059]/30 text-white">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#b38e46] font-semibold">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#c5a059] font-semibold">
                     OFFICIAL CERTIFICATION
                   </span>
                   <span className="text-[10px] font-semibold bg-red-600 text-white px-2 py-0.5 rounded-full">
                     QATAR 2026
                   </span>
                 </div>
-                <div className="text-xs font-semibold text-neutral-900">
+                <div className="text-xs font-semibold text-white">
                   Great Place To Work® · Certified
                 </div>
-                <div className="text-[11px] text-neutral-500 mt-0.5">
+                <div className="text-[11px] text-neutral-400 mt-0.5">
                   Small & Medium Category - #4 THABT
                 </div>
               </div>

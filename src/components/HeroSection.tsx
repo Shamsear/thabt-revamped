@@ -292,17 +292,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
             className="lg:col-span-5"
           >
             <div className="relative rounded-2xl overflow-hidden bg-neutral-100 border border-neutral-200/80 shadow-md group">
-              <div className="relative h-[220px] sm:h-[300px] lg:h-[350px] xl:h-[390px] w-full overflow-hidden">
+              {/* Image Frame: Full uncropped view on mobile, cinematic studio height on desktop */}
+              <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[350px] xl:h-[390px] overflow-hidden bg-neutral-100 flex items-center justify-center">
                 <img
                   src="/home-3.png"
                   alt="ProClip Cockpit Fit"
-                  className="w-full h-full object-cover object-bottom group-hover:scale-[1.025] transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] transform-gpu will-change-transform"
+                  className="w-full h-full object-contain sm:object-cover sm:object-center group-hover:scale-[1.025] transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] transform-gpu will-change-transform"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                {/* Contrast gradient overlay only on desktop where technical plaque floats */}
+                <div className="hidden lg:block absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
               </div>
 
-              {/* Inset Technical Note Card - Stable Hardware-Accelerated Plaque */}
-              <div className="absolute bottom-2.5 sm:bottom-3 left-2.5 sm:left-3 right-2.5 sm:right-3 p-3 sm:p-3.5 rounded-xl bg-white/98 border border-neutral-200/90 text-neutral-900 shadow-[0_4px_24px_rgba(0,0,0,0.08)] transform-gpu">
+              {/* Inset Technical Note Card - Stacked cleanly below photo on mobile, floating overlay on desktop */}
+              <div className="p-3.5 sm:p-4 bg-white border-t border-neutral-100 lg:border-t-0 lg:absolute lg:bottom-2.5 xl:bottom-3 lg:left-2.5 xl:left-3 lg:right-2.5 xl:right-3 lg:p-3 sm:lg:p-3.5 lg:rounded-xl lg:bg-white/98 lg:border lg:border-neutral-200/90 text-neutral-900 lg:shadow-[0_4px_24px_rgba(0,0,0,0.08)] transform-gpu">
                 <motion.div
                   key={activeTab === "vehicle" ? `${selectedVehicleBrand}-${selectedVehicleModel}` : `${selectedDeviceBrand}-${selectedDeviceModel}`}
                   initial={{ opacity: 0.75 }}
