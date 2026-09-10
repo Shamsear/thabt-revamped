@@ -177,6 +177,9 @@ export default function FindPage() {
                       src={matchedBase.image}
                       alt={matchedBase.name}
                       className="w-12 h-12 object-contain rounded-lg bg-white border border-neutral-200 p-1 shrink-0"
+                      onError={(e) => {
+                        e.currentTarget.src = "/admin/banners/accessories.jpg";
+                      }}
                     />
                     <div>
                       <p className="text-[10px] uppercase font-semibold text-[#c5a059]">
@@ -318,6 +321,9 @@ export default function FindPage() {
                       src={matchedHolder.image}
                       alt={matchedHolder.name}
                       className="w-12 h-12 object-contain rounded-lg bg-white border border-neutral-200 p-1 shrink-0"
+                      onError={(e) => {
+                        e.currentTarget.src = "/admin/banners/accessories.jpg";
+                      }}
                     />
                     <div>
                       <p className="text-[10px] uppercase font-semibold text-[#c5a059]">

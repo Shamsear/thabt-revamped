@@ -113,15 +113,15 @@ export default function CategoryPage({
       <main className="flex-1 py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-6">
+          <nav className="flex items-center gap-2 text-xs sm:text-xs text-neutral-500 mb-6">
             <Link href="/" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
-            <ChevronRight size={11} className="rtl:rotate-180" />
+            <ChevronRight size={12} className="rtl:rotate-180" />
             <Link href="/search" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الكتالوج" : "Catalog"}
             </Link>
-            <ChevronRight size={11} className="rtl:rotate-180" />
+            <ChevronRight size={12} className="rtl:rotate-180" />
             <span className="text-neutral-900 font-semibold">
               {lang === "ar" ? category.category_ar : category.category}
             </span>
@@ -146,16 +146,16 @@ export default function CategoryPage({
                 </>
               )}
             </h1>
-            <p className="text-xs sm:text-sm text-neutral-500 max-w-xl leading-relaxed">
+            <p className="text-sm sm:text-base text-neutral-600 max-w-xl leading-relaxed">
               {lang === "ar" ? category.descriptionar : category.description}
             </p>
           </div>
 
           {/* Category Tabs: Open, Minimalist Pill Bar (No boxed container) */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none text-xs">
+          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none text-sm sm:text-xs">
             <Link
               href="/search"
-              className="px-4 py-2 rounded-full font-medium whitespace-nowrap transition-colors bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 shrink-0"
+              className="px-4 py-2.5 sm:py-2 rounded-full font-medium whitespace-nowrap transition-colors bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900 shrink-0"
             >
               {lang === "ar" ? "جميع المنتجات" : "All Products"}
             </Link>
@@ -166,10 +166,10 @@ export default function CategoryPage({
                 <Link
                   key={cat.slug}
                   href={`/categories/${cat.slug}`}
-                  className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-colors shrink-0 ${
+                  className={`px-4 py-2.5 sm:py-2 rounded-full font-medium whitespace-nowrap transition-colors shrink-0 ${
                     isSelected
                       ? "bg-neutral-900 text-white font-semibold shadow-xs"
-                      : "bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900"
+                      : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900"
                   }`}
                 >
                   {lang === "ar" ? cat.category_ar : cat.category}
@@ -178,13 +178,13 @@ export default function CategoryPage({
             })}
           </div>
 
-          {/* Minimalist Filter Toolbar (Directly on white canvas) */}
+          {/* Minimalist Filter Toolbar (Directly on white canvas with identical element sizes) */}
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center mb-6 pb-6 border-b border-neutral-100">
             {/* Search Input */}
-            <div className="sm:col-span-12 md:col-span-5 relative">
+            <div className="sm:col-span-12 md:col-span-5 relative flex items-center">
               <Search
-                size={14}
-                className="absolute left-3.5 rtl:left-auto rtl:right-3.5 top-3 text-neutral-400 pointer-events-none"
+                size={15}
+                className="absolute left-3.5 rtl:left-auto rtl:right-3.5 text-neutral-400 pointer-events-none"
               />
               <input
                 type="search"
@@ -195,15 +195,15 @@ export default function CategoryPage({
                     ? `ابحث داخل ${category.category_ar}...`
                     : `Search in ${category.category}...`
                 }
-                className="w-full bg-neutral-50 hover:bg-neutral-100/60 focus:bg-white border border-neutral-200 rounded-xl pl-9 pr-8 rtl:pl-8 rtl:pr-9 py-2 text-xs text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#c5a059] transition-colors"
+                className="w-full h-11 sm:h-10 bg-neutral-50 hover:bg-neutral-100/70 focus:bg-white border border-neutral-200 rounded-xl pl-9 pr-8 rtl:pl-8 rtl:pr-9 text-sm sm:text-xs text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#c5a059] transition-colors"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 text-neutral-400 hover:text-neutral-700 p-0.5 rounded-full cursor-pointer"
+                  className="absolute right-3 rtl:right-auto rtl:left-3 text-neutral-400 hover:text-neutral-700 p-0.5 rounded-full cursor-pointer"
                 >
-                  <X size={13} />
+                  <X size={14} />
                 </button>
               )}
             </div>
@@ -242,10 +242,10 @@ export default function CategoryPage({
               <button
                 type="button"
                 onClick={() => setOnlyInStock((prev) => !prev)}
-                className={`w-full py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer ${
+                className={`w-full h-11 sm:h-10 px-3.5 rounded-xl border text-sm sm:text-xs font-normal flex items-center justify-center gap-2 transition-colors cursor-pointer ${
                   onlyInStock
                     ? "bg-[#faf6ed] border-[#c5a059] text-[#9b7832] font-semibold"
-                    : "bg-neutral-50 border-neutral-200 text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
+                    : "bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-neutral-100/70 hover:text-neutral-900"
                 }`}
               >
                 <span
@@ -253,7 +253,7 @@ export default function CategoryPage({
                     onlyInStock ? "bg-[#c5a059]" : "bg-neutral-300"
                   }`}
                 />
-                <span>{lang === "ar" ? "المتوفر فقط" : "In Stock Only"}</span>
+                <span className="whitespace-nowrap">{lang === "ar" ? "المتوفر فقط" : "In Stock Only"}</span>
               </button>
             </div>
           </div>
@@ -332,9 +332,9 @@ export default function CategoryPage({
                       </Link>
 
                       {/* Model SKU & Stock */}
-                      <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400 mb-1.5">
+                      <div className="flex items-center justify-between text-xs font-mono text-neutral-500 mb-1.5">
                         <span>{product.product_id}</span>
-                        <span className={inStock ? "text-neutral-500" : "text-[#c5a059]"}>
+                        <span className={inStock ? "text-neutral-600" : "text-[#b38e46] font-medium"}>
                           {inStock
                             ? lang === "ar"
                               ? "متوفر"
@@ -347,7 +347,7 @@ export default function CategoryPage({
 
                       {/* Product Title */}
                       <Link href={`/products/${product.slug}`}>
-                        <h3 className="font-medium text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 transition-colors">
+                        <h3 className="font-medium text-sm sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 transition-colors">
                           {lang === "ar" ? product.name_ar : product.name}
                         </h3>
                       </Link>

@@ -17,6 +17,7 @@ interface CustomSelectProps {
   disabledText?: string;
   lang?: "en" | "ar";
   className?: string;
+  triggerClassName?: string;
 }
 
 export const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -29,6 +30,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   disabledText,
   lang = "en",
   className = "",
+  triggerClassName = "",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -173,7 +175,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   return (
     <div className={`relative ${className}`}>
       {label && (
-        <label className="block text-[11px] text-neutral-500 mb-1 font-medium select-none">
+        <label className="block text-xs sm:text-[11px] text-neutral-600 mb-1 font-medium select-none">
           {label}
         </label>
       )}
@@ -191,13 +193,13 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         }}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        className={`w-full flex items-center justify-between text-xs sm:text-sm rounded-xl px-3 py-2 sm:py-2.5 border transition-all duration-150 cursor-pointer select-none text-left rtl:text-right ${
+        className={`w-full h-11 sm:h-10 flex items-center justify-between text-sm sm:text-xs rounded-xl px-3.5 border transition-all duration-150 cursor-pointer select-none text-left rtl:text-right ${
           disabled
             ? "bg-neutral-100/80 border-neutral-200/60 text-neutral-400 cursor-not-allowed"
             : isOpen
-            ? "bg-white border-[#c5a059] ring-2 ring-[#c5a059]/15 text-neutral-900 shadow-sm"
-            : "bg-white border-neutral-200/90 hover:border-neutral-300 text-neutral-900 shadow-2xs"
-        }`}
+            ? "bg-white border-[#c5a059] ring-2 ring-[#c5a059]/15 text-neutral-900 shadow-xs"
+            : "bg-neutral-50 hover:bg-neutral-100/70 border-neutral-200 text-neutral-900"
+        } ${triggerClassName}`}
       >
         <span className={`truncate ${!value && !disabled ? "text-neutral-400" : ""}`}>
           {displayText}
@@ -255,7 +257,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           placeholder={lang === "ar" ? "ابحث هنا..." : "Search..."}
-                          className="w-full bg-white text-neutral-900 text-xs rounded-xl pl-7 pr-3 rtl:pl-3 rtl:pr-7 py-1.5 border border-neutral-200 focus:outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059]/20"
+                          className="w-full bg-white text-neutral-900 text-sm sm:text-xs rounded-xl pl-7 pr-3 rtl:pl-3 rtl:pr-7 py-2 sm:py-1.5 border border-neutral-200 focus:outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059]/20"
                           onClick={(e) => e.stopPropagation()}
                         />
                       </div>
@@ -263,7 +265,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   )}
 
                   {/* Scrollable Option Items */}
-                  <div className="max-h-52 overflow-y-auto py-1">
+                  <div className="max-h-60 overflow-y-auto py-1">
                     {filteredOptions.length > 0 ? (
                       filteredOptions.map((opt) => {
                         const optVal = getOptValue(opt);
@@ -276,7 +278,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                             role="option"
                             aria-selected={isSelected}
                             onClick={() => handleSelect(opt)}
-                            className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs sm:text-sm text-left rtl:text-right transition-colors duration-100 cursor-pointer ${
+                            className={`w-full flex items-center justify-between px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-left rtl:text-right transition-colors duration-100 cursor-pointer ${
                               isSelected
                                 ? "bg-[#faf6ed] text-[#b38e46] font-semibold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#c5a059]"
                                 : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950"

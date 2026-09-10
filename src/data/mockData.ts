@@ -123,7 +123,7 @@ export const MOCK_CATEGORIES: Category[] = [
     category: "Device Holders",
     category_ar: "حوامل الأجهزة",
     slug: "device-holders",
-    image: "https://www.thabt.qa/admin/categories/Device-Holders.png",
+    image: "/admin/categories/Device-Holders.png",
     description: "Custom and universal device holders engineered for high stability and accessibility while driving.",
     descriptionar: "حوامل أجهزة مخصصة وعامة مصممة للاستقرار العالي وسهولة الوصول أثناء القيادة."
   },
@@ -132,7 +132,7 @@ export const MOCK_CATEGORIES: Category[] = [
     category: "ProClips Mounts",
     category_ar: "قواعد برو كليبس",
     slug: "pro-clips",
-    image: "https://www.thabt.qa/admin/categories/Untitled-1.png",
+    image: "/admin/categories/Untitled-1.png",
     description: "Vehicle-specific dashboard mounts designed to fit without drilling or damaging your car interior.",
     descriptionar: "قواعد لوحة قيادة مخصصة لكل سيارة بدون الحاجة للحفر أو إتلاف مقصورة السيارة."
   },
@@ -141,7 +141,7 @@ export const MOCK_CATEGORIES: Category[] = [
     category: "Leather Mounts",
     category_ar: "حوامل جلدية",
     slug: "leather-mount",
-    image: "https://www.thabt.qa/admin/categories/Leather.png",
+    image: "/admin/categories/Leather.png",
     description: "Premium handcrafted leather mounts combining luxury aesthetics with solid device hold.",
     descriptionar: "حوامل جلدية فاخرة مصنوعة يدوياً تجمع بين الفخامة والقبضة المتينة."
   },
@@ -150,7 +150,7 @@ export const MOCK_CATEGORIES: Category[] = [
     category: "Motorbike Mounts",
     category_ar: "حوامل الدراجات النارية",
     slug: "motorbike-mount",
-    image: "https://www.thabt.qa/admin/categories/Mototr-Bike.png",
+    image: "/admin/categories/Mototr-Bike.png",
     description: "Weather-resistant, vibration-dampened mounts for motorcycles and off-road vehicles.",
     descriptionar: "حوامل مقاومة للعوامل الجوية ومضادة للاهتزاز للدراجات النارية والمركبات الوعرة."
   },
@@ -159,7 +159,7 @@ export const MOCK_CATEGORIES: Category[] = [
     category: "Antenna & Accessories",
     category_ar: "الهوائيات والإكسسوارات",
     slug: "antenna-accessories",
-    image: "https://www.thabt.qa/admin/categories/Anteena.png",
+    image: "/admin/categories/Anteena.png",
     description: "High performance signal boosters, antenna brackets, cable organizers, and extension arms.",
     descriptionar: "مقويات إشارة عالية الأداء، قواعد هوائيات، ومنظمات كابلات."
   }
@@ -175,7 +175,7 @@ export const MOCK_TOP_SELLERS: Product[] = [
     price: 185,
     stock: 12,
     weight: 0.35,
-    image: "https://www.thabt.qa/admin/banners/proclip-1.jpg",
+    image: "/admin/banners/proclip-1.jpg",
     link: "products"
   },
   {
@@ -187,7 +187,7 @@ export const MOCK_TOP_SELLERS: Product[] = [
     price: 220,
     stock: 8,
     weight: 0.4,
-    image: "https://www.thabt.qa/admin/banners/i-phone-h15-holder.jpg",
+    image: "/admin/banners/i-phone-h15-holder.jpg",
     link: "products"
   },
   {
@@ -199,7 +199,7 @@ export const MOCK_TOP_SELLERS: Product[] = [
     price: 175,
     stock: 15,
     weight: 0.3,
-    image: "https://www.thabt.qa/admin/banners/center-console.jpg",
+    image: "/admin/banners/center-console.jpg",
     link: "products"
   },
   {
@@ -211,7 +211,7 @@ export const MOCK_TOP_SELLERS: Product[] = [
     price: 245,
     stock: 5,
     weight: 0.6,
-    image: "https://www.thabt.qa/admin/banners/accessories.jpg",
+    image: "/admin/banners/accessories.jpg",
     link: "products"
   },
   {
@@ -223,7 +223,7 @@ export const MOCK_TOP_SELLERS: Product[] = [
     price: 160,
     stock: 0,
     weight: 0.3,
-    image: "https://www.thabt.qa/admin/banners/bike.jpg",
+    image: "/admin/banners/bike.jpg",
     link: "products"
   }
 ];
@@ -312,10 +312,10 @@ export const MOCK_ALL_PRODUCTS: Product[] = [
     original_price: 210,
     stock: 12,
     weight: 0.35,
-    image: "https://www.thabt.qa/admin/banners/proclip-1.jpg",
+    image: "/admin/banners/proclip-1.jpg",
     images: [
-      "https://www.thabt.qa/admin/banners/proclip-1.jpg",
-      "https://www.thabt.qa/admin/banners/center-console.jpg",
+      "/admin/banners/proclip-1.jpg",
+      "/admin/banners/center-console.jpg",
       "/user/images/home-3.png"
     ],
     link: "products",
@@ -342,10 +342,10 @@ export const MOCK_ALL_PRODUCTS: Product[] = [
     original_price: 260,
     stock: 18,
     weight: 0.4,
-    image: "https://www.thabt.qa/admin/banners/i-phone-h15-holder.jpg",
+    image: "/admin/banners/i-phone-h15-holder.jpg",
     images: [
-      "https://www.thabt.qa/admin/banners/i-phone-h15-holder.jpg",
-      "https://www.thabt.qa/admin/banners/accessories.jpg"
+      "/admin/banners/i-phone-h15-holder.jpg",
+      "/admin/banners/accessories.jpg"
     ],
     link: "products",
     description: "Ultra-strong magnetic MagSafe holder equipped with Qi-certified 15W fast wireless charging. Features a ball-and-socket swivel joint for 360-degree portrait and landscape rotation.",
@@ -371,9 +371,9 @@ export const MOCK_ALL_PRODUCTS: Product[] = [
     original_price: 195,
     stock: 15,
     weight: 0.3,
-    image: "https://www.thabt.qa/admin/banners/center-console.jpg",
+    image: "/admin/banners/center-console.jpg",
     images: [
-      "https://www.thabt.qa/admin/banners/center-console.jpg",
+      "/admin/banners/center-console.jpg",
       "/user/images/home-3.png"
     ],
     link: "products",
@@ -399,8 +399,8 @@ export const MOCK_ALL_PRODUCTS: Product[] = [
     original_price: 290,
     stock: 9,
     weight: 0.6,
-    image: "https://www.thabt.qa/admin/banners/accessories.jpg",
-    images: ["https://www.thabt.qa/admin/banners/accessories.jpg"],
+    image: "/admin/banners/accessories.jpg",
+    images: ["/admin/banners/accessories.jpg"],
     link: "products",
     description: "Engineered for rugged desert expeditions, overland touring, and navigation tablets up to 12.9 inches. Dual spring-loaded grip with rubberized anti-vibration shock absorbers.",
     description_ar: "مصمم للرحلات البرية الصحراوية القاسية، والمغامرات الوعرة، وشاشات وأجهزة التابلت حتى 12.9 بوصة. مزود بنظام تثبيت زنبركي مزدوج ومخمدات اهتزاز مطاطية.",
@@ -422,8 +422,8 @@ export const MOCK_ALL_PRODUCTS: Product[] = [
     price: 160,
     stock: 7,
     weight: 0.3,
-    image: "https://www.thabt.qa/admin/banners/bike.jpg",
-    images: ["https://www.thabt.qa/admin/banners/bike.jpg"],
+    image: "/admin/banners/bike.jpg",
+    images: ["/admin/banners/bike.jpg"],
     link: "products",
     description: "Machined aluminum and composite handlebar clamp with quad-point mechanical locking and silicone vibration isolator for smartphones on sportbikes and adventure tourers.",
     description_ar: "مشبك مقبض دراجة من الألومنيوم والمواد المركبة مع قفل ميكانيكي رباعي النقاط وعازل اهتزاز من السيليكون لحماية كاميرات الهواتف الذكية.",
@@ -445,8 +445,8 @@ export const MOCK_ALL_PRODUCTS: Product[] = [
     original_price: 310,
     stock: 6,
     weight: 0.45,
-    image: "https://www.thabt.qa/admin/categories/Leather.png",
-    images: ["https://www.thabt.qa/admin/categories/Leather.png"],
+    image: "/admin/categories/Leather.png",
+    images: ["/admin/categories/Leather.png"],
     link: "products",
     description: "Bespoke genuine full-grain Italian leather car mount hand-stitched in Qatar with brushed gold accents. Matches high-end automotive cabin trims in Range Rover, Bentley, and Mercedes Maybach.",
     description_ar: "حامل هاتف مصنوع يدوياً من الجلد الإيطالي الفاخر مع حياكة أنيقة وتفاصيل بلون الذهب المصقول. يناسب مقصورات السيارات الفاخرة مثل رينج روفر، بنتلي، ومرسيدس مايباخ.",
@@ -469,8 +469,8 @@ export const MOCK_ALL_PRODUCTS: Product[] = [
     original_price: 230,
     stock: 14,
     weight: 0.7,
-    image: "https://www.thabt.qa/admin/categories/Anteena.png",
-    images: ["https://www.thabt.qa/admin/categories/Anteena.png"],
+    image: "/admin/categories/Anteena.png",
+    images: ["/admin/categories/Anteena.png"],
     link: "products",
     description: "Heavy-duty 4.5mm stainless steel hood / tailgate antenna mount bracket with spring-detent quick fold-down mechanism for desert dune bashing and garage clearance.",
     description_ar: "قاعدة هوائي فائقة التحمل من الفولاذ المقاوم للصدأ بسمك 4.5 مم تركب على غطاء المحرك أو الباب الخلفي مع آلية طي سريعة لتفادي العوائق في الكراجات وتحديات الكثبان.",
@@ -494,7 +494,7 @@ export const MOCK_ALL_PRODUCTS: Product[] = [
     stock: 5,
     weight: 0.85,
     image: "/user/images/home-3.png",
-    images: ["/user/images/home-3.png", "https://www.thabt.qa/admin/banners/accessories.jpg"],
+    images: ["/user/images/home-3.png", "/admin/banners/accessories.jpg"],
     link: "products",
     description: "The apex of in-vehicle mounting technology. Precision CNC-machined from 6061-T6 aerospace aluminum, hard anodized in obsidian black. Engineered to survive 80°C desert heat and high-speed dune jumps with zero deflection.",
     description_ar: "قمة تكنولوجيا التثبيت داخل السيارة. مصنوعة بدقة بالغة بالـ CNC من ألومنيوم الطائرات 6061-T6 ومطلية بأكسدة صلبة بلون الأوبسيديان الأسود. مصممة لتحمل حرارة 80 مئوية وقفزات الكثبان بدون أدنى اهتزاز.",
@@ -528,7 +528,7 @@ export const MOCK_GALLERY_ITEMS: GalleryItem[] = [
     title_ar: "نيسان باترول Y62 نيسمو - قاعدة ملاحة كونسول",
     vehicle: "Nissan Patrol NISMO",
     vehicle_brand: "Nissan",
-    image: "https://www.thabt.qa/admin/banners/center-console.jpg",
+    image: "/admin/banners/center-console.jpg",
     mounting_base: "Patrol Y62 Angled Base (#7731)",
     device_holder: "Adjustable Smartphone Clamp",
     base_slug: "nissan-patrol-y62-mount",
@@ -540,7 +540,7 @@ export const MOCK_GALLERY_ITEMS: GalleryItem[] = [
     title_ar: "لاند روفر ديفندر 110 - حامل تابلت فائق التحمل",
     vehicle: "Defender 110 X-Dynamic",
     vehicle_brand: "Land Rover",
-    image: "https://www.thabt.qa/admin/banners/accessories.jpg",
+    image: "/admin/banners/accessories.jpg",
     mounting_base: "MountX Heavy Duty Pillar Base",
     device_holder: "Heavy Duty Off-Road Tablet Mount",
     base_slug: "mountx-desert-edition",
@@ -552,7 +552,7 @@ export const MOCK_GALLERY_ITEMS: GalleryItem[] = [
     title_ar: "جي إم سي سييرا دينالي - تثبيت نظيف على لوحة القيادة",
     vehicle: "GMC Sierra 1500",
     vehicle_brand: "GMC",
-    image: "https://www.thabt.qa/admin/banners/proclip-1.jpg",
+    image: "/admin/banners/proclip-1.jpg",
     mounting_base: "GMC Sierra Center Bezel Base",
     device_holder: "MagSafe Wireless Fast Charger",
     base_slug: "proclip-land-cruiser-lc300",

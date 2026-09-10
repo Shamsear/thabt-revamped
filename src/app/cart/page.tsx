@@ -25,7 +25,7 @@ export default function CartPage() {
     updateQty,
     removeFromCart,
     clearCart,
-    cartTotal,
+    cartSubtotalQar,
     formatPrice,
     lang,
     currency,
@@ -39,8 +39,6 @@ export default function CartPage() {
 
   // Delivery estimation state
   const [destination, setDestination] = useState<"QA" | "GCC">("QA");
-
-  const cartSubtotalQar = cartTotal;
   const discountAmountQar = Math.round((cartSubtotalQar * discountPercent) / 100);
   const shippingCostQar = destination === "QA" ? 0 : 50; // Free in Qatar, 50 QAR for GCC
   const finalTotalQar = Math.max(0, cartSubtotalQar - discountAmountQar + shippingCostQar);
@@ -166,17 +164,17 @@ export default function CartPage() {
                         </Link>
 
                         <div>
-                          <span className="text-[10px] font-mono text-neutral-400">
+                          <span className="text-xs font-mono text-neutral-500">
                             {item.product.product_id}
                           </span>
                           <Link
                             href={`/products/${item.product.slug}`}
-                            className="block text-xs sm:text-sm font-semibold text-neutral-900 hover:text-[#c5a059] transition-colors mt-0.5 line-clamp-1"
+                            className="block text-sm sm:text-sm font-semibold text-neutral-900 hover:text-[#c5a059] transition-colors mt-0.5 line-clamp-1"
                           >
                             {lang === "ar" ? item.product.name_ar : item.product.name}
                           </Link>
-                          <p className="text-xs font-medium text-neutral-500 mt-0.5">
-                            {item.product.price} {currency}
+                          <p className="text-sm font-semibold text-neutral-900 mt-0.5">
+                            {item.product.price} <span className="text-xs font-medium text-[#c5a059]">{currency}</span>
                           </p>
                         </div>
                       </div>
@@ -184,7 +182,7 @@ export default function CartPage() {
                       {/* Quantity Stepper & Line Total & Delete */}
                       <div className="flex items-center justify-between w-full sm:w-auto sm:justify-end gap-5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-100">
                         {/* Stepper */}
-                        <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden text-xs">
+                        <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden text-sm">
                           <button
                             type="button"
                             onClick={() => updateQty(item.product.id, -1)}
@@ -205,8 +203,8 @@ export default function CartPage() {
                         </div>
 
                         {/* Line Total */}
-                        <p className="text-xs sm:text-sm font-semibold text-neutral-900 min-w-[70px] text-right rtl:text-left">
-                          {item.product.price * item.quantity} {currency}
+                        <p className="text-sm sm:text-base font-semibold text-neutral-900 min-w-[70px] text-right rtl:text-left">
+                          {item.product.price * item.quantity} <span className="text-xs font-medium text-[#c5a059]">{currency}</span>
                         </p>
 
                         {/* Delete Button */}
@@ -274,35 +272,35 @@ export default function CartPage() {
                   <form onSubmit={handleApplyCoupon} className="space-y-1.5">
                     <div className="flex gap-2">
                       <div className="relative flex-1">
-                        <Tag size={12} className="absolute left-3 rtl:left-auto rtl:right-3 top-2.5 text-neutral-400" />
+                        <Tag size={13} className="absolute left-3 rtl:left-auto rtl:right-3 top-3 text-neutral-400" />
                         <input
                           type="text"
                           value={couponCode}
                           onChange={(e) => setCouponCode(e.target.value)}
                           placeholder={lang === "ar" ? "كود الخصم (THABT10)" : "Promo code (THABT10)"}
-                          className="w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-8 pr-3 rtl:pl-3 rtl:pr-8 py-2 text-xs uppercase font-medium focus:outline-none focus:border-[#c5a059] focus:bg-white"
+                          className="w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-8 pr-3 rtl:pl-3 rtl:pr-8 py-2.5 text-sm sm:text-xs uppercase font-medium focus:outline-none focus:border-[#c5a059] focus:bg-white"
                         />
                       </div>
                       <button
                         type="submit"
-                        className="px-3 py-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-xs font-semibold transition cursor-pointer shrink-0"
+                        className="px-3.5 py-2.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-sm sm:text-xs font-semibold transition cursor-pointer shrink-0"
                       >
                         {lang === "ar" ? "تطبيق" : "Apply"}
                       </button>
                     </div>
 
                     {couponApplied && (
-                      <p className="text-[11px] text-emerald-700 font-medium flex items-center gap-1 pt-0.5">
-                        <CheckCircle2 size={11} />
+                      <p className="text-xs text-emerald-700 font-medium flex items-center gap-1 pt-0.5">
+                        <CheckCircle2 size={12} />
                         {lang === "ar" ? "تم تطبيق خصم 10%!" : "10% discount applied!"}
                       </p>
                     )}
-                    {couponError && <p className="text-[11px] text-neutral-500">{couponError}</p>}
+                    {couponError && <p className="text-xs text-neutral-500">{couponError}</p>}
                   </form>
 
                   {/* Calculations */}
-                  <div className="space-y-2 text-xs pt-3 border-t border-neutral-100">
-                    <div className="flex items-center justify-between text-neutral-500">
+                  <div className="space-y-2.5 text-sm sm:text-xs pt-3 border-t border-neutral-100">
+                    <div className="flex items-center justify-between text-neutral-600">
                       <span>{lang === "ar" ? "المجموع الفرعي:" : "Subtotal:"}</span>
                       <span className="font-semibold text-neutral-900">{cartSubtotalQar} {currency}</span>
                     </div>
@@ -314,7 +312,7 @@ export default function CartPage() {
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between text-neutral-500">
+                    <div className="flex items-center justify-between text-neutral-600">
                       <span>{lang === "ar" ? "الشحن والتوصيل:" : "Shipping:"}</span>
                       <span className="font-semibold text-neutral-900">
                         {shippingCostQar === 0 ? (
@@ -327,7 +325,7 @@ export default function CartPage() {
 
                     <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
                       <span className="text-sm font-semibold text-neutral-900">{lang === "ar" ? "الإجمالي:" : "Total:"}</span>
-                      <span className="text-lg font-semibold text-neutral-950">
+                      <span className="text-xl font-semibold text-neutral-950">
                         {finalTotalQar} <span className="text-xs font-medium text-[#c5a059]">{currency}</span>
                       </span>
                     </div>
@@ -337,13 +335,13 @@ export default function CartPage() {
                   <button
                     type="button"
                     onClick={() => router.push("/checkout")}
-                    className="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
+                    className="w-full py-3.5 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-sm sm:text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
                   >
                     <span>{lang === "ar" ? "المتابعة لإتمام الشراء" : "Proceed to Checkout"}</span>
-                    <ArrowRight size={13} className="rtl:rotate-180" />
+                    <ArrowRight size={14} className="rtl:rotate-180" />
                   </button>
 
-                  <p className="text-[10px] text-neutral-400 text-center">
+                  <p className="text-xs text-neutral-500 text-center">
                     {lang === "ar" ? "دفع آمن وتوصيل مباشر في قطر والخليج" : "Secure payment & fast GCC delivery"}
                   </p>
                 </div>

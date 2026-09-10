@@ -103,6 +103,9 @@ export default function ProductDetailPage({
                   src={activeImage}
                   alt={product.name}
                   className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105"
+                  onError={(e) => {
+                    e.currentTarget.src = "/admin/banners/accessories.jpg";
+                  }}
                 />
 
                 {product.original_price && (
@@ -126,7 +129,14 @@ export default function ProductDetailPage({
                           : "border-neutral-200 hover:border-neutral-400 opacity-80 hover:opacity-100"
                       }`}
                     >
-                      <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
+                      <img
+                        src={img}
+                        alt={`View ${idx + 1}`}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.src = "/admin/banners/accessories.jpg";
+                        }}
+                      />
                     </button>
                   ))}
                 </div>
@@ -136,18 +146,18 @@ export default function ProductDetailPage({
               <div className="pt-4 border-t border-neutral-100 grid grid-cols-3 gap-3 text-center">
                 <div className="p-2">
                   <ShieldCheck size={18} className="text-[#c5a059] mx-auto mb-1" />
-                  <p className="font-semibold text-neutral-900 text-xs">{lang === "ar" ? "ضمان سنة" : "1-Year Warranty"}</p>
-                  <p className="text-[10px] text-neutral-400">{lang === "ar" ? "استبدال رسمي" : "GCC coverage"}</p>
+                  <p className="font-semibold text-neutral-900 text-xs sm:text-xs">{lang === "ar" ? "ضمان سنة" : "1-Year Warranty"}</p>
+                  <p className="text-xs sm:text-[11px] text-neutral-500">{lang === "ar" ? "استبدال رسمي" : "GCC coverage"}</p>
                 </div>
                 <div className="p-2 border-x border-neutral-100">
                   <Truck size={18} className="text-[#c5a059] mx-auto mb-1" />
-                  <p className="font-semibold text-neutral-900 text-xs">{lang === "ar" ? "توصيل سريع" : "Express Delivery"}</p>
-                  <p className="text-[10px] text-neutral-400">{lang === "ar" ? "جميع مناطق قطر" : "Same-day dispatch"}</p>
+                  <p className="font-semibold text-neutral-900 text-xs sm:text-xs">{lang === "ar" ? "توصيل سريع" : "Express Delivery"}</p>
+                  <p className="text-xs sm:text-[11px] text-neutral-500">{lang === "ar" ? "جميع مناطق قطر" : "Same-day dispatch"}</p>
                 </div>
                 <div className="p-2">
                   <RotateCcw size={18} className="text-[#c5a059] mx-auto mb-1" />
-                  <p className="font-semibold text-neutral-900 text-xs">{lang === "ar" ? "إرجاع 14 يوم" : "14-Day Returns"}</p>
-                  <p className="text-[10px] text-neutral-400">{lang === "ar" ? "سهل وبسيط" : "Hassle-free"}</p>
+                  <p className="font-semibold text-neutral-900 text-xs sm:text-xs">{lang === "ar" ? "إرجاع 14 يوم" : "14-Day Returns"}</p>
+                  <p className="text-xs sm:text-[11px] text-neutral-500">{lang === "ar" ? "سهل وبسيط" : "Hassle-free"}</p>
                 </div>
               </div>
             </div>
@@ -207,7 +217,7 @@ export default function ProductDetailPage({
                 </div>
 
                 {/* Description */}
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed border-t border-neutral-100 pt-4">
+                <p className="text-sm sm:text-base text-neutral-600 leading-relaxed border-t border-neutral-100 pt-4">
                   {lang === "ar" ? product.description_ar || product.description : product.description}
                 </p>
               </div>
@@ -218,7 +228,7 @@ export default function ProductDetailPage({
                   <p className="text-xs uppercase tracking-[0.2em] text-[#c5a059] font-semibold">
                     {lang === "ar" ? "المميزات الرئيسية" : "Key Features"}
                   </p>
-                  <ul className="space-y-1.5 text-xs text-neutral-700">
+                  <ul className="space-y-1.5 text-sm sm:text-xs text-neutral-700">
                     {product.features.map((feat, idx) => (
                       <li key={idx} className="flex items-start gap-2">
                         <Check size={14} className="text-[#c5a059] shrink-0 mt-0.5" />
@@ -289,16 +299,16 @@ export default function ProductDetailPage({
                   <button
                     type="button"
                     onClick={handleAddToCart}
-                    className="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
+                    className="w-full py-3.5 sm:py-3 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-sm sm:text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
                   >
                     {addedSuccess ? (
                       <>
-                        <Check size={14} />
+                        <Check size={15} />
                         <span>{lang === "ar" ? "تمت الإضافة بنجاح!" : "Added to Cart!"}</span>
                       </>
                     ) : (
                       <>
-                        <ShoppingBag size={14} />
+                        <ShoppingBag size={15} />
                         <span>{lang === "ar" ? "أضف إلى السلة" : "Add to Cart"}</span>
                       </>
                     )}
@@ -307,9 +317,9 @@ export default function ProductDetailPage({
                   <button
                     type="button"
                     onClick={handleInstantBuy}
-                    className="w-full py-3 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
+                    className="w-full py-3.5 sm:py-3 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-sm sm:text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
                   >
-                    <Zap size={14} />
+                    <Zap size={15} />
                     <span>{lang === "ar" ? "شراء فوري" : "Instant Buy"}</span>
                   </button>
                 </div>
@@ -322,16 +332,19 @@ export default function ProductDetailPage({
                     src={companionProduct.image}
                     alt={companionProduct.name}
                     className="w-12 h-12 object-contain rounded-xl bg-white border border-neutral-200 p-1 shrink-0"
+                    onError={(e) => {
+                      e.currentTarget.src = "/admin/banners/accessories.jpg";
+                    }}
                   />
                   <div>
-                    <p className="text-[11px] text-neutral-500 font-medium">
+                    <p className="text-xs sm:text-[11px] text-neutral-500 font-medium">
                       {lang === "ar" ? "القطعة المكملة الموصى بها:" : "Recommended Companion:"}
                     </p>
-                    <h4 className="text-xs font-semibold text-neutral-900 line-clamp-1">
+                    <h4 className="text-sm sm:text-xs font-semibold text-neutral-900 line-clamp-1">
                       {lang === "ar" ? companionProduct.name_ar : companionProduct.name}
                     </h4>
-                    <p className="text-xs font-semibold text-neutral-900">
-                      {companionProduct.price} <span className="text-[10px] text-[#c5a059]">{currency}</span>
+                    <p className="text-sm sm:text-xs font-semibold text-neutral-900">
+                      {companionProduct.price} <span className="text-xs text-[#c5a059]">{currency}</span>
                     </p>
                   </div>
                 </div>
@@ -357,7 +370,7 @@ export default function ProductDetailPage({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {Object.entries(product.specs).map(([key, val]) => (
-                  <div key={key} className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between text-xs">
+                  <div key={key} className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between text-sm sm:text-xs">
                     <span className="text-neutral-500">{key}</span>
                     <span className="font-semibold text-neutral-900">{val}</span>
                   </div>

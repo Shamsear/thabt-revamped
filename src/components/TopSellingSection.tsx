@@ -138,6 +138,9 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                           src={product.image}
                           alt={product.name}
                           className="w-full h-full object-cover object-center rounded-xl group-hover:scale-105 group-active:scale-105 transition-transform duration-500 ease-out"
+                          onError={(e) => {
+                            e.currentTarget.src = "/admin/banners/accessories.jpg";
+                          }}
                         />
                       </div>
 

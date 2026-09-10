@@ -70,7 +70,7 @@ export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ lang
             >
               {/* Cover Image in Front */}
               <img
-                src="https://www.thabt.qa/admin/galleries/855497-c.jpg"
+                src="/admin/galleries/855497-c.jpg"
                 alt="Installation Demonstration"
                 className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-65 transition-opacity duration-500 group-hover:scale-105 transition-transform duration-700 ease-out"
               />

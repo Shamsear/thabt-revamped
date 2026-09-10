@@ -9,13 +9,11 @@ import { CustomSelect } from "@/components/CustomSelect";
 import { MOCK_JOBS, JobOpening } from "@/data/mockData";
 import {
   Award,
-  Briefcase,
   MapPin,
   Clock,
   CheckCircle2,
   ChevronRight,
   ArrowRight,
-  Sparkles,
   Users,
   Heart,
   Zap,
@@ -40,45 +38,41 @@ export default function CareersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] text-neutral-900 flex flex-col relative overflow-hidden">
-      {/* Ambient background gold glow */}
-      <div className="pointer-events-none absolute -top-40 right-1/4 w-96 h-96 bg-[#c5a059]/5 rounded-full blur-[160px]" />
-      <div className="pointer-events-none absolute top-1/2 -left-40 w-96 h-96 bg-[#c5a059]/5 rounded-full blur-[160px]" />
-
+    <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-8 sm:py-14 relative z-10">
+      <main className="flex-1 py-8 sm:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-xs text-neutral-500 mb-6">
-            <Link href="/" className="hover:text-[#9b7832] transition">
+          <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-6">
+            <Link href="/" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
-            <ChevronRight size={12} className="rtl:rotate-180 text-neutral-400" />
-            <span className="text-neutral-900 font-semibold flex items-center gap-1.5">
+            <ChevronRight size={12} className="rtl:rotate-180 text-neutral-300" />
+            <span className="text-neutral-900 font-medium flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]"></span>
               {lang === "ar" ? "الوظائف وبيئة العمل" : "Careers at Thabt"}
             </span>
           </nav>
 
-          {/* Great Place to Work #4 Qatar Award Banner */}
-          <div className="bg-gradient-to-r from-neutral-950 via-neutral-900 to-neutral-950 text-white rounded-3xl p-8 sm:p-12 mb-14 relative overflow-hidden border border-[#c5a059]/30 shadow-2xl">
-            <div className="absolute -right-10 -bottom-10 w-96 h-96 bg-[#c5a059]/20 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative z-10">
-              <div className="md:col-span-8 space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#c5a059]/20 text-[#c5a059] border border-[#c5a059]/40 text-xs font-bold shadow-xs">
-                  <Award size={15} />
+          {/* Great Place to Work Award Minimal Banner */}
+          <div className="bg-neutral-950 text-white rounded-2xl p-8 sm:p-10 mb-14 border border-neutral-800">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+              <div className="md:col-span-8 space-y-3">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/30 text-xs font-semibold">
+                  <Award size={14} />
                   <span>Great Place to Work® Qatar 2026</span>
                 </div>
 
-                <h1 className="text-2xl sm:text-4xl font-black tracking-tight leading-snug">
-                  {lang === "ar"
-                    ? "المركز الرابع كأفضل بيئة عمل في دولة قطر لعام 2026"
-                    : "Ranked #4 Best Workplace in Qatar for 2026"}
+                <h1 className="text-2xl sm:text-3xl font-light tracking-tight leading-snug">
+                  {lang === "ar" ? (
+                    <>المركز الرابع كأفضل <span className="font-semibold text-[#c5a059]">بيئة عمل في قطر</span> لعام 2026</>
+                  ) : (
+                    <>Ranked #4 Best <span className="font-semibold text-[#c5a059]">Workplace in Qatar</span> for 2026</>
+                  )}
                 </h1>
 
-                <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed max-w-2xl">
+                <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-2xl">
                   {lang === "ar"
                     ? "نفتخر بحصول شركة ثقة (Gulf Digital Solution) على اعتماد بيئات العمل العالمية كواحدة من أفضل الشركات في قطر. نؤمن بأن شغف فريقنا بالابتكار ودقة الهندسة هو سر تميزنا."
                     : "Proudly certified by the global Great Place to Work® authority as the #4 best workplace in the State of Qatar. We cultivate a culture of trust, precision, and continuous empowerment."}
@@ -86,10 +80,10 @@ export default function CareersPage() {
               </div>
 
               <div className="md:col-span-4 flex justify-center md:justify-end">
-                <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-3xl bg-neutral-900/80 backdrop-blur-md border border-[#c5a059]/40 p-4 flex flex-col items-center justify-center text-center shadow-xl">
-                  <span className="text-3xl sm:text-4xl font-black text-[#c5a059]">#4</span>
-                  <p className="text-xs font-bold text-white uppercase tracking-wider mt-1">Qatar Best Workplaces</p>
-                  <span className="text-[10px] text-[#c5a059]/80 font-mono mt-1">2026 Certified</span>
+                <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl bg-neutral-900 border border-neutral-800 p-4 flex flex-col items-center justify-center text-center">
+                  <span className="text-3xl sm:text-4xl font-bold text-[#c5a059]">#4</span>
+                  <p className="text-[11px] font-semibold text-white uppercase tracking-wider mt-1">Qatar Best</p>
+                  <span className="text-[10px] text-neutral-400 font-mono mt-0.5">2026 Certified</span>
                 </div>
               </div>
             </div>
@@ -98,12 +92,12 @@ export default function CareersPage() {
           {/* Culture Values Pillars */}
           <div className="mb-14">
             <div className="text-center max-w-xl mx-auto mb-10">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-3 py-1 rounded-full border border-[#c5a059]/30 inline-flex items-center gap-1.5 shadow-2xs mb-2">
-                <Sparkles size={13} className="text-[#c5a059]" />
+              <span className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2 block">
                 {lang === "ar" ? "قيمنا ومبادئنا" : "Our Core Values"}
               </span>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-950 mb-2">
-                {lang === "ar" ? "ثقافة العمل في ثقة" : "Life & Culture at Thabt"}
+              <h2 className="text-2xl sm:text-3xl font-light tracking-tight text-neutral-900 mb-2">
+                {lang === "ar" ? "ثقافة العمل في " : "Culture & Values at "}
+                <span className="font-semibold text-neutral-950">Thabt</span>
               </h2>
               <p className="text-xs text-neutral-500">
                 {lang === "ar" ? "الركائز الأساسية التي تقود فريقنا كل يوم لتقديم الأفضل لعملائنا في الخليج" : "The values that shape how we work, grow, and build together"}
@@ -111,11 +105,11 @@ export default function CareersPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="p-6 bg-white rounded-3xl border border-neutral-200/90 hover:border-[#c5a059] shadow-2xs hover:shadow-xl transition-all duration-300 space-y-3 group">
-                <div className="w-11 h-11 rounded-2xl bg-[#faf6ed] text-[#9b7832] border border-[#c5a059]/30 flex items-center justify-center font-bold shadow-xs">
-                  <Zap size={20} className="text-[#c5a059]" />
+              <div className="p-6 bg-white rounded-2xl border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center">
+                  <Zap size={18} className="text-[#c5a059]" />
                 </div>
-                <h3 className="text-sm font-extrabold text-neutral-950 group-hover:text-[#9b7832] transition-colors">
+                <h3 className="text-sm font-semibold text-neutral-950">
                   {lang === "ar" ? "الدقة والكمال الهندسي" : "Precision & Perfection"}
                 </h3>
                 <p className="text-xs text-neutral-500 leading-relaxed">
@@ -125,11 +119,11 @@ export default function CareersPage() {
                 </p>
               </div>
 
-              <div className="p-6 bg-white rounded-3xl border border-neutral-200/90 hover:border-[#c5a059] shadow-2xs hover:shadow-xl transition-all duration-300 space-y-3 group">
-                <div className="w-11 h-11 rounded-2xl bg-[#faf6ed] text-[#9b7832] border border-[#c5a059]/30 flex items-center justify-center font-bold shadow-xs">
-                  <Users size={20} className="text-[#c5a059]" />
+              <div className="p-6 bg-white rounded-2xl border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center">
+                  <Users size={18} className="text-[#c5a059]" />
                 </div>
-                <h3 className="text-sm font-extrabold text-neutral-950 group-hover:text-[#9b7832] transition-colors">
+                <h3 className="text-sm font-semibold text-neutral-950">
                   {lang === "ar" ? "فريق عمل متماسك وداعم" : "Empowered Team"}
                 </h3>
                 <p className="text-xs text-neutral-500 leading-relaxed">
@@ -139,11 +133,11 @@ export default function CareersPage() {
                 </p>
               </div>
 
-              <div className="p-6 bg-white rounded-3xl border border-neutral-200/90 hover:border-[#c5a059] shadow-2xs hover:shadow-xl transition-all duration-300 space-y-3 group">
-                <div className="w-11 h-11 rounded-2xl bg-[#faf6ed] text-[#9b7832] border border-[#c5a059]/30 flex items-center justify-center font-bold shadow-xs">
-                  <Heart size={20} className="text-[#c5a059]" />
+              <div className="p-6 bg-white rounded-2xl border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center">
+                  <Heart size={18} className="text-[#c5a059]" />
                 </div>
-                <h3 className="text-sm font-extrabold text-neutral-950 group-hover:text-[#9b7832] transition-colors">
+                <h3 className="text-sm font-semibold text-neutral-950">
                   {lang === "ar" ? "شغف بخدمة العميل" : "Customer Obsession"}
                 </h3>
                 <p className="text-xs text-neutral-500 leading-relaxed">
@@ -159,15 +153,15 @@ export default function CareersPage() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-extrabold text-neutral-950">
+                <h2 className="text-lg font-semibold text-neutral-950">
                   {lang === "ar" ? "الوظائف المتاحة حالياً" : "Current Open Roles"}
                 </h2>
                 <p className="text-xs text-neutral-500">
-                  {lang === "ar" ? "انضم لفريقنا في الدوحة وساهم في نجاحنا" : "Join our team in Doha and accelerate your automotive career"}
+                  {lang === "ar" ? "انضم لفريقنا في الدوحة وساهم في ابتكار تجربة القيادة" : "Join our team in Doha and accelerate your automotive career"}
                 </p>
               </div>
-              <span className="text-xs font-bold text-[#9b7832] bg-[#faf6ed] px-3 py-1 rounded-full border border-[#c5a059]/30 shadow-2xs">
-                {MOCK_JOBS.length} {lang === "ar" ? "وظائف مفتوحة" : "Positions Open"}
+              <span className="text-[11px] font-semibold text-[#9b7832] bg-[#faf6ed] px-3 py-1 rounded-full border border-[#c5a059]/30">
+                {MOCK_JOBS.length} {lang === "ar" ? "وظائف مفتوحة" : "Open Positions"}
               </span>
             </div>
 
@@ -175,11 +169,11 @@ export default function CareersPage() {
               {MOCK_JOBS.map((job) => (
                 <div
                   key={job.id}
-                  className="bg-white rounded-3xl border border-neutral-200/90 hover:border-[#c5a059] p-6 sm:p-7 shadow-2xs hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-6 group"
+                  className="bg-white rounded-2xl border border-neutral-200/80 hover:border-neutral-900 p-6 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-6"
                 >
                   <div className="space-y-2">
                     <div className="flex flex-wrap items-center gap-2 text-xs">
-                      <span className="font-bold text-neutral-950 bg-[#faf6ed] text-[#9b7832] border border-[#c5a059]/30 px-2.5 py-0.5 rounded-md">
+                      <span className="font-semibold text-neutral-950 bg-neutral-100 px-2.5 py-0.5 rounded-md text-[11px]">
                         {job.department}
                       </span>
                       <span className="text-neutral-500 flex items-center gap-1">
@@ -190,11 +184,11 @@ export default function CareersPage() {
                       </span>
                     </div>
 
-                    <h3 className="text-base font-extrabold text-neutral-950 group-hover:text-[#9b7832] transition-colors">
+                    <h3 className="text-base font-semibold text-neutral-950">
                       {lang === "ar" ? job.title_ar : job.title}
                     </h3>
 
-                    <p className="text-xs text-neutral-600 max-w-2xl leading-relaxed">
+                    <p className="text-xs text-neutral-500 max-w-2xl leading-relaxed">
                       {lang === "ar" ? job.description_ar : job.description}
                     </p>
                   </div>
@@ -202,10 +196,10 @@ export default function CareersPage() {
                   <button
                     type="button"
                     onClick={() => setSelectedJob(job)}
-                    className="py-3 px-5 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 font-black text-xs uppercase tracking-wider shrink-0 flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer shadow-sm group/btn"
+                    className="py-2.5 px-5 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 font-semibold text-xs uppercase tracking-wider shrink-0 flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
                     <span>{lang === "ar" ? "التقديم على الوظيفة" : "Apply for Role"}</span>
-                    <ArrowRight size={13} className="rtl:rotate-180 text-[#c5a059] group-hover/btn:text-neutral-950 group-hover/btn:translate-x-0.5 rtl:group-hover/btn:-translate-x-0.5 transition-all" />
+                    <ArrowRight size={13} className="rtl:rotate-180" />
                   </button>
                 </div>
               ))}
@@ -216,14 +210,14 @@ export default function CareersPage() {
 
       {/* Interactive Application Modal */}
       {selectedJob && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-[#c5a059]/40 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-7 border border-neutral-200 shadow-xl">
             <div className="flex items-center justify-between pb-4 border-b border-neutral-100 mb-5">
               <div>
-                <span className="text-[10px] uppercase font-bold text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md">
+                <span className="text-[10px] uppercase font-semibold text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md">
                   {selectedJob.department}
                 </span>
-                <h3 className="text-base font-extrabold text-neutral-950 mt-1">
+                <h3 className="text-base font-semibold text-neutral-950 mt-1">
                   {lang === "ar" ? selectedJob.title_ar : selectedJob.title}
                 </h3>
               </div>
@@ -232,87 +226,87 @@ export default function CareersPage() {
                 onClick={() => setSelectedJob(null)}
                 className="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-500 cursor-pointer transition"
               >
-                <X size={16} />
+                <X size={15} />
               </button>
             </div>
 
             {applySuccess ? (
-              <div className="text-center py-8 space-y-2 bg-[#faf6ed] rounded-2xl border border-[#c5a059]/40 p-6">
-                <CheckCircle2 size={36} className="text-[#9b7832] mx-auto" />
-                <h4 className="text-sm font-extrabold text-neutral-950">
+              <div className="text-center py-8 space-y-2 bg-[#faf6ed]/60 rounded-xl border border-[#c5a059]/30 p-6">
+                <CheckCircle2 size={32} className="text-[#9b7832] mx-auto" />
+                <h4 className="text-sm font-semibold text-neutral-950">
                   {lang === "ar" ? "تم إرسال طلب التوظيف بنجاح!" : "Application Submitted!"}
                 </h4>
-                <p className="text-xs text-neutral-700">
-                  {lang === "ar" ? "شكراً لاهتمامك بالانضمام لثقة. سنتواصل معك عبر الهاتف أو الإيميل." : "Thank you for your application. Our recruitment team will review and contact you."}
+                <p className="text-xs text-neutral-600">
+                  {lang === "ar" ? "شكراً لاهتمامك بالانضمام لثقة. سنتواصل معك قريباً." : "Thank you for your application. Our team will review and contact you."}
                 </p>
               </div>
             ) : (
               <form onSubmit={handleApplySubmit} className="space-y-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase text-neutral-500 mb-1">
+                  <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
                     {lang === "ar" ? "الاسم الكامل" : "Full Name"}
                   </label>
                   <input
                     type="text"
                     required
-                    className="w-full bg-[#fafaf9] border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/20 transition-all"
+                    className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[11px] font-bold uppercase text-neutral-500 mb-1">
+                    <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
                       {lang === "ar" ? "البريد الإلكتروني" : "Email"}
                     </label>
                     <input
                       type="email"
                       required
-                      className="w-full bg-[#fafaf9] border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/20 transition-all"
+                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold uppercase text-neutral-500 mb-1">
+                    <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
                       {lang === "ar" ? "رقم الهاتف" : "Phone"}
                     </label>
                     <input
                       type="tel"
                       required
                       placeholder="+974..."
-                      className="w-full bg-[#fafaf9] border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/20 transition-all"
+                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
                   <CustomSelect
-                      label={lang === "ar" ? "مقر العمل المفضل" : "Preferred Work Location"}
-                      value={preferredLocation}
-                      onChange={(val) => setPreferredLocation(val)}
-                      options={[
-                        { value: "Salwa Road HQ, Doha", label: lang === "ar" ? "المقر الرئيسي - الريان القديم، الدوحة" : "Old Rayan Showroom & HQ, Doha" },
-                        { value: "Umm Salal Muhammed Branch", label: lang === "ar" ? "فرع أم صلال محمد، الدوحة" : "Umm Salal Muhammed Showroom" },
-                        { value: "Logistics & Fulfillment Center", label: lang === "ar" ? "مركز التجهيز والشحن اللوجستي" : "Logistics & Fulfillment Center" },
-                        { value: "Hybrid / Remote GCC", label: lang === "ar" ? "عمل عن بعد / هجين بالخليج" : "Remote / Hybrid (GCC)" },
-                      ]}
-                      lang={lang}
-                    />
+                    label={lang === "ar" ? "مقر العمل المفضل" : "Preferred Work Location"}
+                    value={preferredLocation}
+                    onChange={(val) => setPreferredLocation(val)}
+                    options={[
+                      { value: "Salwa Road HQ, Doha", label: lang === "ar" ? "المقر الرئيسي - الريان القديم، الدوحة" : "Old Rayan Showroom & HQ, Doha" },
+                      { value: "Umm Salal Muhammed Branch", label: lang === "ar" ? "فرع أم صلال محمد، الدوحة" : "Umm Salal Muhammed Showroom" },
+                      { value: "Logistics & Fulfillment Center", label: lang === "ar" ? "مركز التجهيز والشحن اللوجستي" : "Logistics & Fulfillment Center" },
+                      { value: "Hybrid / Remote GCC", label: lang === "ar" ? "عمل عن بعد / هجين بالخليج" : "Remote / Hybrid (GCC)" },
+                    ]}
+                    lang={lang}
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase text-neutral-500 mb-1">
+                  <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
                     {lang === "ar" ? "نبذة عن خبرتك أو رابط لينكد إن" : "LinkedIn Profile or Summary"}
                   </label>
                   <textarea
                     rows={3}
                     required
                     placeholder={lang === "ar" ? "اكتب نبذة مختصرة عن مؤهلاتك..." : "Share a brief summary of your background..."}
-                    className="w-full bg-[#fafaf9] border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/20 transition-all"
+                    className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 px-4 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all duration-200"
+                  className="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-colors"
                 >
                   <Send size={14} className="text-[#c5a059]" />
                   <span>{lang === "ar" ? "إرسال طلب التقديم" : "Submit Application"}</span>
