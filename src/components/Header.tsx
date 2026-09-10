@@ -50,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-neutral-100">
+    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-neutral-200/80 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo (Black & Gold) */}
         <a href="#" className="flex items-center shrink-0 mr-4 sm:mr-8 rtl:mr-0 rtl:ml-4 sm:rtl:ml-8">
