@@ -57,7 +57,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ categories, la
                 />
               </div>
 
-              <div className="h-44 flex items-center justify-center my-6 overflow-hidden">
+              <div className="h-44 flex items-center justify-center my-6 relative">
                 <img
                   src={cat.image}
                   alt={cat.category}

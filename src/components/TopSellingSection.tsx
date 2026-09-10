@@ -133,11 +133,11 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                   <div className="h-full flex flex-col justify-between bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/80 hover:border-neutral-900 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-out group">
                     <div>
                       {/* Product Photo Showcase */}
-                      <div className="h-48 sm:h-52 w-full rounded-xl mb-4 sm:mb-5 bg-neutral-100 overflow-hidden relative">
+                      <div className="h-48 sm:h-52 w-full rounded-xl mb-4 sm:mb-5 bg-neutral-100 relative">
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+                          className="w-full h-full object-cover object-center rounded-xl group-hover:scale-105 transition-transform duration-500 ease-out"
                         />
                       </div>
 
