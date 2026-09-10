@@ -21,16 +21,15 @@ import {
   CheckCircle2,
   ShieldCheck,
   Zap,
-  Sparkles,
   ArrowRight,
-  RefreshCw,
   ShoppingBag,
   Layers,
   ChevronRight,
+  Check,
 } from "lucide-react";
 
 export default function FindPage() {
-  const { lang, formatPrice, addToCart } = useAppContext();
+  const { lang, formatPrice, addToCart, currency } = useAppContext();
 
   // Step 1: Vehicle State
   const [selectedBrand, setSelectedBrand] = useState("Toyota");
@@ -41,6 +40,7 @@ export default function FindPage() {
   const [selectedDeviceBrand, setSelectedDeviceBrand] = useState("Apple");
   const [selectedDeviceModel, setSelectedDeviceModel] = useState("iPhone 15 Pro Max");
   const [holderType, setHolderType] = useState<"magsafe" | "adjustable" | "offroad">("magsafe");
+  const [addedSuccess, setAddedSuccess] = useState(false);
 
   // Matched Base: Land Cruiser or Patrol or fallback
   const matchedBase: Product =
@@ -63,69 +63,72 @@ export default function FindPage() {
   const handleAddComboToCart = () => {
     addToCart(matchedBase, 1);
     addToCart(matchedHolder, 1);
+    setAddedSuccess(true);
+    setTimeout(() => setAddedSuccess(false), 2000);
   };
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] text-neutral-900 flex flex-col">
+    <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-8 sm:py-12 relative">
-        {/* Subtle Ambient Gold Glow in Background */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-[#c5a059]/5 blur-[160px] pointer-events-none rounded-full" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
+      <main className="flex-1 py-8 sm:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-xs text-neutral-500 mb-6">
-            <Link href="/" className="hover:text-[#9b7832] transition">
+          <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-6">
+            <Link href="/" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
-            <ChevronRight size={12} className="rtl:rotate-180 text-neutral-400" />
-            <span className="text-neutral-900 font-semibold flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
-              {lang === "ar" ? "مطابق التثبيت الذكي" : "Vehicle & Device Matcher"}
+            <ChevronRight size={11} className="rtl:rotate-180" />
+            <span className="text-neutral-900 font-semibold">
+              {lang === "ar" ? "مطابق التثبيت الذكي" : "Vehicle Fitment Matcher"}
             </span>
           </nav>
 
-          {/* Hero Header */}
-          <div className="text-center max-w-3xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#faf6ed] border border-[#c5a059]/30 text-[#9b7832] text-xs font-bold mb-3">
-              <Sparkles size={14} className="text-[#c5a059]" />
-              <span>{lang === "ar" ? "نظام التركيب الثنائي المتكامل" : "The 2-Part Precision Mounting System"}</span>
-            </div>
-            <h1 className="text-2xl sm:text-4xl font-black text-neutral-950 tracking-tight mb-3">
-              {lang === "ar"
-                ? "اختر سيارتك وهاتفك للحصول على التركيب المثالي"
-                : "Find the Perfect Mount for Your Vehicle & Phone"}
+          {/* Minimalist Section Header (Matches Home Page Model) */}
+          <div className="mb-8 sm:mb-12">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2">
+              {lang === "ar" ? "نظام التثبيت الثنائي" : "The 2-Part System"}
+            </p>
+            <h1 className="text-2xl sm:text-4xl font-light tracking-tight text-neutral-900 mb-2">
+              {lang === "ar" ? (
+                <>
+                  مطابق التثبيت <span className="font-semibold text-neutral-950">للسيارة والهاتف</span>
+                </>
+              ) : (
+                <>
+                  Find the Exact <span className="font-semibold text-neutral-950">Fitment Pair</span>
+                </>
+              )}
             </h1>
-            <p className="text-neutral-600 text-xs sm:text-sm leading-relaxed">
+            <p className="text-xs sm:text-sm text-neutral-500 max-w-xl leading-relaxed">
               {lang === "ar"
-                ? "قواعد برو كليبس تصنع بدقة متناهية لكل سيارة لتركب في فواصل الطبلون بدون أي حفر أو مسامير، وتتكامل مع حوامل الهواتف الذكية مع شحن ماج سيف السريع."
-                : "Swedish-engineered vehicle bases snap directly into your dashboard seams without drilling, screws, or suction cups, perfectly pairing with our vibration-tested wireless phone holders."}
+                ? "قواعد برو كليبس تصنع بدقة لكل سيارة لتثبت في فواصل الديكور بدون حفر، وتتكامل مع حوامل الهواتف الذكية."
+                : "Vehicle-specific dashboard mounts clip in tool-free, perfectly pairing with our wireless MagSafe phone holders."}
             </p>
           </div>
 
           {/* 2-Step Configuration Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start mb-16">
             {/* Left Column: Step 1 & Step 2 Selectors (7 cols) */}
             <div className="lg:col-span-7 space-y-6">
               {/* STEP 1: Vehicle Base Selection */}
-              <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-8 h-8 rounded-xl bg-neutral-950 text-[#c5a059] border border-[#c5a059]/40 flex items-center justify-center font-bold text-xs shadow-xs">
+              <div className="bg-white rounded-2xl border border-neutral-200/80 p-5 sm:p-6 space-y-4">
+                <div className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-neutral-950 text-[#c5a059] text-xs font-bold flex items-center justify-center">
                     1
-                  </div>
+                  </span>
                   <div>
-                    <h2 className="text-base font-bold text-neutral-950 flex items-center gap-2">
-                      <Car size={18} className="text-[#c5a059]" />
-                      <span>{lang === "ar" ? "الخطوة الأولى: حدد سيارتك" : "Step 1: Select Your Vehicle"}</span>
+                    <h2 className="text-sm font-bold text-neutral-950 flex items-center gap-2">
+                      <Car size={15} className="text-[#c5a059]" />
+                      <span>{lang === "ar" ? "حدد نوع سيارتك وموديلها" : "Select Your Vehicle"}</span>
                     </h2>
-                    <p className="text-xs text-neutral-500">
+                    <p className="text-xs text-neutral-400">
                       {lang === "ar" ? "اختر الماركة، الموديل، وسنة الصنع" : "Choose vehicle make, model and manufacturing year"}
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                   {/* Brand */}
                   <div>
                     <CustomSelect
@@ -167,53 +170,53 @@ export default function FindPage() {
                   </div>
                 </div>
 
-                {/* Matched Base Quick Preview Card */}
-                <div className="mt-5 p-4 bg-neutral-50/80 rounded-2xl border border-neutral-200/80 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3.5">
+                {/* Matched Base Minimal Preview */}
+                <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-3">
                     <img
                       src={matchedBase.image}
                       alt={matchedBase.name}
-                      className="w-14 h-14 object-contain rounded-xl bg-white border border-neutral-200/90 p-1 shrink-0 shadow-2xs"
+                      className="w-12 h-12 object-contain rounded-lg bg-white border border-neutral-200 p-1 shrink-0"
                     />
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md border border-[#c5a059]/30">
+                      <p className="text-[10px] uppercase font-semibold text-[#c5a059]">
                         {lang === "ar" ? "قاعدة لوحة القيادة المتطابقة" : "Matched Dashboard Base"}
-                      </span>
-                      <h4 className="text-xs font-bold text-neutral-950 mt-1 line-clamp-1">
+                      </p>
+                      <h4 className="font-semibold text-neutral-900 line-clamp-1">
                         {lang === "ar" ? matchedBase.name_ar : matchedBase.name}
                       </h4>
-                      <p className="text-[11px] text-neutral-500 font-medium">
+                      <p className="text-neutral-400 text-[11px]">
                         {selectedBrand} {selectedModel} ({selectedYear})
                       </p>
                     </div>
                   </div>
                   <div className="text-right rtl:text-left shrink-0">
-                    <p className="text-xs font-black text-neutral-950">{formatPrice(matchedBase.price)}</p>
-                    <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
-                      <CheckCircle2 size={11} /> {lang === "ar" ? "متوفر بالمخزن" : "In Stock"}
+                    <p className="font-semibold text-neutral-950">{matchedBase.price} <span className="text-[10px] text-[#c5a059]">{currency}</span></p>
+                    <span className="text-[10px] text-emerald-700 font-medium flex items-center gap-1">
+                      <CheckCircle2 size={10} /> {lang === "ar" ? "متوفر" : "In Stock"}
                     </span>
                   </div>
                 </div>
               </div>
 
               {/* STEP 2: Device & Holder Selection */}
-              <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-8 h-8 rounded-xl bg-[#c5a059] text-neutral-950 flex items-center justify-center font-bold text-xs shadow-xs">
+              <div className="bg-white rounded-2xl border border-neutral-200/80 p-5 sm:p-6 space-y-4">
+                <div className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-[#c5a059] text-neutral-950 text-xs font-bold flex items-center justify-center">
                     2
-                  </div>
+                  </span>
                   <div>
-                    <h2 className="text-base font-bold text-neutral-950 flex items-center gap-2">
-                      <Smartphone size={18} className="text-[#c5a059]" />
-                      <span>{lang === "ar" ? "الخطوة الثانية: حدد جهازك ونوع الحامل" : "Step 2: Select Device & Holder"}</span>
+                    <h2 className="text-sm font-bold text-neutral-950 flex items-center gap-2">
+                      <Smartphone size={15} className="text-[#c5a059]" />
+                      <span>{lang === "ar" ? "حدد جهازك وطريقة التثبيت" : "Select Device & Holder Style"}</span>
                     </h2>
-                    <p className="text-xs text-neutral-500">
-                      {lang === "ar" ? "اختر هاتفك وطريقة التثبيت المفضلة لديك" : "Choose device brand, model, and preferred holding style"}
+                    <p className="text-xs text-neutral-400">
+                      {lang === "ar" ? "اختر ماركة الهاتف والنوع المناسب لقيادتك" : "Choose device brand, model, and preferred holding style"}
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   {/* Device Brand */}
                   <div>
                     <CustomSelect
@@ -243,9 +246,9 @@ export default function FindPage() {
                   </div>
                 </div>
 
-                {/* Holder Style Radio Selector */}
+                {/* Holder Style Buttons */}
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">
+                  <label className="block text-[11px] font-semibold text-neutral-500 mb-2">
                     {lang === "ar" ? "طريقة التثبيت والشحن" : "Mounting & Charging Style"}
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -253,18 +256,18 @@ export default function FindPage() {
                     <button
                       type="button"
                       onClick={() => setHolderType("magsafe")}
-                      className={`p-3.5 rounded-2xl text-left rtl:text-right border transition-all cursor-pointer ${
+                      className={`p-3 rounded-xl text-left rtl:text-right border transition-all cursor-pointer ${
                         holderType === "magsafe"
-                          ? "bg-[#faf6ed] border-[#c5a059] ring-2 ring-[#c5a059]/30 shadow-xs"
-                          : "bg-white border-neutral-200 hover:border-[#c5a059]/40 hover:bg-[#faf6ed]/20"
+                          ? "bg-[#faf6ed] border-[#c5a059] text-neutral-950 font-semibold"
+                          : "bg-neutral-50/70 border-neutral-200 text-neutral-700 hover:bg-neutral-100"
                       }`}
                     >
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-950 mb-1">
-                        <Zap size={14} className="text-[#c5a059]" />
-                        <span>MagSafe Qi Fast</span>
+                      <div className="flex items-center gap-1.5 text-xs font-semibold mb-1">
+                        <Zap size={13} className="text-[#c5a059]" />
+                        <span>MagSafe Fast</span>
                       </div>
-                      <p className="text-[10px] text-neutral-500 leading-snug">
-                        {lang === "ar" ? "مغناطيس 15 واط لاسلكي" : "15W Magnetic wireless charge"}
+                      <p className="text-[10px] text-neutral-500">
+                        {lang === "ar" ? "مغناطيس 15W لاسلكي" : "15W Magnetic wireless"}
                       </p>
                     </button>
 
@@ -272,18 +275,18 @@ export default function FindPage() {
                     <button
                       type="button"
                       onClick={() => setHolderType("offroad")}
-                      className={`p-3.5 rounded-2xl text-left rtl:text-right border transition-all cursor-pointer ${
+                      className={`p-3 rounded-xl text-left rtl:text-right border transition-all cursor-pointer ${
                         holderType === "offroad"
-                          ? "bg-[#faf6ed] border-[#c5a059] ring-2 ring-[#c5a059]/30 shadow-xs"
-                          : "bg-white border-neutral-200 hover:border-[#c5a059]/40 hover:bg-[#faf6ed]/20"
+                          ? "bg-[#faf6ed] border-[#c5a059] text-neutral-950 font-semibold"
+                          : "bg-neutral-50/70 border-neutral-200 text-neutral-700 hover:bg-neutral-100"
                       }`}
                     >
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-950 mb-1">
-                        <ShieldCheck size={14} className="text-[#c5a059]" />
-                        <span>Heavy-Duty Off-Road</span>
+                      <div className="flex items-center gap-1.5 text-xs font-semibold mb-1">
+                        <ShieldCheck size={13} className="text-[#c5a059]" />
+                        <span>Heavy-Duty</span>
                       </div>
-                      <p className="text-[10px] text-neutral-500 leading-snug">
-                        {lang === "ar" ? "مخمد اهتزاز للصحراء" : "Dual-arm shock dampening"}
+                      <p className="text-[10px] text-neutral-500">
+                        {lang === "ar" ? "مخمد اهتزاز للصحراء" : "Desert vibration dampener"}
                       </p>
                     </button>
 
@@ -291,138 +294,137 @@ export default function FindPage() {
                     <button
                       type="button"
                       onClick={() => setHolderType("adjustable")}
-                      className={`p-3.5 rounded-2xl text-left rtl:text-right border transition-all cursor-pointer ${
+                      className={`p-3 rounded-xl text-left rtl:text-right border transition-all cursor-pointer ${
                         holderType === "adjustable"
-                          ? "bg-[#faf6ed] border-[#c5a059] ring-2 ring-[#c5a059]/30 shadow-xs"
-                          : "bg-white border-neutral-200 hover:border-[#c5a059]/40 hover:bg-[#faf6ed]/20"
+                          ? "bg-[#faf6ed] border-[#c5a059] text-neutral-950 font-semibold"
+                          : "bg-neutral-50/70 border-neutral-200 text-neutral-700 hover:bg-neutral-100"
                       }`}
                     >
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-950 mb-1">
-                        <Layers size={14} className="text-[#c5a059]" />
+                      <div className="flex items-center gap-1.5 text-xs font-semibold mb-1">
+                        <Layers size={13} className="text-[#c5a059]" />
                         <span>Luxury Leather</span>
                       </div>
-                      <p className="text-[10px] text-neutral-500 leading-snug">
-                        {lang === "ar" ? "جلد إيطالي فاخر يدوي" : "Handcrafted Italian leather"}
+                      <p className="text-[10px] text-neutral-500">
+                        {lang === "ar" ? "جلد إيطالي يدوي" : "Handcrafted Italian leather"}
                       </p>
                     </button>
                   </div>
                 </div>
 
-                {/* Matched Holder Quick Preview Card */}
-                <div className="mt-5 p-4 bg-neutral-50/80 rounded-2xl border border-neutral-200/80 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3.5">
+                {/* Matched Holder Minimal Preview */}
+                <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-3">
                     <img
                       src={matchedHolder.image}
                       alt={matchedHolder.name}
-                      className="w-14 h-14 object-contain rounded-xl bg-white border border-neutral-200/90 p-1 shrink-0 shadow-2xs"
+                      className="w-12 h-12 object-contain rounded-lg bg-white border border-neutral-200 p-1 shrink-0"
                     />
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md border border-[#c5a059]/30">
+                      <p className="text-[10px] uppercase font-semibold text-[#c5a059]">
                         {lang === "ar" ? "الحامل المتطابق" : "Matched Device Holder"}
-                      </span>
-                      <h4 className="text-xs font-bold text-neutral-950 mt-1 line-clamp-1">
+                      </p>
+                      <h4 className="font-semibold text-neutral-900 line-clamp-1">
                         {lang === "ar" ? matchedHolder.name_ar : matchedHolder.name}
                       </h4>
-                      <p className="text-[11px] text-neutral-500 font-medium">
+                      <p className="text-neutral-400 text-[11px]">
                         {selectedDeviceBrand} {selectedDeviceModel}
                       </p>
                     </div>
                   </div>
                   <div className="text-right rtl:text-left shrink-0">
-                    <p className="text-xs font-black text-neutral-950">{formatPrice(matchedHolder.price)}</p>
-                    <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
-                      <CheckCircle2 size={11} /> {lang === "ar" ? "متوفر بالمخزن" : "In Stock"}
+                    <p className="font-semibold text-neutral-950">{matchedHolder.price} <span className="text-[10px] text-[#c5a059]">{currency}</span></p>
+                    <span className="text-[10px] text-emerald-700 font-medium flex items-center gap-1">
+                      <CheckCircle2 size={10} /> {lang === "ar" ? "متوفر" : "In Stock"}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Live Combo Summary & Add to Cart (5 cols) */}
+            {/* Right Column: Live Combo Summary (5 cols) */}
             <div className="lg:col-span-5 sticky top-24">
-              <div className="bg-gradient-to-b from-white via-white to-[#faf6ed]/40 rounded-3xl border border-[#c5a059]/40 p-6 sm:p-7 shadow-[0_4px_25px_rgba(0,0,0,0.04)] relative">
-                {/* Gold Ribbon */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#faf6ed] border border-[#c5a059]/40 text-[#9b7832] text-xs font-bold mb-4">
-                  <Sparkles size={13} className="text-[#c5a059]" />
-                  <span>{lang === "ar" ? "خصم الباقة المتكاملة: وفر 10%" : "Complete Pair Bundle: Save 10%"}</span>
+              <div className="bg-white rounded-2xl border border-neutral-200/80 p-6 space-y-5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-neutral-950">
+                    {lang === "ar" ? "ملخص الباقة الثنائية" : "Complete Pair Summary"}
+                  </h3>
+                  <span className="text-[11px] font-semibold text-[#9b7832] bg-[#faf6ed] border border-[#c5a059]/30 px-2 py-0.5 rounded-full">
+                    {lang === "ar" ? "خصم 10%" : "Save 10%"}
+                  </span>
                 </div>
 
-                <h3 className="text-base font-black text-neutral-950 mb-4">
-                  {lang === "ar" ? "ملخص باقة التثبيت المتكاملة" : "Complete Fitment Pair Summary"}
-                </h3>
-
                 {/* Items in Pair */}
-                <div className="space-y-3 pb-5 border-b border-neutral-100">
+                <div className="space-y-3 pb-4 border-b border-neutral-100 text-xs">
                   {/* Part 1 */}
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-5 h-5 rounded-full bg-neutral-950 text-[#c5a059] border border-[#c5a059]/40 text-[10px] font-bold flex items-center justify-center shrink-0">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="w-4 h-4 rounded-full bg-neutral-950 text-[#c5a059] text-[9px] font-bold flex items-center justify-center shrink-0">
                         1
                       </span>
-                      <span className="text-neutral-800 font-bold line-clamp-1 max-w-[200px]">
+                      <span className="text-neutral-800 font-medium line-clamp-1 max-w-[200px]">
                         {lang === "ar" ? matchedBase.name_ar : matchedBase.name}
                       </span>
                     </div>
-                    <span className="font-bold text-neutral-900">{formatPrice(matchedBase.price)}</span>
+                    <span className="font-semibold text-neutral-900">{matchedBase.price} {currency}</span>
                   </div>
 
                   {/* Part 2 */}
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-5 h-5 rounded-full bg-[#c5a059] text-neutral-950 text-[10px] font-bold flex items-center justify-center shrink-0">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="w-4 h-4 rounded-full bg-[#c5a059] text-neutral-950 text-[9px] font-bold flex items-center justify-center shrink-0">
                         2
                       </span>
-                      <span className="text-neutral-800 font-bold line-clamp-1 max-w-[200px]">
+                      <span className="text-neutral-800 font-medium line-clamp-1 max-w-[200px]">
                         {lang === "ar" ? matchedHolder.name_ar : matchedHolder.name}
                       </span>
                     </div>
-                    <span className="font-bold text-neutral-900">{formatPrice(matchedHolder.price)}</span>
+                    <span className="font-semibold text-neutral-900">{matchedHolder.price} {currency}</span>
                   </div>
                 </div>
 
-                {/* Calculations */}
-                <div className="py-4 space-y-2 text-xs border-b border-neutral-100">
-                  <div className="flex items-center justify-between text-neutral-500">
-                    <span>{lang === "ar" ? "سعر القطعتين منفردتين:" : "Separate Items Price:"}</span>
-                    <span className="line-through">{formatPrice(comboSubtotal)}</span>
+                {/* Price Breakdown */}
+                <div className="space-y-1.5 text-xs pb-4 border-b border-neutral-100">
+                  <div className="flex items-center justify-between text-neutral-400">
+                    <span>{lang === "ar" ? "السعر الإجمالي:" : "Subtotal:"}</span>
+                    <span className="line-through">{comboSubtotal} {currency}</span>
                   </div>
-                  <div className="flex items-center justify-between text-emerald-700 font-bold">
-                    <span>{lang === "ar" ? "خصم الباقة المزدوجة (10%):" : "Pair Bundle Discount (10%):"}</span>
-                    <span>-{formatPrice(comboDiscount)}</span>
+                  <div className="flex items-center justify-between text-emerald-700 font-medium">
+                    <span>{lang === "ar" ? "خصم الباقة (10%):" : "Bundle Discount (10%):"}</span>
+                    <span>-{comboDiscount} {currency}</span>
                   </div>
-                  <div className="flex items-center justify-between text-neutral-950 font-extrabold text-base pt-2">
-                    <span>{lang === "ar" ? "الإجمالي للباقة:" : "Bundle Total:"}</span>
-                    <span className="text-[#9b7832] text-xl font-black">{formatPrice(comboTotal)}</span>
-                  </div>
-                </div>
-
-                {/* Guarantee Badges */}
-                <div className="grid grid-cols-2 gap-2 my-4 text-[10px] text-neutral-700">
-                  <div className="p-2 bg-[#faf6ed]/60 rounded-xl flex items-center gap-1.5 border border-[#c5a059]/30">
-                    <ShieldCheck size={14} className="text-[#c5a059] shrink-0" />
-                    <span>{lang === "ar" ? "ضمان استبدال لسنة كاملة" : "1-Year GCC Warranty"}</span>
-                  </div>
-                  <div className="p-2 bg-[#faf6ed]/60 rounded-xl flex items-center gap-1.5 border border-[#c5a059]/30">
-                    <Zap size={14} className="text-[#c5a059] shrink-0" />
-                    <span>{lang === "ar" ? "توصيل خلال 24 ساعة بقطر" : "24h Express Delivery"}</span>
+                  <div className="flex items-center justify-between text-neutral-950 font-bold text-sm pt-2">
+                    <span>{lang === "ar" ? "الإجمالي:" : "Total:"}</span>
+                    <span className="text-base font-semibold text-neutral-950">
+                      {comboTotal}{" "}
+                      <span className="text-xs font-medium text-[#c5a059]">{currency}</span>
+                    </span>
                   </div>
                 </div>
 
-                {/* Primary Action Button */}
+                {/* Action Button (Home Page Obsidian & Gold styling) */}
                 <button
                   type="button"
                   onClick={handleAddComboToCart}
-                  className="w-full py-4 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(197,160,89,0.3)] hover:shadow-md transition-all active:scale-98 cursor-pointer group"
+                  className="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
                 >
-                  <ShoppingBag size={16} />
-                  <span>{lang === "ar" ? "أضف الباقة المتكاملة إلى السلة" : "Add Complete 2-Part Set to Cart"}</span>
-                  <ArrowRight size={14} className="rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
+                  {addedSuccess ? (
+                    <>
+                      <Check size={14} />
+                      <span>{lang === "ar" ? "تمت إضافة الباقة للسلة!" : "Bundle Added!"}</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag size={14} />
+                      <span>{lang === "ar" ? "أضف الباقة كاملة للسلة" : "Add Complete 2-Part Set"}</span>
+                      <ArrowRight size={13} className="rtl:rotate-180" />
+                    </>
+                  )}
                 </button>
 
-                <p className="text-[10px] text-neutral-400 text-center mt-3">
+                <p className="text-[11px] text-neutral-400 text-center">
                   {lang === "ar"
-                    ? "تركيب مباشر بدون أي حفر، لاصق، أو إتلاف لديكور سيارتك."
-                    : "Precision snap-fit without tools, drilling, or vehicle dashboard adhesives."}
+                    ? "تركيب مباشر بدون أي حفر أو إتلاف لديكور سيارتك."
+                    : "Precision snap-fit without tools, drilling, or vehicle adhesives."}
                 </p>
               </div>
             </div>
