@@ -17,7 +17,6 @@ import {
   Car,
   Layers,
   ArrowRight,
-  Sparkles,
   Truck,
   RotateCcw,
   Check,
@@ -32,7 +31,7 @@ export default function ProductDetailPage({
   const { slug } = resolvedParams;
   const router = useRouter();
 
-  const { lang, formatPrice, addToCart } = useAppContext();
+  const { lang, formatPrice, addToCart, currency } = useAppContext();
 
   // Find product by slug
   const product = MOCK_ALL_PRODUCTS.find((p) => p.slug === slug);
@@ -57,7 +56,7 @@ export default function ProductDetailPage({
   const handleAddToCart = () => {
     addToCart(product, quantity);
     setAddedSuccess(true);
-    setTimeout(() => setAddedSuccess(false), 2500);
+    setTimeout(() => setAddedSuccess(false), 2000);
   };
 
   const handleInstantBuy = () => {
@@ -71,47 +70,43 @@ export default function ProductDetailPage({
   };
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] text-neutral-900 flex flex-col">
+    <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-6 sm:py-8 relative">
-        {/* Subtle Ambient Gold Glow in Background */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-[#c5a059]/5 blur-[160px] pointer-events-none rounded-full" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
+      <main className="flex-1 py-8 sm:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-xs text-neutral-500 mb-6">
-            <Link href="/" className="hover:text-[#9b7832] transition">
+          <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-8">
+            <Link href="/" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
-            <ChevronRight size={12} className="rtl:rotate-180 text-neutral-400" />
+            <ChevronRight size={11} className="rtl:rotate-180" />
             <Link
               href={`/categories/${product.category_slug || "pro-clips"}`}
-              className="hover:text-[#9b7832] transition"
+              className="hover:text-neutral-900 transition"
             >
               {lang === "ar" ? "الفئة" : "Category"}
             </Link>
-            <ChevronRight size={12} className="rtl:rotate-180 text-neutral-400" />
-            <span className="text-neutral-900 font-semibold line-clamp-1 max-w-xs flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
+            <ChevronRight size={11} className="rtl:rotate-180" />
+            <span className="text-neutral-900 font-semibold line-clamp-1 max-w-xs">
               {lang === "ar" ? product.name_ar : product.name}
             </span>
           </nav>
 
           {/* Main Product Two-Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 mb-16 items-start">
             {/* Left: Gallery (6 cols) */}
             <div className="lg:col-span-6 space-y-4">
               {/* Main Image Display */}
-              <div className="relative aspect-square bg-white rounded-3xl border border-neutral-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:border-[#c5a059]/50 overflow-hidden flex items-center justify-center p-6 sm:p-10 transition-all">
+              <div className="aspect-square bg-neutral-50 rounded-2xl border border-neutral-200/80 overflow-hidden flex items-center justify-center p-8 relative">
                 <img
                   src={activeImage}
                   alt={product.name}
-                  className="max-h-full max-w-full object-contain transition-all duration-300 hover:scale-105"
+                  className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105"
                 />
 
                 {product.original_price && (
-                  <span className="absolute top-4 left-4 rtl:left-auto rtl:right-4 bg-neutral-950 text-[#c5a059] border border-[#c5a059]/40 text-xs font-bold px-3 py-1 rounded-full shadow-xs">
+                  <span className="absolute top-4 left-4 rtl:left-auto rtl:right-4 bg-neutral-900 text-[#c5a059] text-[11px] font-bold px-3 py-1 rounded-full shadow-xs">
                     {lang === "ar" ? "خصم خاص" : "Special Offer"}
                   </span>
                 )}
@@ -119,16 +114,16 @@ export default function ProductDetailPage({
 
               {/* Thumbnail Selector */}
               {images.length > 1 && (
-                <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+                <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none">
                   {images.map((img, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => setActiveImage(img)}
-                      className={`w-20 h-20 rounded-2xl bg-white border-2 p-2 shrink-0 transition-all cursor-pointer ${
+                      className={`w-18 h-18 rounded-xl bg-neutral-50 border p-2 shrink-0 transition-all cursor-pointer ${
                         activeImage === img
-                          ? "border-[#c5a059] ring-2 ring-[#c5a059]/20 shadow-xs"
-                          : "border-neutral-200 hover:border-[#c5a059]/50 opacity-70 hover:opacity-100"
+                          ? "border-neutral-900 ring-1 ring-neutral-900"
+                          : "border-neutral-200 hover:border-neutral-400 opacity-80 hover:opacity-100"
                       }`}
                     >
                       <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
@@ -137,22 +132,22 @@ export default function ProductDetailPage({
                 </div>
               )}
 
-              {/* Features Pill Strip */}
-              <div className="bg-white rounded-2xl border border-neutral-200/90 p-4 grid grid-cols-3 gap-2 text-center text-xs shadow-2xs">
+              {/* Reassurance Features Strip */}
+              <div className="pt-4 border-t border-neutral-100 grid grid-cols-3 gap-3 text-center">
                 <div className="p-2">
-                  <ShieldCheck size={20} className="text-[#c5a059] mx-auto mb-1" />
-                  <p className="font-bold text-neutral-950 text-[11px]">{lang === "ar" ? "ضمان سنة" : "1-Year Warranty"}</p>
-                  <p className="text-[9px] text-neutral-400">{lang === "ar" ? "استبدال رسمي بالخليج" : "Official GCC coverage"}</p>
+                  <ShieldCheck size={18} className="text-[#c5a059] mx-auto mb-1" />
+                  <p className="font-semibold text-neutral-900 text-xs">{lang === "ar" ? "ضمان سنة" : "1-Year Warranty"}</p>
+                  <p className="text-[10px] text-neutral-400">{lang === "ar" ? "استبدال رسمي" : "GCC coverage"}</p>
                 </div>
                 <div className="p-2 border-x border-neutral-100">
-                  <Truck size={20} className="text-[#c5a059] mx-auto mb-1" />
-                  <p className="font-bold text-neutral-950 text-[11px]">{lang === "ar" ? "توصيل 24 ساعة" : "24h Express"}</p>
-                  <p className="text-[9px] text-neutral-400">{lang === "ar" ? "في جميع مناطق قطر" : "Same-day Qatar delivery"}</p>
+                  <Truck size={18} className="text-[#c5a059] mx-auto mb-1" />
+                  <p className="font-semibold text-neutral-900 text-xs">{lang === "ar" ? "توصيل سريع" : "Express Delivery"}</p>
+                  <p className="text-[10px] text-neutral-400">{lang === "ar" ? "جميع مناطق قطر" : "Same-day dispatch"}</p>
                 </div>
                 <div className="p-2">
-                  <RotateCcw size={20} className="text-[#c5a059] mx-auto mb-1" />
-                  <p className="font-bold text-neutral-950 text-[11px]">{lang === "ar" ? "إرجاع 14 يوم" : "14-Day Returns"}</p>
-                  <p className="text-[9px] text-neutral-400">{lang === "ar" ? "بدون أي تعقيد" : "Hassle-free guarantee"}</p>
+                  <RotateCcw size={18} className="text-[#c5a059] mx-auto mb-1" />
+                  <p className="font-semibold text-neutral-900 text-xs">{lang === "ar" ? "إرجاع 14 يوم" : "14-Day Returns"}</p>
+                  <p className="text-[10px] text-neutral-400">{lang === "ar" ? "سهل وبسيط" : "Hassle-free"}</p>
                 </div>
               </div>
             </div>
@@ -160,52 +155,70 @@ export default function ProductDetailPage({
             {/* Right: Buy Box & Product Details (6 cols) */}
             <div className="lg:col-span-6 space-y-6">
               <div>
-                {/* SKU & Category & Stock */}
-                <div className="flex items-center gap-3 text-xs mb-2.5">
-                  <span className="font-mono text-[#9b7832] bg-[#faf6ed] px-2.5 py-0.5 rounded-md border border-[#c5a059]/30 font-bold">
+                {/* SKU & Stock */}
+                <div className="flex items-center gap-2.5 text-xs mb-3">
+                  <span className="font-mono text-neutral-400">
                     {product.product_id}
                   </span>
-                  <span className="text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                    <CheckCircle2 size={12} />
-                    <span>{product.stock > 0 ? (lang === "ar" ? "متوفر بالمخزن" : "In Stock") : (lang === "ar" ? "حجز مسبق" : "Pre-Order")}</span>
+                  <span className="text-neutral-300">•</span>
+                  <span className={`font-semibold flex items-center gap-1 ${product.stock > 0 ? "text-emerald-700" : "text-[#c5a059]"}`}>
+                    {product.stock > 0 ? (
+                      <>
+                        <CheckCircle2 size={12} />
+                        <span>{lang === "ar" ? "متوفر بالمخزن" : "In Stock"}</span>
+                      </>
+                    ) : (
+                      <span>{lang === "ar" ? "حجز مسبق" : "Pre-Order"}</span>
+                    )}
                   </span>
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-black text-neutral-950 tracking-tight leading-snug mb-3">
-                  {lang === "ar" ? product.name_ar : product.name}
+                <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-neutral-900 leading-snug mb-3">
+                  {lang === "ar" ? (
+                    product.name_ar
+                  ) : (
+                    <>
+                      {product.name.split(" - ")[0]}
+                      {product.name.includes(" - ") && (
+                        <span className="block font-semibold text-neutral-950 mt-1">
+                          {product.name.split(" - ").slice(1).join(" - ")}
+                        </span>
+                      )}
+                    </>
+                  )}
                 </h1>
 
                 {/* Price Display */}
                 <div className="flex items-baseline gap-3 mb-4">
-                  <span className="text-2xl sm:text-3xl font-black text-neutral-950">
-                    {formatPrice(product.price)}
+                  <span className="text-2xl sm:text-3xl font-semibold text-neutral-950">
+                    {product.price}{" "}
+                    <span className="text-sm font-medium text-[#c5a059]">{currency}</span>
                   </span>
                   {product.original_price && (
-                    <span className="text-sm font-semibold text-neutral-400 line-through">
-                      {formatPrice(product.original_price)}
+                    <span className="text-sm font-normal text-neutral-400 line-through">
+                      {product.original_price} {currency}
                     </span>
                   )}
                   {product.original_price && (
-                    <span className="text-xs font-bold text-neutral-950 bg-[#faf6ed] border border-[#c5a059]/40 px-2 py-0.5 rounded-md text-[#9b7832]">
-                      {Math.round(((product.original_price - product.price) / product.original_price) * 100)}% {lang === "ar" ? "وفر" : "OFF"}
+                    <span className="text-xs font-semibold text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md">
+                      {Math.round(((product.original_price - product.price) / product.original_price) * 100)}% {lang === "ar" ? "خصم" : "OFF"}
                     </span>
                   )}
                 </div>
 
                 {/* Description */}
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed border-t border-neutral-200 pt-4">
+                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed border-t border-neutral-100 pt-4">
                   {lang === "ar" ? product.description_ar || product.description : product.description}
                 </p>
               </div>
 
-              {/* Highlights Bullet Points */}
+              {/* Highlights List (Direct on page, no boxed card) */}
               {product.features && product.features.length > 0 && (
-                <div className="bg-white rounded-2xl border border-neutral-200/90 p-5 shadow-xs">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#9b7832] mb-3 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
-                    <span>{lang === "ar" ? "أهم المميزات التقنية" : "Key Engineering Highlights"}</span>
-                  </h3>
-                  <ul className="space-y-2 text-xs text-neutral-700">
+                <div className="space-y-2 pt-2">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[#c5a059] font-semibold">
+                    {lang === "ar" ? "المميزات الرئيسية" : "Key Features"}
+                  </p>
+                  <ul className="space-y-1.5 text-xs text-neutral-700">
                     {product.features.map((feat, idx) => (
                       <li key={idx} className="flex items-start gap-2">
                         <Check size={14} className="text-[#c5a059] shrink-0 mt-0.5" />
@@ -216,123 +229,109 @@ export default function ProductDetailPage({
                 </div>
               )}
 
-              {/* Quantity Selector & Action Buttons */}
-              <div className="bg-white rounded-2xl border border-neutral-200/90 p-5 space-y-4 shadow-xs">
-                {/* Vehicle Fitment Verification Dropdown */}
-                <div className="p-4 bg-[#faf6ed]/60 rounded-2xl border border-[#c5a059]/30 space-y-2">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-bold text-neutral-900 flex items-center gap-1.5">
-                      <Car size={13} className="text-[#c5a059]" />
-                      <span>{lang === "ar" ? "تحقق من تطابق سيارتك:" : "Check Vehicle Fitment:"}</span>
-                    </span>
-                    <span className="text-[#9b7832] font-bold bg-[#faf6ed] px-2.5 py-0.5 rounded text-[10px] border border-[#c5a059]/40">
-                      {lang === "ar" ? "تطابق دقيق 100%" : "Exact Match"}
-                    </span>
-                  </div>
-                  <CustomSelect
-                    value={checkedVehicle}
-                    onChange={(val) => setCheckedVehicle(val)}
-                    options={[
-                      { value: "Toyota Land Cruiser LC300", label: "Toyota Land Cruiser LC300 (2022-2025)" },
-                      { value: "Nissan Patrol Y62", label: "Nissan Patrol Y62 (2010-2025)" },
-                      { value: "GMC Sierra / Yukon", label: "GMC Sierra / Yukon (2021-2025)" },
-                      { value: "Lexus LX600", label: "Lexus LX600 (2022-2025)" },
-                      { value: "Defender 110/130", label: "Land Rover Defender (2020-2025)" },
-                      { value: "Universal GCC Fit", label: lang === "ar" ? "مقاس قياسي عام للخليج" : "Universal Fit for All Vehicles" },
-                    ]}
-                    placeholder={lang === "ar" ? "اختر سيارتك للتحقق..." : "Select vehicle to verify fitment..."}
-                    lang={lang}
-                  />
-                  {checkedVehicle && (
-                    <p className="text-[10px] text-emerald-700 font-medium flex items-center gap-1 pt-0.5">
-                      <CheckCircle2 size={11} className="shrink-0" />
-                      <span>
-                        {lang === "ar"
-                          ? `متطابق 100% مع مقصورة ${checkedVehicle} بدون أي تخريم`
-                          : `100% verified fit for ${checkedVehicle} dashboard seamlessly without drilling`}
-                      </span>
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-neutral-800">
-                    {lang === "ar" ? "الكمية المطلوبة:" : "Quantity:"}
+              {/* Vehicle Compatibility Inline Selector */}
+              <div className="pt-4 border-t border-neutral-100 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-neutral-900 flex items-center gap-1.5">
+                    <Car size={14} className="text-[#c5a059]" />
+                    <span>{lang === "ar" ? "التحقق من التوافق:" : "Fitment Check:"}</span>
                   </span>
-                  <div className="flex items-center border border-neutral-200 rounded-xl bg-neutral-50 overflow-hidden">
+                  <span className="text-xs text-emerald-700 font-semibold flex items-center gap-1">
+                    <CheckCircle2 size={12} />
+                    <span>{lang === "ar" ? "تطابق 100%" : "Verified Match"}</span>
+                  </span>
+                </div>
+                <CustomSelect
+                  value={checkedVehicle}
+                  onChange={(val) => setCheckedVehicle(val)}
+                  options={[
+                    { value: "Toyota Land Cruiser LC300", label: "Toyota Land Cruiser LC300 (2022-2025)" },
+                    { value: "Nissan Patrol Y62", label: "Nissan Patrol Y62 (2010-2025)" },
+                    { value: "GMC Sierra / Yukon", label: "GMC Sierra / Yukon (2021-2025)" },
+                    { value: "Lexus LX600", label: "Lexus LX600 (2022-2025)" },
+                    { value: "Defender 110/130", label: "Land Rover Defender (2020-2025)" },
+                    { value: "Universal GCC Fit", label: lang === "ar" ? "مقاس عام لجميع السيارات" : "Universal Fit for All Vehicles" },
+                  ]}
+                  placeholder={lang === "ar" ? "اختر سيارتك للتحقق..." : "Select vehicle to verify..."}
+                  lang={lang}
+                />
+              </div>
+
+              {/* Quantity Selector & Action Buttons */}
+              <div className="pt-2 space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-semibold text-neutral-700">
+                    {lang === "ar" ? "الكمية:" : "Quantity:"}
+                  </span>
+                  <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden text-xs">
                     <button
                       type="button"
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="px-3 py-1.5 text-neutral-600 hover:text-neutral-950 font-bold text-sm cursor-pointer"
+                      className="px-3 py-1.5 text-neutral-600 hover:text-neutral-900 font-bold cursor-pointer hover:bg-neutral-50"
                     >
                       -
                     </button>
-                    <span className="px-4 py-1.5 text-xs font-bold text-neutral-900 bg-white">
+                    <span className="px-3 py-1.5 font-semibold text-neutral-900 bg-white">
                       {quantity}
                     </span>
                     <button
                       type="button"
                       onClick={() => setQuantity((q) => q + 1)}
-                      className="px-3 py-1.5 text-neutral-600 hover:text-neutral-950 font-bold text-sm cursor-pointer"
+                      className="px-3 py-1.5 text-neutral-600 hover:text-neutral-900 font-bold cursor-pointer hover:bg-neutral-50"
                     >
                       +
                     </button>
                   </div>
                 </div>
 
+                {/* Primary Action Buttons */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <button
                     type="button"
                     onClick={handleAddToCart}
-                    className="w-full py-3.5 px-4 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 border border-neutral-950 hover:border-[#c5a059] text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all duration-200 active:scale-98 cursor-pointer"
+                    className="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
                   >
-                    <ShoppingBag size={16} className="text-[#c5a059] group-hover:text-neutral-950" />
-                    <span>
-                      {addedSuccess
-                        ? lang === "ar"
-                          ? "تمت الإضافة بنجاح!"
-                          : "Added to Cart!"
-                        : lang === "ar"
-                        ? "أضف إلى السلة"
-                        : "Add to Cart"}
-                    </span>
+                    {addedSuccess ? (
+                      <>
+                        <Check size={14} />
+                        <span>{lang === "ar" ? "تمت الإضافة بنجاح!" : "Added to Cart!"}</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag size={14} />
+                        <span>{lang === "ar" ? "أضف إلى السلة" : "Add to Cart"}</span>
+                      </>
+                    )}
                   </button>
 
                   <button
                     type="button"
                     onClick={handleInstantBuy}
-                    className="w-full py-3.5 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all active:scale-98 cursor-pointer"
+                    className="w-full py-3 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
                   >
-                    <Zap size={16} />
-                    <span>{lang === "ar" ? "شراء فوري ومباشر" : "Instant Buy"}</span>
+                    <Zap size={14} />
+                    <span>{lang === "ar" ? "شراء فوري" : "Instant Buy"}</span>
                   </button>
                 </div>
               </div>
 
-              {/* Two-Part Complete Fitment Pairing Box */}
-              <div className="bg-gradient-to-br from-white via-[#faf6ed] to-[#f5ebd4]/60 rounded-3xl border border-[#c5a059]/50 p-6 shadow-xs">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-[#9b7832] flex items-center gap-1.5">
-                    <Sparkles size={13} className="text-[#c5a059]" />
-                    <span>{lang === "ar" ? "أكمل منظومة التثبيت الثنائية" : "Complete the 2-Part Fitment"}</span>
-                  </span>
-                  <span className="text-[10px] font-bold bg-neutral-950 text-[#c5a059] border border-[#c5a059]/40 px-2.5 py-0.5 rounded-full">
-                    -10% {lang === "ar" ? "خصم الباقة" : "Bundle"}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-3.5 mb-4">
+              {/* Complete System Pairing Banner */}
+              <div className="p-4 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
                   <img
                     src={companionProduct.image}
                     alt={companionProduct.name}
-                    className="w-14 h-14 object-contain rounded-2xl bg-white border border-[#c5a059]/30 p-1 shrink-0 shadow-2xs"
+                    className="w-12 h-12 object-contain rounded-xl bg-white border border-neutral-200 p-1 shrink-0"
                   />
                   <div>
-                    <h4 className="text-xs font-bold text-neutral-950 line-clamp-1">
+                    <p className="text-[11px] text-neutral-500 font-medium">
+                      {lang === "ar" ? "القطعة المكملة الموصى بها:" : "Recommended Companion:"}
+                    </p>
+                    <h4 className="text-xs font-semibold text-neutral-900 line-clamp-1">
                       {lang === "ar" ? companionProduct.name_ar : companionProduct.name}
                     </h4>
-                    <p className="text-[11px] font-bold text-[#9b7832] mt-0.5">
-                      {formatPrice(companionProduct.price)}
+                    <p className="text-xs font-semibold text-neutral-900">
+                      {companionProduct.price} <span className="text-[10px] text-[#c5a059]">{currency}</span>
                     </p>
                   </div>
                 </div>
@@ -340,51 +339,50 @@ export default function ProductDetailPage({
                 <button
                   type="button"
                   onClick={handleAddCompanionCombo}
-                  className="w-full py-3 px-3 rounded-xl bg-white hover:bg-neutral-950 text-neutral-950 hover:text-white border-2 border-[#c5a059] font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-xs"
+                  className="px-3.5 py-2 rounded-lg bg-white hover:bg-neutral-900 text-neutral-900 hover:text-white border border-neutral-300 text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer shrink-0"
                 >
-                  <span>{lang === "ar" ? "أضف القطعتين معاً (وفر 10%)" : "Add Both Items to Cart (Save 10%)"}</span>
-                  <ArrowRight size={13} className="rtl:rotate-180 text-[#c5a059]" />
+                  {lang === "ar" ? "أضف الاثنين" : "Add Both"}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Technical Specifications Table */}
+          {/* Technical Specifications & Materials */}
           {product.specs && (
-            <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-8 mb-12 shadow-xs">
-              <h2 className="text-base font-black text-neutral-950 mb-4 flex items-center gap-2">
-                <Layers size={18} className="text-[#c5a059]" />
-                <span>{lang === "ar" ? "المواصفات الهندسية والمواد" : "Technical Specifications & Materials"}</span>
+            <div className="border-t border-neutral-100 pt-10 mb-12">
+              <h2 className="text-base font-semibold text-neutral-900 mb-6 flex items-center gap-2">
+                <Layers size={16} className="text-[#c5a059]" />
+                <span>{lang === "ar" ? "المواصفات الهندسية" : "Engineering Specifications"}</span>
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {Object.entries(product.specs).map(([key, val]) => (
-                  <div key={key} className="p-3.5 bg-neutral-50/70 hover:bg-[#faf6ed]/40 rounded-xl border border-neutral-100 flex items-center justify-between transition-colors">
-                    <span className="text-xs text-neutral-500 font-medium">{key}</span>
-                    <span className="text-xs font-bold text-neutral-900 text-right rtl:text-left">{val}</span>
+                  <div key={key} className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between text-xs">
+                    <span className="text-neutral-500">{key}</span>
+                    <span className="font-semibold text-neutral-900">{val}</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Vehicle Compatibility Banner */}
+          {/* Vehicle Compatibility Strip */}
           {product.compatible_cars && (
-            <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-8 shadow-xs">
-              <h2 className="text-base font-black text-neutral-950 mb-3 flex items-center gap-2">
-                <Car size={18} className="text-[#c5a059]" />
-                <span>{lang === "ar" ? "توافق المركبات المعتمدة" : "Verified Vehicle Compatibility"}</span>
+            <div className="border-t border-neutral-100 pt-10">
+              <h2 className="text-base font-semibold text-neutral-900 mb-2 flex items-center gap-2">
+                <Car size={16} className="text-[#c5a059]" />
+                <span>{lang === "ar" ? "السيارات المتوافقة المعتمدة" : "Verified Compatible Vehicles"}</span>
               </h2>
               <p className="text-xs text-neutral-500 mb-4">
                 {lang === "ar"
-                  ? "تم اختبار هذه القطعة واعتمادها هندسياً لتركب في المقصورات التالية بمقاييس الخليج:"
-                  : "Tested and verified for seamless installation on the following GCC-specification vehicles:"}
+                  ? "تم اختبار وتأكيد ملاءمة هذه القطعة للسيارات التالية بدون الحاجة إلى حفر:"
+                  : "Verified tool-free snap fit for the following vehicle dashboards:"}
               </p>
               <div className="flex flex-wrap gap-2">
                 {product.compatible_cars.map((car, idx) => (
                   <span
                     key={idx}
-                    className="px-3.5 py-1.5 rounded-xl bg-[#faf6ed] text-[#9b7832] border border-[#c5a059]/30 text-xs font-bold"
+                    className="px-3 py-1.5 rounded-lg bg-neutral-100 text-neutral-800 text-xs font-medium"
                   >
                     {car}
                   </span>
