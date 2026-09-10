@@ -59,8 +59,16 @@ export default function CheckoutPage() {
     );
   }
 
-  const shippingCostQar = formData.country === "Qatar" ? (cartSubtotalQar > 200 ? 0 : 15) : 35;
-  const orderTotalQar = cartSubtotalQar + shippingCostQar;
+  const subtotalQar =
+    Number.isFinite(cartSubtotalQar) && cartSubtotalQar >= 0
+      ? cartSubtotalQar
+      : cartItems.reduce(
+          (acc, item) =>
+            acc + (Number(item?.product?.price) || 0) * (Number(item?.quantity) || 1),
+          0
+        );
+  const shippingCostQar = formData.country === "Qatar" ? (subtotalQar > 200 ? 0 : 15) : 35;
+  const orderTotalQar = subtotalQar + shippingCostQar;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -382,7 +390,7 @@ export default function CheckoutPage() {
               <div className="pt-4 border-t border-neutral-100 space-y-2 text-xs">
                 <div className="flex items-center justify-between text-neutral-600">
                   <span>{lang === "ar" ? "المجموع الفرعي:" : "Subtotal:"}</span>
-                  <span className="font-semibold text-neutral-950">{formatPrice(cartSubtotalQar)}</span>
+                  <span className="font-semibold text-neutral-950">{formatPrice(subtotalQar)}</span>
                 </div>
                 <div className="flex items-center justify-between text-neutral-600">
                   <span>{lang === "ar" ? "رسوم الشحن:" : "Shipping:"}</span>

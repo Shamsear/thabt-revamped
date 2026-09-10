@@ -97,7 +97,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (savedCart) {
         const parsed = JSON.parse(savedCart);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setCartItems(parsed);
+          const valid = parsed
+            .filter((item) => item && item.product && typeof item.product.id === "string")
+            .map((item) => ({
+              ...item,
+              quantity: Math.max(1, Number(item.quantity) || 1),
+              product: {
+                ...item.product,
+                price: Number(item.product.price) || 0,
+              },
+            }));
+          if (valid.length > 0) {
+            setCartItems(valid);
+          }
         }
       }
     } catch {
@@ -151,18 +163,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setCartItems([]);
   };
 
-  const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const totalCartCount = cartItems.reduce(
+    (acc, item) => acc + (Number(item?.quantity) || 1),
+    0
+  );
 
   const cartSubtotalQar = cartItems.reduce(
-    (acc, item) => acc + item.product.price * item.quantity,
+    (acc, item) => acc + (Number(item?.product?.price) || 0) * (Number(item?.quantity) || 1),
     0
   );
 
   const formatPrice = (qarAmount: number): string => {
     const cur = CURRENCY_MAP[currency] || CURRENCY_MAP.QAR;
-    const converted = qarAmount * cur.rate;
+    const safeAmount = Number.isFinite(qarAmount) ? qarAmount : 0;
+    const converted = safeAmount * (cur?.rate || 1);
     const formatted = converted % 1 === 0 ? converted.toFixed(0) : converted.toFixed(2);
-    return lang === "ar" ? `${formatted} ${cur.symbol_ar}` : `${formatted} ${cur.symbol}`;
+    return lang === "ar" ? `${formatted} ${cur?.symbol_ar || "ر.ق"}` : `${formatted} ${cur?.symbol || "QAR"}`;
   };
 
   return (

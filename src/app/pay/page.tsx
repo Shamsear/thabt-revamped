@@ -32,8 +32,16 @@ export default function DummyPayPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
 
-  const shippingCostQar = cartSubtotalQar > 200 || cartSubtotalQar === 0 ? 0 : 15;
-  const orderTotalQar = cartSubtotalQar + shippingCostQar;
+  const subtotalQar =
+    Number.isFinite(cartSubtotalQar) && cartSubtotalQar >= 0
+      ? cartSubtotalQar
+      : cartItems.reduce(
+          (acc, item) =>
+            acc + (Number(item?.product?.price) || 0) * (Number(item?.quantity) || 1),
+          0
+        );
+  const shippingCostQar = subtotalQar > 200 || subtotalQar === 0 ? 0 : 15;
+  const orderTotalQar = subtotalQar + shippingCostQar;
 
   // Auto fill dummy card
   const handleAutoFillDummy = () => {
@@ -379,7 +387,7 @@ export default function DummyPayPage() {
               <div className="py-3 space-y-2 text-xs border-b border-neutral-100">
                 <div className="flex items-center justify-between text-neutral-500">
                   <span>{lang === "ar" ? "المنتجات:" : "Items Subtotal:"}</span>
-                  <span className="font-semibold text-neutral-900">{formatPrice(cartSubtotalQar)}</span>
+                  <span className="font-semibold text-neutral-900">{formatPrice(subtotalQar)}</span>
                 </div>
                 <div className="flex items-center justify-between text-neutral-500">
                   <span>{lang === "ar" ? "التوصيل:" : "Delivery:"}</span>

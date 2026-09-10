@@ -39,9 +39,23 @@ export default function CartPage() {
 
   // Delivery estimation state
   const [destination, setDestination] = useState<"QA" | "GCC">("QA");
-  const discountAmountQar = Math.round((cartSubtotalQar * discountPercent) / 100);
+
+  // Safeguarded subtotal calculation:
+  // Calculate directly from cartItems with fallback to cartSubtotalQar, always defaulting to 0
+  const subtotalQar =
+    cartItems && cartItems.length > 0
+      ? cartItems.reduce(
+          (acc, item) =>
+            acc + (Number(item?.product?.price) || 0) * (Number(item?.quantity) || 1),
+          0
+        )
+      : Number.isFinite(cartSubtotalQar) && cartSubtotalQar >= 0
+      ? cartSubtotalQar
+      : 0;
+
+  const discountAmountQar = Math.round((subtotalQar * (discountPercent || 0)) / 100);
   const shippingCostQar = destination === "QA" ? 0 : 50; // Free in Qatar, 50 QAR for GCC
-  const finalTotalQar = Math.max(0, cartSubtotalQar - discountAmountQar + shippingCostQar);
+  const finalTotalQar = Math.max(0, subtotalQar - discountAmountQar + shippingCostQar);
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -174,7 +188,7 @@ export default function CartPage() {
                             {lang === "ar" ? item.product.name_ar : item.product.name}
                           </Link>
                           <p className="text-sm font-semibold text-neutral-900 mt-0.5">
-                            {item.product.price} <span className="text-xs font-medium text-[#c5a059]">{currency}</span>
+                            {formatPrice(item.product.price)}
                           </p>
                         </div>
                       </div>
@@ -204,7 +218,7 @@ export default function CartPage() {
 
                         {/* Line Total */}
                         <p className="text-sm sm:text-base font-semibold text-neutral-900 min-w-[70px] text-right rtl:text-left">
-                          {item.product.price * item.quantity} <span className="text-xs font-medium text-[#c5a059]">{currency}</span>
+                          {formatPrice(item.product.price * item.quantity)}
                         </p>
 
                         {/* Delete Button */}
@@ -302,13 +316,15 @@ export default function CartPage() {
                   <div className="space-y-2.5 text-sm sm:text-xs pt-3 border-t border-neutral-100">
                     <div className="flex items-center justify-between text-neutral-600">
                       <span>{lang === "ar" ? "المجموع الفرعي:" : "Subtotal:"}</span>
-                      <span className="font-semibold text-neutral-900">{cartSubtotalQar} {currency}</span>
+                      <span className="font-semibold text-neutral-900">
+                        {formatPrice(subtotalQar)}
+                      </span>
                     </div>
 
                     {discountPercent > 0 && (
                       <div className="flex items-center justify-between text-emerald-700 font-medium">
                         <span>{lang === "ar" ? `خصم الكوبون (${discountPercent}%):` : `Discount (${discountPercent}%):`}</span>
-                        <span>-{discountAmountQar} {currency}</span>
+                        <span>-{formatPrice(discountAmountQar)}</span>
                       </div>
                     )}
 
@@ -316,9 +332,9 @@ export default function CartPage() {
                       <span>{lang === "ar" ? "الشحن والتوصيل:" : "Shipping:"}</span>
                       <span className="font-semibold text-neutral-900">
                         {shippingCostQar === 0 ? (
-                          <span className="text-emerald-700">{lang === "ar" ? "مجاني" : "Free"}</span>
+                          <span className="text-emerald-700 font-medium">{lang === "ar" ? "مجاني" : "Free"}</span>
                         ) : (
-                          `${shippingCostQar} ${currency}`
+                          formatPrice(shippingCostQar)
                         )}
                       </span>
                     </div>
@@ -326,7 +342,7 @@ export default function CartPage() {
                     <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
                       <span className="text-sm font-semibold text-neutral-900">{lang === "ar" ? "الإجمالي:" : "Total:"}</span>
                       <span className="text-xl font-semibold text-neutral-950">
-                        {finalTotalQar} <span className="text-xs font-medium text-[#c5a059]">{currency}</span>
+                        {formatPrice(finalTotalQar)}
                       </span>
                     </div>
                   </div>
