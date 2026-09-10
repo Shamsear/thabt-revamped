@@ -100,7 +100,7 @@ export default function FindPage() {
                 </>
               )}
             </h1>
-            <p className="text-xs sm:text-sm text-neutral-500 max-w-xl leading-relaxed">
+            <p className="text-sm sm:text-base text-neutral-600 max-w-xl leading-relaxed">
               {lang === "ar"
                 ? "قواعد برو كليبس تصنع بدقة لكل سيارة لتثبت في فواصل الديكور بدون حفر، وتتكامل مع حوامل الهواتف الذكية."
                 : "Vehicle-specific dashboard mounts clip in tool-free, perfectly pairing with our wireless MagSafe phone holders."}
@@ -171,7 +171,7 @@ export default function FindPage() {
                 </div>
 
                 {/* Matched Base Minimal Preview */}
-                <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between gap-3 text-xs">
+                <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between gap-3 text-sm sm:text-xs">
                   <div className="flex items-center gap-3">
                     <img
                       src={matchedBase.image}
@@ -182,21 +182,21 @@ export default function FindPage() {
                       }}
                     />
                     <div>
-                      <p className="text-[10px] uppercase font-semibold text-[#c5a059]">
+                      <p className="text-xs sm:text-[11px] uppercase font-semibold text-[#c5a059]">
                         {lang === "ar" ? "قاعدة لوحة القيادة المتطابقة" : "Matched Dashboard Base"}
                       </p>
                       <h4 className="font-semibold text-neutral-900 line-clamp-1">
                         {lang === "ar" ? matchedBase.name_ar : matchedBase.name}
                       </h4>
-                      <p className="text-neutral-400 text-[11px]">
+                      <p className="text-neutral-500 text-xs font-mono">
                         {selectedBrand} {selectedModel} ({selectedYear})
                       </p>
                     </div>
                   </div>
                   <div className="text-right rtl:text-left shrink-0">
-                    <p className="font-semibold text-neutral-950">{matchedBase.price} <span className="text-[10px] text-[#c5a059]">{currency}</span></p>
-                    <span className="text-[10px] text-emerald-700 font-medium flex items-center gap-1">
-                      <CheckCircle2 size={10} /> {lang === "ar" ? "متوفر" : "In Stock"}
+                    <p className="font-semibold text-neutral-950">{matchedBase.price} <span className="text-xs text-[#c5a059]">{currency}</span></p>
+                    <span className="text-xs text-emerald-700 font-medium flex items-center gap-1">
+                      <CheckCircle2 size={12} /> {lang === "ar" ? "متوفر" : "In Stock"}
                     </span>
                   </div>
                 </div>
@@ -315,7 +315,7 @@ export default function FindPage() {
                 </div>
 
                 {/* Matched Holder Minimal Preview */}
-                <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between gap-3 text-xs">
+                <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between gap-3 text-sm sm:text-xs">
                   <div className="flex items-center gap-3">
                     <img
                       src={matchedHolder.image}
@@ -326,21 +326,21 @@ export default function FindPage() {
                       }}
                     />
                     <div>
-                      <p className="text-[10px] uppercase font-semibold text-[#c5a059]">
+                      <p className="text-xs sm:text-[11px] uppercase font-semibold text-[#c5a059]">
                         {lang === "ar" ? "الحامل المتطابق" : "Matched Device Holder"}
                       </p>
                       <h4 className="font-semibold text-neutral-900 line-clamp-1">
                         {lang === "ar" ? matchedHolder.name_ar : matchedHolder.name}
                       </h4>
-                      <p className="text-neutral-400 text-[11px]">
+                      <p className="text-neutral-500 text-xs font-mono">
                         {selectedDeviceBrand} {selectedDeviceModel}
                       </p>
                     </div>
                   </div>
                   <div className="text-right rtl:text-left shrink-0">
-                    <p className="font-semibold text-neutral-950">{matchedHolder.price} <span className="text-[10px] text-[#c5a059]">{currency}</span></p>
-                    <span className="text-[10px] text-emerald-700 font-medium flex items-center gap-1">
-                      <CheckCircle2 size={10} /> {lang === "ar" ? "متوفر" : "In Stock"}
+                    <p className="font-semibold text-neutral-950">{matchedHolder.price} <span className="text-xs text-[#c5a059]">{currency}</span></p>
+                    <span className="text-xs text-emerald-700 font-medium flex items-center gap-1">
+                      <CheckCircle2 size={12} /> {lang === "ar" ? "متوفر" : "In Stock"}
                     </span>
                   </div>
                 </div>
@@ -411,23 +411,23 @@ export default function FindPage() {
                 <button
                   type="button"
                   onClick={handleAddComboToCart}
-                  className="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
+                  className="w-full py-3.5 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-sm sm:text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
                 >
                   {addedSuccess ? (
                     <>
-                      <Check size={14} />
+                      <Check size={15} />
                       <span>{lang === "ar" ? "تمت إضافة الباقة للسلة!" : "Bundle Added!"}</span>
                     </>
                   ) : (
                     <>
-                      <ShoppingBag size={14} />
+                      <ShoppingBag size={15} />
                       <span>{lang === "ar" ? "أضف الباقة كاملة للسلة" : "Add Complete 2-Part Set"}</span>
-                      <ArrowRight size={13} className="rtl:rotate-180" />
+                      <ArrowRight size={14} className="rtl:rotate-180" />
                     </>
                   )}
                 </button>
 
-                <p className="text-[11px] text-neutral-400 text-center">
+                <p className="text-xs text-neutral-500 text-center">
                   {lang === "ar"
                     ? "تركيب مباشر بدون أي حفر أو إتلاف لديكور سيارتك."
                     : "Precision snap-fit without tools, drilling, or vehicle adhesives."}

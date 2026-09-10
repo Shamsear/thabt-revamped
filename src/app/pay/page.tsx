@@ -197,21 +197,21 @@ export default function DummyPayPage() {
               {paymentMethod === "card" && (
                 <form onSubmit={handleSimulatePayment} className="space-y-4">
                   <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
-                    <span className="text-xs font-semibold text-neutral-950 flex items-center gap-2">
+                    <span className="text-xs sm:text-sm font-semibold text-neutral-950 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]"></span>
                       {lang === "ar" ? "بيانات البطاقة البنكية" : "Card Details"}
                     </span>
                     <button
                       type="button"
                       onClick={handleAutoFillDummy}
-                      className="text-[11px] font-semibold text-[#9b7832] bg-[#faf6ed] px-2.5 py-1 rounded-lg border border-[#c5a059]/30 hover:bg-[#faf6ed]/80 cursor-pointer transition-colors"
+                      className="text-xs font-semibold text-[#9b7832] bg-[#faf6ed] px-3 py-1.5 rounded-lg border border-[#c5a059]/30 hover:bg-[#faf6ed]/80 cursor-pointer transition-colors"
                     >
                       {lang === "ar" ? "⚡ تعبئة بيانات تجريبية" : "⚡ Auto-Fill Test Card"}
                     </button>
                   </div>
 
                   <div>
-                    <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                    <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
                       {lang === "ar" ? "الاسم المطبوع على البطاقة" : "Cardholder Name"}
                     </label>
                     <input
@@ -219,12 +219,12 @@ export default function DummyPayPage() {
                       required
                       value={cardHolder}
                       onChange={(e) => setCardHolder(e.target.value)}
-                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                    <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
                       {lang === "ar" ? "رقم البطاقة" : "Card Number"}
                     </label>
                     <input
@@ -232,13 +232,13 @@ export default function DummyPayPage() {
                       required
                       value={cardNumber}
                       onChange={(e) => setCardNumber(e.target.value)}
-                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs font-mono text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs font-mono text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                      <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
                         {lang === "ar" ? "تاريخ الانتهاء" : "Expiry (MM/YY)"}
                       </label>
                       <input
@@ -246,11 +246,11 @@ export default function DummyPayPage() {
                         required
                         value={cardExpiry}
                         onChange={(e) => setCardExpiry(e.target.value)}
-                        className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs font-mono text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                        className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs font-mono text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                      <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
                         {lang === "ar" ? "رمز الأمان CVV" : "CVV Code"}
                       </label>
                       <input
@@ -258,7 +258,7 @@ export default function DummyPayPage() {
                         required
                         value={cardCvv}
                         onChange={(e) => setCardCvv(e.target.value)}
-                        className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs font-mono text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                        className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs font-mono text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                       />
                     </div>
                   </div>
@@ -266,7 +266,7 @@ export default function DummyPayPage() {
                   <button
                     type="submit"
                     disabled={isProcessing}
-                    className="w-full mt-3 py-3.5 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-70"
+                    className="w-full mt-3 py-4 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 font-semibold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-98 disabled:opacity-70"
                   >
                     {isProcessing ? (
                       <>
@@ -275,7 +275,7 @@ export default function DummyPayPage() {
                       </>
                     ) : (
                       <>
-                        <Lock size={14} className="text-[#c5a059]" />
+                        <Lock size={15} className="text-[#c5a059]" />
                         <span>
                           {lang === "ar"
                             ? `تأكيد ودفع ${formatPrice(orderTotalQar)} (محاكاة)`

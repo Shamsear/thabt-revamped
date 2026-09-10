@@ -130,7 +130,7 @@ export default function CheckoutPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                    <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
                       {lang === "ar" ? "الاسم الأول" : "First Name"}
                     </label>
                     <input
@@ -138,11 +138,11 @@ export default function CheckoutPage() {
                       required
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                    <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
                       {lang === "ar" ? "اسم العائلة" : "Last Name"}
                     </label>
                     <input
@@ -150,13 +150,13 @@ export default function CheckoutPage() {
                       required
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                  <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
                     {lang === "ar" ? "البريد الإلكتروني للإشعار" : "Email Address"}
                   </label>
                   <input
@@ -164,12 +164,12 @@ export default function CheckoutPage() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                    className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                  <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
                     {lang === "ar" ? "رقم الهاتف للتوصيل" : "Mobile Phone Number"}
                   </label>
                   <div className="flex gap-2 items-stretch">
@@ -178,12 +178,12 @@ export default function CheckoutPage() {
                         value={formData.phoneCode}
                         onChange={(val) => setFormData({ ...formData, phoneCode: val })}
                         options={[
-                          { value: "+974", label: "QA (+974)" },
-                          { value: "+966", label: "KSA (+966)" },
-                          { value: "+971", label: "UAE (+971)" },
-                          { value: "+965", label: "KW (+965)" },
-                          { value: "+973", label: "BH (+973)" },
-                          { value: "+968", label: "OM (+968)" },
+                          { value: "+974", label: "🇶🇦 +974" },
+                          { value: "+966", label: "🇸🇦 +966" },
+                          { value: "+971", label: "🇦🇪 +971" },
+                          { value: "+965", label: "🇰🇼 +965" },
+                          { value: "+973", label: "🇧🇭 +973" },
+                          { value: "+968", label: "🇴🇲 +968" },
                         ]}
                         lang={lang}
                       />
@@ -191,9 +191,10 @@ export default function CheckoutPage() {
                     <input
                       type="tel"
                       required
+                      placeholder="5500 0000"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="flex-1 bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      className="flex-1 bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
@@ -246,8 +247,8 @@ export default function CheckoutPage() {
                     </p>
                     <div className="grid grid-cols-3 gap-3">
                       <div>
-                        <label className="block text-[10px] font-medium text-neutral-500 mb-1">
-                          {lang === "ar" ? "رقم المنطقة (Zone)" : "Zone No."}
+                        <label className="block text-xs sm:text-[11px] font-medium text-neutral-600 mb-1">
+                          {lang === "ar" ? "المنطقة (Zone)" : "Zone No."}
                         </label>
                         <input
                           type="text"
@@ -255,12 +256,12 @@ export default function CheckoutPage() {
                           placeholder="52"
                           value={formData.zoneNumber}
                           onChange={(e) => setFormData({ ...formData, zoneNumber: e.target.value })}
-                          className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-2 text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
+                          className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-2.5 sm:py-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-medium text-neutral-500 mb-1">
-                          {lang === "ar" ? "رقم الشارع (Street)" : "Street No."}
+                        <label className="block text-xs sm:text-[11px] font-medium text-neutral-600 mb-1">
+                          {lang === "ar" ? "الشارع (Street)" : "Street No."}
                         </label>
                         <input
                           type="text"
@@ -268,12 +269,12 @@ export default function CheckoutPage() {
                           placeholder="990"
                           value={formData.streetNumber}
                           onChange={(e) => setFormData({ ...formData, streetNumber: e.target.value })}
-                          className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-2 text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
+                          className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-2.5 sm:py-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-medium text-neutral-500 mb-1">
-                          {lang === "ar" ? "رقم المبنى (Building)" : "Building No."}
+                        <label className="block text-xs sm:text-[11px] font-medium text-neutral-600 mb-1">
+                          {lang === "ar" ? "المبنى (Building)" : "Building No."}
                         </label>
                         <input
                           type="text"
@@ -281,7 +282,7 @@ export default function CheckoutPage() {
                           placeholder="16"
                           value={formData.buildingNumber}
                           onChange={(e) => setFormData({ ...formData, buildingNumber: e.target.value })}
-                          className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-2 text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
+                          className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-2.5 sm:py-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
                         />
                       </div>
                     </div>
@@ -330,14 +331,14 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Submit Button */}
+              {/* Primary Action Button */}
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 px-6 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-70"
+                className="w-full py-4 px-6 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-98 disabled:opacity-70"
               >
-                <span>{lang === "ar" ? "المتابعة لاختيار وسيلة الدفع" : "Continue to Payment Simulation"}</span>
-                <ArrowRight size={14} className="rtl:rotate-180" />
+                <span>{lang === "ar" ? "المتابعة إلى بوابة الدفع" : "Proceed to Payment Gateway"}</span>
+                <ArrowRight size={15} className="rtl:rotate-180" />
               </button>
             </form>
           </div>
