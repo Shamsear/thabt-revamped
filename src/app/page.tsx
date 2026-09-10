@@ -84,16 +84,19 @@ export default function Home() {
         {/* 1. Hero Section & Vehicle Matcher */}
         <HeroSection lang={lang} />
 
-        {/* 2. The Two-Part Architecture & Engineering Standards */}
+        {/* 2. The Two-Part Architecture: How the Thabt System Works */}
         <WhyMountSection lang={lang} />
 
-        {/* 3. Product Collections */}
+        {/* 3. Great Place To Work Qatar 2026 Certification */}
+        <AwardSection lang={lang} />
+
+        {/* 4. Product Collections */}
         <CategorySection categories={MOCK_CATEGORIES} lang={lang} />
 
-        {/* 4. Supported Marques Ribbon */}
+        {/* 5. Supported Marques Ribbon */}
         <BrandTickerSection brands={MOCK_BRANDS} lang={lang} />
 
-        {/* 5. Selected Hardware Carousel */}
+        {/* 6. Selected Hardware Carousel */}
         <TopSellingSection
           products={MOCK_TOP_SELLERS}
           onAddToCart={handleAddToCart}
@@ -102,11 +105,8 @@ export default function Home() {
           lang={lang}
         />
 
-        {/* 6. Video Field Demonstration */}
+        {/* 7. Video Field Demonstration */}
         <VideoShowcaseSection lang={lang} />
-
-        {/* 7. Great Place To Work Qatar 2026 Certification */}
-        <AwardSection lang={lang} />
 
         {/* 8. Specifications & FAQs */}
         <FaqSection faqs={MOCK_FAQS} lang={lang} />
