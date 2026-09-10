@@ -9,6 +9,7 @@ import { useAppContext } from "@/context/AppContext";
 import { MOCK_ALL_PRODUCTS, Product } from "@/data/mockData";
 import {
   ChevronRight,
+  ChevronLeft,
   ShieldCheck,
   Zap,
   ShoppingBag,
@@ -40,9 +41,50 @@ export default function ProductDetailPage({
 
   // Gallery state
   const images = product.images && product.images.length > 0 ? product.images : [product.image];
-  const [activeImage, setActiveImage] = useState(images[0]);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const activeImage = images[activeImageIndex] || images[0];
   const [quantity, setQuantity] = useState(1);
   const [addedSuccess, setAddedSuccess] = useState(false);
+
+  // Gallery Navigation Functions
+  const nextImage = () => {
+    setActiveImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setActiveImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  // Touch Swipe Gesture Handling
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const minSwipeDistance = 40;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (lang === "ar") {
+      if (isLeftSwipe) prevImage();
+      if (isRightSwipe) nextImage();
+    } else {
+      if (isLeftSwipe) nextImage();
+      if (isRightSwipe) prevImage();
+    }
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
 
   // Companion recommended combo product
   const companionProduct: Product =
@@ -94,21 +136,83 @@ export default function ProductDetailPage({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 mb-12 items-start">
             {/* Left: Gallery (6 cols) */}
             <div className="lg:col-span-6 space-y-3">
-              {/* Main Image Display */}
-              <div className="aspect-square max-h-[340px] sm:max-h-[440px] w-full bg-neutral-50/70 rounded-2xl border border-neutral-100 overflow-hidden flex items-center justify-center p-4 sm:p-8 relative">
+              {/* Main Image Display with Touch Swipe and Left/Right Navigation Buttons */}
+              <div
+                className="aspect-square max-h-[340px] sm:max-h-[440px] w-full bg-neutral-50/70 rounded-2xl border border-neutral-100 overflow-hidden flex items-center justify-center p-4 sm:p-8 relative select-none touch-pan-y"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
+                {/* Active Image */}
                 <img
+                  key={activeImageIndex}
                   src={activeImage}
-                  alt={product.name}
-                  className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105"
+                  alt={`${product.name} - View ${activeImageIndex + 1}`}
+                  className="max-h-full max-w-full object-contain transition-all duration-300 pointer-events-none select-none"
+                  draggable={false}
                   onError={(e) => {
                     e.currentTarget.src = "/admin/banners/accessories.jpg";
                   }}
                 />
 
+                {/* Special Offer Badge */}
                 {product.original_price && (
-                  <span className="absolute top-3 left-3 rtl:left-auto rtl:right-3 bg-neutral-900 text-[#c5a059] text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-2xs">
+                  <span className="absolute top-3 left-3 rtl:left-auto rtl:right-3 bg-neutral-900 text-[#c5a059] text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-2xs z-10 pointer-events-none">
                     {lang === "ar" ? "خصم خاص" : "Special Offer"}
                   </span>
+                )}
+
+                {/* Counter Badge (e.g. 1 / 3) */}
+                {images.length > 1 && (
+                  <span className="absolute top-3 right-3 rtl:right-auto rtl:left-3 bg-neutral-900/75 backdrop-blur-xs text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded-full z-10 pointer-events-none">
+                    {activeImageIndex + 1} / {images.length}
+                  </span>
+                )}
+
+                {/* Previous & Next Arrow Buttons on the Image */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        lang === "ar" ? nextImage() : prevImage();
+                      }}
+                      className="absolute left-2.5 sm:left-3.5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20"
+                      aria-label={lang === "ar" ? "الصورة السابقة" : "Previous image"}
+                      title={lang === "ar" ? "السابق" : "Previous"}
+                    >
+                      <ChevronLeft size={18} className="rtl:rotate-180" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        lang === "ar" ? prevImage() : nextImage();
+                      }}
+                      className="absolute right-2.5 sm:right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20"
+                      aria-label={lang === "ar" ? "الصورة التالية" : "Next image"}
+                      title={lang === "ar" ? "التالي" : "Next"}
+                    >
+                      <ChevronRight size={18} className="rtl:rotate-180" />
+                    </button>
+
+                    {/* Pagination Indicator Dots */}
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 bg-neutral-950/40 backdrop-blur-xs px-2.5 py-1 rounded-full">
+                      {images.map((_, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setActiveImageIndex(idx)}
+                          className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                            activeImageIndex === idx ? "w-5 bg-[#c5a059]" : "w-1.5 bg-white/70 hover:bg-white"
+                          }`}
+                          aria-label={`View image ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
 
@@ -119,16 +223,16 @@ export default function ProductDetailPage({
                     <button
                       key={idx}
                       type="button"
-                      onClick={() => setActiveImage(img)}
+                      onClick={() => setActiveImageIndex(idx)}
                       className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-neutral-50 border p-1 shrink-0 transition-all cursor-pointer ${
-                        activeImage === img
-                          ? "border-neutral-900 ring-1 ring-neutral-900"
-                          : "border-neutral-200/80 hover:border-neutral-400 opacity-80 hover:opacity-100"
+                        activeImageIndex === idx
+                          ? "border-[#c5a059] ring-2 ring-[#c5a059]/40"
+                          : "border-neutral-200/80 hover:border-neutral-400 opacity-75 hover:opacity-100"
                       }`}
                     >
                       <img
                         src={img}
-                        alt={`View ${idx + 1}`}
+                        alt={`Thumbnail ${idx + 1}`}
                         className="w-full h-full object-contain"
                         onError={(e) => {
                           e.currentTarget.src = "/admin/banners/accessories.jpg";
