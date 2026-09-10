@@ -71,25 +71,29 @@ export default function ProductDetailPage({
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900 flex flex-col">
+    <div className="min-h-screen bg-[#fafaf9] text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-4 sm:py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+      <main className="flex-1 py-6 sm:py-8 relative">
+        {/* Subtle Ambient Gold Glow in Background */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-[#c5a059]/5 blur-[160px] pointer-events-none rounded-full" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-xs text-neutral-500 mb-4">
-            <Link href="/" className="hover:text-neutral-900 transition">
+          <nav className="flex items-center gap-2 text-xs text-neutral-500 mb-6">
+            <Link href="/" className="hover:text-[#9b7832] transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
             <ChevronRight size={12} className="rtl:rotate-180 text-neutral-400" />
             <Link
               href={`/categories/${product.category_slug || "pro-clips"}`}
-              className="hover:text-neutral-900 transition"
+              className="hover:text-[#9b7832] transition"
             >
               {lang === "ar" ? "الفئة" : "Category"}
             </Link>
             <ChevronRight size={12} className="rtl:rotate-180 text-neutral-400" />
-            <span className="text-neutral-900 font-semibold line-clamp-1 max-w-xs">
+            <span className="text-neutral-900 font-semibold line-clamp-1 max-w-xs flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
               {lang === "ar" ? product.name_ar : product.name}
             </span>
           </nav>
@@ -99,7 +103,7 @@ export default function ProductDetailPage({
             {/* Left: Gallery (6 cols) */}
             <div className="lg:col-span-6 space-y-4">
               {/* Main Image Display */}
-              <div className="relative aspect-square bg-white rounded-3xl border border-neutral-200 overflow-hidden shadow-sm flex items-center justify-center p-6 sm:p-10">
+              <div className="relative aspect-square bg-white rounded-3xl border border-neutral-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:border-[#c5a059]/50 overflow-hidden flex items-center justify-center p-6 sm:p-10 transition-all">
                 <img
                   src={activeImage}
                   alt={product.name}
@@ -107,7 +111,7 @@ export default function ProductDetailPage({
                 />
 
                 {product.original_price && (
-                  <span className="absolute top-4 left-4 rtl:left-auto rtl:right-4 bg-rose-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-xs">
+                  <span className="absolute top-4 left-4 rtl:left-auto rtl:right-4 bg-neutral-950 text-[#c5a059] border border-[#c5a059]/40 text-xs font-bold px-3 py-1 rounded-full shadow-xs">
                     {lang === "ar" ? "خصم خاص" : "Special Offer"}
                   </span>
                 )}
@@ -123,8 +127,8 @@ export default function ProductDetailPage({
                       onClick={() => setActiveImage(img)}
                       className={`w-20 h-20 rounded-2xl bg-white border-2 p-2 shrink-0 transition-all cursor-pointer ${
                         activeImage === img
-                          ? "border-[#c5a059] shadow-xs"
-                          : "border-neutral-200 hover:border-neutral-300 opacity-70 hover:opacity-100"
+                          ? "border-[#c5a059] ring-2 ring-[#c5a059]/20 shadow-xs"
+                          : "border-neutral-200 hover:border-[#c5a059]/50 opacity-70 hover:opacity-100"
                       }`}
                     >
                       <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
@@ -134,20 +138,20 @@ export default function ProductDetailPage({
               )}
 
               {/* Features Pill Strip */}
-              <div className="bg-white rounded-2xl border border-neutral-200 p-4 grid grid-cols-3 gap-2 text-center text-xs">
+              <div className="bg-white rounded-2xl border border-neutral-200/90 p-4 grid grid-cols-3 gap-2 text-center text-xs shadow-2xs">
                 <div className="p-2">
                   <ShieldCheck size={20} className="text-[#c5a059] mx-auto mb-1" />
-                  <p className="font-bold text-neutral-900 text-[11px]">{lang === "ar" ? "ضمان سنة" : "1-Year Warranty"}</p>
+                  <p className="font-bold text-neutral-950 text-[11px]">{lang === "ar" ? "ضمان سنة" : "1-Year Warranty"}</p>
                   <p className="text-[9px] text-neutral-400">{lang === "ar" ? "استبدال رسمي بالخليج" : "Official GCC coverage"}</p>
                 </div>
                 <div className="p-2 border-x border-neutral-100">
                   <Truck size={20} className="text-[#c5a059] mx-auto mb-1" />
-                  <p className="font-bold text-neutral-900 text-[11px]">{lang === "ar" ? "توصيل 24 ساعة" : "24h Express"}</p>
+                  <p className="font-bold text-neutral-950 text-[11px]">{lang === "ar" ? "توصيل 24 ساعة" : "24h Express"}</p>
                   <p className="text-[9px] text-neutral-400">{lang === "ar" ? "في جميع مناطق قطر" : "Same-day Qatar delivery"}</p>
                 </div>
                 <div className="p-2">
                   <RotateCcw size={20} className="text-[#c5a059] mx-auto mb-1" />
-                  <p className="font-bold text-neutral-900 text-[11px]">{lang === "ar" ? "إرجاع 14 يوم" : "14-Day Returns"}</p>
+                  <p className="font-bold text-neutral-950 text-[11px]">{lang === "ar" ? "إرجاع 14 يوم" : "14-Day Returns"}</p>
                   <p className="text-[9px] text-neutral-400">{lang === "ar" ? "بدون أي تعقيد" : "Hassle-free guarantee"}</p>
                 </div>
               </div>
@@ -157,8 +161,8 @@ export default function ProductDetailPage({
             <div className="lg:col-span-6 space-y-6">
               <div>
                 {/* SKU & Category & Stock */}
-                <div className="flex items-center gap-3 text-xs mb-2">
-                  <span className="font-mono text-neutral-400 bg-neutral-100 px-2 py-0.5 rounded-md">
+                <div className="flex items-center gap-3 text-xs mb-2.5">
+                  <span className="font-mono text-[#9b7832] bg-[#faf6ed] px-2.5 py-0.5 rounded-md border border-[#c5a059]/30 font-bold">
                     {product.product_id}
                   </span>
                   <span className="text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
@@ -167,7 +171,7 @@ export default function ProductDetailPage({
                   </span>
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-950 tracking-tight leading-snug mb-3">
+                <h1 className="text-2xl sm:text-3xl font-black text-neutral-950 tracking-tight leading-snug mb-3">
                   {lang === "ar" ? product.name_ar : product.name}
                 </h1>
 
@@ -182,7 +186,7 @@ export default function ProductDetailPage({
                     </span>
                   )}
                   {product.original_price && (
-                    <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">
+                    <span className="text-xs font-bold text-neutral-950 bg-[#faf6ed] border border-[#c5a059]/40 px-2 py-0.5 rounded-md text-[#9b7832]">
                       {Math.round(((product.original_price - product.price) / product.original_price) * 100)}% {lang === "ar" ? "وفر" : "OFF"}
                     </span>
                   )}
@@ -196,9 +200,10 @@ export default function ProductDetailPage({
 
               {/* Highlights Bullet Points */}
               {product.features && product.features.length > 0 && (
-                <div className="bg-white rounded-2xl border border-neutral-200 p-4 sm:p-5">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-3">
-                    {lang === "ar" ? "أهم المميزات التقنية" : "Key Engineering Highlights"}
+                <div className="bg-white rounded-2xl border border-neutral-200/90 p-5 shadow-xs">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#9b7832] mb-3 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
+                    <span>{lang === "ar" ? "أهم المميزات التقنية" : "Key Engineering Highlights"}</span>
                   </h3>
                   <ul className="space-y-2 text-xs text-neutral-700">
                     {product.features.map((feat, idx) => (
@@ -212,15 +217,15 @@ export default function ProductDetailPage({
               )}
 
               {/* Quantity Selector & Action Buttons */}
-              <div className="bg-white rounded-2xl border border-neutral-200 p-5 space-y-4">
+              <div className="bg-white rounded-2xl border border-neutral-200/90 p-5 space-y-4 shadow-xs">
                 {/* Vehicle Fitment Verification Dropdown */}
-                <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
+                <div className="p-4 bg-[#faf6ed]/60 rounded-2xl border border-[#c5a059]/30 space-y-2">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-bold text-neutral-700 flex items-center gap-1.5">
+                    <span className="font-bold text-neutral-900 flex items-center gap-1.5">
                       <Car size={13} className="text-[#c5a059]" />
                       <span>{lang === "ar" ? "تحقق من تطابق سيارتك:" : "Check Vehicle Fitment:"}</span>
                     </span>
-                    <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded text-[10px] border border-emerald-200">
+                    <span className="text-[#9b7832] font-bold bg-[#faf6ed] px-2.5 py-0.5 rounded text-[10px] border border-[#c5a059]/40">
                       {lang === "ar" ? "تطابق دقيق 100%" : "Exact Match"}
                     </span>
                   </div>
@@ -251,7 +256,7 @@ export default function ProductDetailPage({
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-neutral-700">
+                  <span className="text-xs font-bold text-neutral-800">
                     {lang === "ar" ? "الكمية المطلوبة:" : "Quantity:"}
                   </span>
                   <div className="flex items-center border border-neutral-200 rounded-xl bg-neutral-50 overflow-hidden">
@@ -279,9 +284,9 @@ export default function ProductDetailPage({
                   <button
                     type="button"
                     onClick={handleAddToCart}
-                    className="w-full py-3 px-4 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all active:scale-98 cursor-pointer"
+                    className="w-full py-3.5 px-4 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 border border-neutral-950 hover:border-[#c5a059] text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all duration-200 active:scale-98 cursor-pointer"
                   >
-                    <ShoppingBag size={16} className="text-[#c5a059]" />
+                    <ShoppingBag size={16} className="text-[#c5a059] group-hover:text-neutral-950" />
                     <span>
                       {addedSuccess
                         ? lang === "ar"
@@ -296,7 +301,7 @@ export default function ProductDetailPage({
                   <button
                     type="button"
                     onClick={handleInstantBuy}
-                    className="w-full py-3 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all active:scale-98 cursor-pointer"
+                    className="w-full py-3.5 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all active:scale-98 cursor-pointer"
                   >
                     <Zap size={16} />
                     <span>{lang === "ar" ? "شراء فوري ومباشر" : "Instant Buy"}</span>
@@ -305,28 +310,28 @@ export default function ProductDetailPage({
               </div>
 
               {/* Two-Part Complete Fitment Pairing Box */}
-              <div className="bg-[#faf6ed] rounded-2xl border border-[#c5a059]/40 p-5 shadow-xs">
+              <div className="bg-gradient-to-br from-white via-[#faf6ed] to-[#f5ebd4]/60 rounded-3xl border border-[#c5a059]/50 p-6 shadow-xs">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#9b7832] flex items-center gap-1.5">
-                    <Sparkles size={13} />
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#9b7832] flex items-center gap-1.5">
+                    <Sparkles size={13} className="text-[#c5a059]" />
                     <span>{lang === "ar" ? "أكمل منظومة التثبيت الثنائية" : "Complete the 2-Part Fitment"}</span>
                   </span>
-                  <span className="text-[10px] font-bold bg-[#c5a059] text-white px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold bg-neutral-950 text-[#c5a059] border border-[#c5a059]/40 px-2.5 py-0.5 rounded-full">
                     -10% {lang === "ar" ? "خصم الباقة" : "Bundle"}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3.5 mb-4">
                   <img
                     src={companionProduct.image}
                     alt={companionProduct.name}
-                    className="w-14 h-14 object-contain rounded-xl bg-white border border-[#c5a059]/30 p-1 shrink-0"
+                    className="w-14 h-14 object-contain rounded-2xl bg-white border border-[#c5a059]/30 p-1 shrink-0 shadow-2xs"
                   />
                   <div>
-                    <h4 className="text-xs font-bold text-neutral-900 line-clamp-1">
+                    <h4 className="text-xs font-bold text-neutral-950 line-clamp-1">
                       {lang === "ar" ? companionProduct.name_ar : companionProduct.name}
                     </h4>
-                    <p className="text-[11px] text-neutral-600 mt-0.5">
+                    <p className="text-[11px] font-bold text-[#9b7832] mt-0.5">
                       {formatPrice(companionProduct.price)}
                     </p>
                   </div>
@@ -335,7 +340,7 @@ export default function ProductDetailPage({
                 <button
                   type="button"
                   onClick={handleAddCompanionCombo}
-                  className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-neutral-50 text-neutral-900 border border-[#c5a059]/60 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+                  className="w-full py-3 px-3 rounded-xl bg-white hover:bg-neutral-950 text-neutral-950 hover:text-white border-2 border-[#c5a059] font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-xs"
                 >
                   <span>{lang === "ar" ? "أضف القطعتين معاً (وفر 10%)" : "Add Both Items to Cart (Save 10%)"}</span>
                   <ArrowRight size={13} className="rtl:rotate-180 text-[#c5a059]" />
@@ -346,15 +351,15 @@ export default function ProductDetailPage({
 
           {/* Technical Specifications Table */}
           {product.specs && (
-            <div className="bg-white rounded-2xl border border-neutral-200 p-6 sm:p-8 mb-16">
-              <h2 className="text-base font-extrabold text-neutral-950 mb-4 flex items-center gap-2">
+            <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-8 mb-12 shadow-xs">
+              <h2 className="text-base font-black text-neutral-950 mb-4 flex items-center gap-2">
                 <Layers size={18} className="text-[#c5a059]" />
                 <span>{lang === "ar" ? "المواصفات الهندسية والمواد" : "Technical Specifications & Materials"}</span>
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {Object.entries(product.specs).map(([key, val]) => (
-                  <div key={key} className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between">
+                  <div key={key} className="p-3.5 bg-neutral-50/70 hover:bg-[#faf6ed]/40 rounded-xl border border-neutral-100 flex items-center justify-between transition-colors">
                     <span className="text-xs text-neutral-500 font-medium">{key}</span>
                     <span className="text-xs font-bold text-neutral-900 text-right rtl:text-left">{val}</span>
                   </div>
@@ -365,8 +370,8 @@ export default function ProductDetailPage({
 
           {/* Vehicle Compatibility Banner */}
           {product.compatible_cars && (
-            <div className="bg-white rounded-2xl border border-neutral-200 p-6 sm:p-8">
-              <h2 className="text-base font-extrabold text-neutral-950 mb-3 flex items-center gap-2">
+            <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-8 shadow-xs">
+              <h2 className="text-base font-black text-neutral-950 mb-3 flex items-center gap-2">
                 <Car size={18} className="text-[#c5a059]" />
                 <span>{lang === "ar" ? "توافق المركبات المعتمدة" : "Verified Vehicle Compatibility"}</span>
               </h2>
@@ -379,7 +384,7 @@ export default function ProductDetailPage({
                 {product.compatible_cars.map((car, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1.5 rounded-xl bg-neutral-100 text-neutral-800 text-xs font-semibold"
+                    className="px-3.5 py-1.5 rounded-xl bg-[#faf6ed] text-[#9b7832] border border-[#c5a059]/30 text-xs font-bold"
                   >
                     {car}
                   </span>
