@@ -145,13 +145,15 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                       </div>
 
                       {/* Model SKU & Fitment */}
-                      <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400 mb-1.5">
+                      <div className="flex items-center justify-between text-xs font-mono text-neutral-500 mb-1.5">
                         <span>{product.product_id}</span>
-                        <span>{inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Backorder")}</span>
+                        <span className={inStock ? "text-neutral-600" : "text-[#b38e46] font-medium"}>
+                          {inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Backorder")}
+                        </span>
                       </div>
 
                       {/* Product Title */}
-                      <h3 className="font-medium text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 group-active:text-[#c5a059] transition-colors">
+                      <h3 className="font-medium text-sm sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 group-active:text-[#c5a059] transition-colors">
                         {lang === "ar" ? product.name_ar : product.name}
                       </h3>
                     </div>
@@ -169,7 +171,7 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                         <button
                           type="button"
                           onClick={() => handleAddClick(product)}
-                          className={`flex items-center gap-1.5 text-xs font-semibold py-2 px-3.5 rounded-lg transition-all duration-200 cursor-pointer active-press ${
+                          className={`flex items-center gap-1.5 text-sm sm:text-xs font-semibold py-2.5 sm:py-2 px-3.5 rounded-lg transition-all duration-200 cursor-pointer active-press ${
                             isAdded
                               ? "bg-[#25D366] text-white"
                               : "bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 hover:shadow-sm"
@@ -177,12 +179,12 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                         >
                           {isAdded ? (
                             <>
-                              <Check size={13} className="stroke-[2.5]" />
+                              <Check size={14} className="stroke-[2.5]" />
                               <span>{lang === "ar" ? "تمت الإضافة" : "Added!"}</span>
                             </>
                           ) : (
                             <>
-                              <Plus size={13} />
+                              <Plus size={14} />
                               <span>{lang === "ar" ? "إضافة" : "Add to Bag"}</span>
                             </>
                           )}
@@ -191,7 +193,7 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                         <button
                           type="button"
                           onClick={() => onOpenPreOrder(product)}
-                          className="flex items-center gap-1.5 text-xs font-medium py-2 px-3.5 rounded-lg bg-neutral-100 hover:bg-[#faf6ed] text-neutral-800 hover:text-[#c5a059] transition-colors cursor-pointer active-press"
+                          className="flex items-center gap-1.5 text-sm sm:text-xs font-medium py-2.5 sm:py-2 px-3.5 rounded-lg bg-neutral-100 hover:bg-[#faf6ed] text-neutral-800 hover:text-[#c5a059] transition-colors cursor-pointer active-press"
                         >
                           <span>{lang === "ar" ? "طلب مسبق" : "Pre-Order"}</span>
                         </button>

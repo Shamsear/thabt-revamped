@@ -125,17 +125,17 @@ export default function GalleryPage() {
                       <ArrowRight size={13} className="rtl:rotate-180" />
                     </span>
                   </div>
-                  <span className="absolute top-3 left-3 rtl:left-auto rtl:right-3 bg-neutral-950/80 text-white text-[10px] font-medium px-2.5 py-1 rounded-full">
+                  <span className="absolute top-3 left-3 rtl:left-auto rtl:right-3 bg-neutral-950/80 text-white text-xs font-medium px-2.5 py-1 rounded-full">
                     {item.vehicle}
                   </span>
                 </div>
 
                 {/* Card Footer */}
                 <div className="p-4 sm:p-5 space-y-1">
-                  <h3 className="text-xs sm:text-sm font-semibold text-neutral-950 group-hover:text-[#9b7832] transition-colors">
+                  <h3 className="text-sm font-semibold text-neutral-950 group-hover:text-[#9b7832] transition-colors">
                     {lang === "ar" ? item.title_ar : item.title}
                   </h3>
-                  <p className="text-[11px] text-neutral-500 flex items-center gap-1.5">
+                  <p className="text-xs text-neutral-600 flex items-center gap-1.5">
                     <span className="w-1 h-1 rounded-full bg-[#c5a059]"></span>
                     <span>{item.mounting_base} + {item.device_holder}</span>
                   </p>

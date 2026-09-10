@@ -55,12 +55,12 @@ export default function ProfilePage() {
                   <h1 className="text-lg sm:text-xl font-semibold text-neutral-950">
                     Mohammed Al-Kuwari
                   </h1>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2.5 py-0.5 rounded-full border border-[#c5a059]/30">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2.5 py-0.5 rounded-full border border-[#c5a059]/30">
                     Thabt VIP
                   </span>
                 </div>
-                <p className="text-xs text-neutral-500 mt-0.5">mohammed.alkuwari@gmail.com • +974 5581 2940</p>
-                <p className="text-[11px] text-[#9b7832] font-medium mt-1 flex items-center gap-1.5">
+                <p className="text-sm text-neutral-600 mt-0.5">mohammed.alkuwari@gmail.com • +974 5581 2940</p>
+                <p className="text-xs text-[#9b7832] font-medium mt-1 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]"></span>
                   <span>Doha, Qatar (Zone 52)</span>
                 </p>
@@ -70,7 +70,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-3">
               <Link
                 href="/find"
-                className="py-2.5 px-5 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                className="py-3 px-5 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-sm sm:text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
               >
                 {lang === "ar" ? "مطابقة قطعة جديدة" : "Match New Vehicle"}
               </Link>
@@ -78,7 +78,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Tabs Bar */}
-          <div className="flex items-center gap-2 border-b border-neutral-200/80 mb-8 overflow-x-auto text-xs font-medium">
+          <div className="flex items-center gap-2 border-b border-neutral-200/80 mb-8 overflow-x-auto text-sm sm:text-xs font-medium">
             <button
               type="button"
               onClick={() => setActiveTab("orders")}
