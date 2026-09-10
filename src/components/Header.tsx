@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext, SupportedCurrency, SupportedLanguage } from "@/context/AppContext";
+import { MOCK_ALL_PRODUCTS } from "@/data/mockData";
 
 interface HeaderProps {
   cartCount?: number;
@@ -43,6 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const context = useAppContext();
   const router = useRouter();
+  const pathname = usePathname();
 
   const lang = propLang || context.lang;
   const setLang = propSetLang || context.setLang;
@@ -55,12 +57,45 @@ export const Header: React.FC<HeaderProps> = ({
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [currencyOpen, setCurrencyOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
+  const currencyRef = useRef<HTMLDivElement>(null);
+  const moreCloseTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (moreRef.current && !moreRef.current.contains(target)) {
+        setMoreOpen(false);
+      }
+      if (currencyRef.current && !currencyRef.current.contains(target)) {
+        setCurrencyOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      if (moreCloseTimeout.current) clearTimeout(moreCloseTimeout.current);
+    };
+  }, []);
+
+  const handleMoreMouseEnter = () => {
+    if (moreCloseTimeout.current) clearTimeout(moreCloseTimeout.current);
+    setMoreOpen(true);
+  };
+
+  const handleMoreMouseLeave = () => {
+    moreCloseTimeout.current = setTimeout(() => {
+      setMoreOpen(false);
+    }, 200);
+  };
 
   // Lock body scroll when mobile sidebar is open
   useEffect(() => {
@@ -100,6 +135,42 @@ export const Header: React.FC<HeaderProps> = ({
     { name: lang === "ar" ? "الكتالوج" : "Catalog", href: "/search" },
   ];
 
+  const moreLinks = [
+    { name: lang === "ar" ? "معرض التركيبات" : "Builds Gallery", href: "/gallery", icon: Camera },
+    { name: lang === "ar" ? "معارض الدوحة" : "Doha Showrooms", href: "/contact-us", icon: MapPin },
+    { name: lang === "ar" ? "الأسئلة والضمان" : "FAQs & Support", href: "/faqs", icon: HelpCircle },
+    { name: lang === "ar" ? "الوظائف وبيئة العمل" : "Careers", href: "/careers", icon: Briefcase },
+  ];
+
+  const isRouteActive = (href: string) => {
+    if (!pathname) return false;
+    if (href === "/") return pathname === "/";
+    if (pathname === href) return true;
+    if (pathname.startsWith(href + "/")) return true;
+
+    // Handle mounting-bases alias to pro-clips
+    if (
+      href === "/categories/pro-clips" &&
+      (pathname === "/categories/mounting-bases" || pathname.startsWith("/categories/mounting-bases/"))
+    ) {
+      return true;
+    }
+
+    // Match product detail pages to their category
+    if (pathname.startsWith("/products/")) {
+      const slug = pathname.replace("/products/", "");
+      const matched = MOCK_ALL_PRODUCTS.find((p) => p.slug === slug);
+      if (matched) {
+        if (href === `/categories/${matched.category_slug}`) return true;
+        if (matched.category_slug === "mountx" && href === "/mountx") return true;
+        if (matched.category_slug === "pro-clips" && href === "/categories/pro-clips") return true;
+      }
+    }
+    return false;
+  };
+
+  const isMoreActive = moreLinks.some((l) => pathname === l.href);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -122,22 +193,105 @@ export const Header: React.FC<HeaderProps> = ({
             />
           </Link>
 
-          {/* Clean, Non-Cramped Desktop Navigation (Visible on lg+) */}
-          <nav className="hidden lg:flex items-center gap-7 xl:gap-9 text-sm text-neutral-600 font-medium">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`whitespace-nowrap transition-colors duration-150 py-1 ${
-                  link.highlight
-                    ? "text-[#9b7832] font-semibold hover:text-[#795d23] flex items-center gap-1.5"
-                    : "hover:text-neutral-950 hover-underline-gold"
+          {/* Minimal, Luxury Active-Aware Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 h-16 text-xs">
+            {navLinks.map((link) => {
+              const active = isRouteActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`relative h-16 flex items-center px-3 tracking-tight transition-colors ${
+                    active
+                      ? "text-neutral-950 font-bold"
+                      : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-50/70 font-medium"
+                  }`}
+                >
+                  {link.href === "/find" && (
+                    <Compass
+                      size={13}
+                      className={`mr-1.5 rtl:mr-0 rtl:ml-1.5 transition-colors ${
+                        active ? "text-[#c5a059]" : "text-neutral-400"
+                      }`}
+                    />
+                  )}
+                  <span>{link.name}</span>
+                  {active && (
+                    <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#c5a059] rounded-t-full shadow-[0_-1px_6px_rgba(197,160,89,0.35)]" />
+                  )}
+                </Link>
+              );
+            })}
+
+            {/* More Dropdown (Gallery, Showrooms, FAQs, Careers) */}
+            <div
+              ref={moreRef}
+              className="relative h-16 flex items-center"
+              onMouseEnter={handleMoreMouseEnter}
+              onMouseLeave={handleMoreMouseLeave}
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  if (moreCloseTimeout.current) clearTimeout(moreCloseTimeout.current);
+                  setMoreOpen((prev) => !prev);
+                }}
+                className={`relative h-16 flex items-center gap-1 px-3 tracking-tight transition-colors cursor-pointer ${
+                  isMoreActive
+                    ? "text-neutral-950 font-bold"
+                    : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-50/70 font-medium"
                 }`}
               >
-                {link.highlight && <Compass size={14} className="text-[#c5a059]" />}
-                <span>{link.name}</span>
-              </Link>
-            ))}
+                <span>{lang === "ar" ? "المزيد" : "More"}</span>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ${
+                    moreOpen ? "rotate-180 text-[#c5a059]" : isMoreActive ? "text-[#c5a059]" : "text-neutral-400"
+                  }`}
+                />
+                {isMoreActive && (
+                  <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#c5a059] rounded-t-full shadow-[0_-1px_6px_rgba(197,160,89,0.35)]" />
+                )}
+              </button>
+
+              {moreOpen && (
+                <div
+                  className="absolute top-full pt-1 right-0 rtl:right-auto rtl:left-0 w-52 z-50 animate-in fade-in zoom-in-95 duration-150"
+                  onMouseEnter={handleMoreMouseEnter}
+                  onMouseLeave={handleMoreMouseLeave}
+                >
+                  <div className="bg-white border border-neutral-200/90 rounded-2xl shadow-xl py-1.5 overflow-hidden">
+                    {moreLinks.map((sub) => {
+                      const isSubActive = pathname === sub.href;
+                      const SubIcon = sub.icon;
+                      return (
+                        <Link
+                          key={sub.href}
+                          href={sub.href}
+                          onClick={() => setMoreOpen(false)}
+                          className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors ${
+                            isSubActive
+                              ? "bg-neutral-50 text-neutral-950 font-bold"
+                              : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950 font-medium"
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <SubIcon
+                              size={14}
+                              className={isSubActive ? "text-[#c5a059]" : "text-neutral-400"}
+                            />
+                            <span>{sub.name}</span>
+                          </span>
+                          {isSubActive && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
+                          )}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Clean Right Actions */}
@@ -180,7 +334,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Currency Dropdown (Desktop) */}
-            <div className="relative hidden sm:block">
+            <div ref={currencyRef} className="relative hidden sm:block">
               <button
                 type="button"
                 onClick={() => setCurrencyOpen(!currencyOpen)}
@@ -193,12 +347,14 @@ export const Header: React.FC<HeaderProps> = ({
               {currencyOpen && (
                 <div
                   className="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-36 bg-white border border-neutral-200 rounded-xl shadow-xl py-1 z-50 animate-in fade-in duration-150"
-                  onClick={() => setCurrencyOpen(false)}
                 >
                   {currencies.map((c) => (
                     <button
                       key={c.code}
-                      onClick={() => setCurrency(c.code)}
+                      onClick={() => {
+                        setCurrency(c.code);
+                        setCurrencyOpen(false);
+                      }}
                       className={`w-full text-left rtl:text-right px-3.5 py-1.5 text-xs transition cursor-pointer flex items-center justify-between ${
                         currency === c.code
                           ? "bg-[#faf6ed] font-bold text-[#c5a059]"
@@ -225,7 +381,11 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Profile Link (Desktop) */}
             <Link
               href="/profile"
-              className="hidden lg:flex items-center justify-center p-2 text-neutral-600 hover:text-[#c5a059] rounded-full hover:bg-neutral-100 transition-colors"
+              className={`hidden lg:flex items-center justify-center p-2 rounded-full transition-colors ${
+                pathname === "/profile"
+                  ? "text-[#c5a059] bg-[#faf6ed]"
+                  : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100"
+              }`}
               title={lang === "ar" ? "حسابي" : "My Account"}
             >
               <User size={18} />
@@ -235,12 +395,16 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={onOpenCart}
-              className="relative p-2 text-neutral-900 hover:text-[#c5a059] transition cursor-pointer flex items-center justify-center rounded-full hover:bg-neutral-100"
+              className={`relative p-2 transition-colors flex items-center justify-center rounded-full ${
+                pathname === "/cart" || pathname === "/checkout"
+                  ? "text-[#c5a059] bg-[#faf6ed]"
+                  : "text-neutral-900 hover:text-[#c5a059] hover:bg-neutral-100"
+              }`}
               aria-label="Shopping Bag"
             >
               <ShoppingBag size={20} className="stroke-[1.6]" />
               {cartCount > 0 && (
-                <span className="absolute 0 top-0.5 right-0.5 rtl:right-auto rtl:left-0.5 w-4 h-4 rounded-full bg-[#c5a059] text-neutral-950 text-[9px] font-black flex items-center justify-center shadow-xs">
+                <span className="absolute top-0.5 right-0.5 rtl:right-auto rtl:left-0.5 w-4 h-4 rounded-full bg-[#c5a059] text-neutral-950 text-[9px] font-black flex items-center justify-center shadow-xs">
                   {cartCount}
                 </span>
               )}
@@ -321,26 +485,36 @@ export const Header: React.FC<HeaderProps> = ({
                 {/* Scrollable Navigation Body */}
                 <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6">
                   {/* Hero Matcher Callout Banner */}
-                  <Link
-                    href="/find"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-[#faf6ed] to-[#f4ebe0] border border-[#c5a059]/40 shadow-xs group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-[#c5a059] text-neutral-950 flex items-center justify-center font-bold">
-                        <Compass size={18} />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-neutral-900">
-                          {lang === "ar" ? "مطابق التثبيت للسيارات" : "Vehicle Fitment Matcher"}
-                        </p>
-                        <p className="text-[10px] text-[#8c6f2e]">
-                          {lang === "ar" ? "اختر سيارتك وهاتفك خطوة بخطوة" : "2-Step Base + Holder System"}
-                        </p>
-                      </div>
-                    </div>
-                    <ChevronRight size={14} className="text-[#c5a059] rtl:rotate-180 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
-                  </Link>
+                  {(() => {
+                    const isFindActive = pathname === "/find";
+                    return (
+                      <Link
+                        href="/find"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center justify-between p-3.5 rounded-2xl transition-all shadow-xs group ${
+                          isFindActive
+                            ? "bg-[#faf6ed] border border-[#c5a059] ring-1 ring-[#c5a059]/20"
+                            : "bg-gradient-to-r from-[#faf6ed] to-[#f4ebe0] border border-[#c5a059]/40"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl flex items-center justify-center font-bold bg-[#c5a059] text-neutral-950">
+                            <Compass size={18} />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold flex items-center gap-1.5 text-neutral-950">
+                              <span>{lang === "ar" ? "مطابق التثبيت للسيارات" : "Vehicle Fitment Matcher"}</span>
+                              {isFindActive && <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />}
+                            </p>
+                            <p className="text-[10px] text-[#8c6f2e]">
+                              {lang === "ar" ? "اختر سيارتك وهاتفك خطوة بخطوة" : "2-Step Base + Holder System"}
+                            </p>
+                          </div>
+                        </div>
+                        <ChevronRight size={14} className="text-[#c5a059] rtl:rotate-180 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
+                      </Link>
+                    );
+                  })()}
 
                   {/* Collections */}
                   <div>
@@ -348,68 +522,42 @@ export const Header: React.FC<HeaderProps> = ({
                       {lang === "ar" ? "التشكيلات والمنتجات" : "Collections"}
                     </p>
                     <div className="space-y-1">
-                      <Link
-                        href="/categories/pro-clips"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span>{lang === "ar" ? "قواعد برو كليبس" : "ProClips Mounts"}</span>
-                        <ChevronRight size={14} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href="/categories/device-holders"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span>{lang === "ar" ? "حوامل الأجهزة" : "Device Holders"}</span>
-                        <ChevronRight size={14} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href="/mountx"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span className="flex items-center gap-2">
-                          <Shield size={14} className="text-[#c5a059]" />
-                          {lang === "ar" ? "ماونت إكس ألمنيوم للطرق الوعرة" : "MountX All-Terrain System"}
-                        </span>
-                        <ChevronRight size={14} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href="/categories/leather-mount"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span>{lang === "ar" ? "حوامل جلدية" : "Leather Mounts"}</span>
-                        <ChevronRight size={14} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href="/categories/motorbike-mount"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span>{lang === "ar" ? "حوامل الدراجات" : "Motorbike Mounts"}</span>
-                        <ChevronRight size={14} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href="/categories/antenna-accessories"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span>{lang === "ar" ? "الهوائيات والدفع الرباعي" : "Antenna & Off-Road"}</span>
-                        <ChevronRight size={14} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href="/search"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#8c6f2e] hover:bg-[#faf6ed] transition-colors"
-                      >
-                        <span className="flex items-center gap-2">
-                          <SlidersHorizontal size={14} />
-                          {lang === "ar" ? "تصفح كامل الكتالوج" : "Browse All Products"}
-                        </span>
-                        <ChevronRight size={14} className="text-[#c5a059] rtl:rotate-180" />
-                      </Link>
+                      {[
+                        { label: lang === "ar" ? "قواعد برو كليبس" : "ProClips Mounts", href: "/categories/pro-clips" },
+                        { label: lang === "ar" ? "حوامل الأجهزة" : "Device Holders", href: "/categories/device-holders" },
+                        { label: lang === "ar" ? "ماونت إكس ألمنيوم للطرق الوعرة" : "MountX All-Terrain System", href: "/mountx", icon: Shield },
+                        { label: lang === "ar" ? "حوامل جلدية" : "Leather Mounts", href: "/categories/leather-mount" },
+                        { label: lang === "ar" ? "حوامل الدراجات" : "Motorbike Mounts", href: "/categories/motorbike-mount" },
+                        { label: lang === "ar" ? "الهوائيات والدفع الرباعي" : "Antenna & Off-Road", href: "/categories/antenna-accessories" },
+                        { label: lang === "ar" ? "تصفح كامل الكتالوج" : "Browse All Products", href: "/search", icon: SlidersHorizontal, isCatalog: true },
+                      ].map((item) => {
+                        const isItemActive = isRouteActive(item.href);
+                        const ItemIcon = item.icon;
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-colors ${
+                              isItemActive
+                                ? "bg-neutral-100 text-neutral-950 font-bold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#c5a059]"
+                                : item.isCatalog
+                                ? "text-[#8c6f2e] bg-[#faf6ed]/50 hover:bg-[#faf6ed] font-medium"
+                                : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 font-medium"
+                            }`}
+                          >
+                            <span className="flex items-center gap-2">
+                              {ItemIcon && <ItemIcon size={14} className={isItemActive ? "text-[#c5a059]" : item.isCatalog ? "text-[#8c6f2e]" : "text-neutral-400"} />}
+                              <span>{item.label}</span>
+                            </span>
+                            {isItemActive ? (
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] shrink-0" />
+                            ) : (
+                              <ChevronRight size={14} className="text-neutral-300 rtl:rotate-180" />
+                            )}
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -419,79 +567,65 @@ export const Header: React.FC<HeaderProps> = ({
                       {lang === "ar" ? "المحتوى والمجتمع" : "Experience"}
                     </p>
                     <div className="space-y-1">
-                      <Link
-                        href="/gallery"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span className="flex items-center gap-2">
-                          <Camera size={14} className="text-neutral-500" />
-                          {lang === "ar" ? "معرض صور تركيبات العملاء" : "Customer Builds Gallery"}
-                        </span>
-                        <ChevronRight size={13} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href="/contact-us"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span className="flex items-center gap-2">
-                          <MapPin size={14} className="text-neutral-500" />
-                          {lang === "ar" ? "معارض الدوحة وأوقات العمل" : "Doha Showrooms & Locations"}
-                        </span>
-                        <ChevronRight size={13} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href="/careers"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span className="flex items-center gap-2">
-                          <Briefcase size={14} className="text-neutral-500" />
-                          {lang === "ar" ? "الوظائف وبيئة العمل" : "Careers at Thabt"}
-                        </span>
-                        <ChevronRight size={13} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href="/faqs"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span className="flex items-center gap-2">
-                          <HelpCircle size={14} className="text-neutral-500" />
-                          {lang === "ar" ? "الأسئلة الشائعة والضمان" : "FAQs & Support"}
-                        </span>
-                        <ChevronRight size={13} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
-                      <Link
-                        href="/profile"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 transition-colors"
-                      >
-                        <span className="flex items-center gap-2">
-                          <User size={14} className="text-neutral-500" />
-                          {lang === "ar" ? "حسابي وتتبع الشحنات" : "My Account & Orders"}
-                        </span>
-                        <ChevronRight size={13} className="text-neutral-300 rtl:rotate-180" />
-                      </Link>
+                      {[
+                        { label: lang === "ar" ? "معرض صور تركيبات العملاء" : "Customer Builds Gallery", href: "/gallery", icon: Camera },
+                        { label: lang === "ar" ? "معارض الدوحة وأوقات العمل" : "Doha Showrooms & Locations", href: "/contact-us", icon: MapPin },
+                        { label: lang === "ar" ? "الوظائف وبيئة العمل" : "Careers at Thabt", href: "/careers", icon: Briefcase },
+                        { label: lang === "ar" ? "الأسئلة الشائعة والضمان" : "FAQs & Support", href: "/faqs", icon: HelpCircle },
+                        { label: lang === "ar" ? "حسابي وتتبع الشحنات" : "My Account & Orders", href: "/profile", icon: User },
+                      ].map((item) => {
+                        const isItemActive = pathname === item.href;
+                        const ItemIcon = item.icon;
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-colors ${
+                              isItemActive
+                                ? "bg-neutral-100 text-neutral-950 font-bold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#c5a059]"
+                                : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 font-medium"
+                            }`}
+                          >
+                            <span className="flex items-center gap-2">
+                              <ItemIcon size={14} className={isItemActive ? "text-[#c5a059]" : "text-neutral-400"} />
+                              <span>{item.label}</span>
+                            </span>
+                            {isItemActive ? (
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] shrink-0" />
+                            ) : (
+                              <ChevronRight size={13} className="text-neutral-300 rtl:rotate-180" />
+                            )}
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
 
                   {/* Cart Action */}
                   <div className="pt-2">
-                    <Link
-                      href="/cart"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="w-full flex items-center justify-between p-3 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-xs font-bold text-neutral-900 transition-colors"
-                    >
-                      <span className="flex items-center gap-2">
-                        <ShoppingBag size={15} />
-                        {lang === "ar" ? "عرض سلة المشتريات" : "View Shopping Cart"}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full bg-[#c5a059] text-neutral-950 text-[10px]">
-                        {cartCount}
-                      </span>
-                    </Link>
+                    {(() => {
+                      const isCartActive = pathname === "/cart";
+                      return (
+                        <Link
+                          href="/cart"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`w-full flex items-center justify-between p-3 rounded-xl text-xs font-semibold transition-colors ${
+                            isCartActive
+                              ? "bg-neutral-100 text-neutral-950 border border-[#c5a059]/40"
+                              : "bg-neutral-100 hover:bg-neutral-200 text-neutral-900"
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <ShoppingBag size={15} className={isCartActive ? "text-[#c5a059]" : ""} />
+                            <span>{lang === "ar" ? "عرض سلة المشتريات" : "View Shopping Cart"}</span>
+                          </span>
+                          <span className="px-2 py-0.5 rounded-full bg-[#c5a059] text-neutral-950 text-[10px] font-black">
+                            {cartCount}
+                          </span>
+                        </Link>
+                      );
+                    })()}
                   </div>
                 </div>
 

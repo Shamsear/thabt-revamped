@@ -34,7 +34,10 @@ export default function CategoryPage({
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc">("featured");
   const [onlyInStock, setOnlyInStock] = useState<boolean>(false);
 
-  const category = MOCK_CATEGORIES.find((c) => c.slug === slug);
+  const normalizedSlug =
+    slug === "mounting-bases" || slug === "mounting-base" ? "pro-clips" : slug;
+
+  const category = MOCK_CATEGORIES.find((c) => c.slug === normalizedSlug);
 
   if (!category) {
     notFound();
@@ -43,7 +46,9 @@ export default function CategoryPage({
   // Filter products by category, search query, and vehicle inline
   const filteredProducts = useMemo(() => {
     let list = MOCK_ALL_PRODUCTS.filter(
-      (p) => p.category_slug === slug || (slug === "pro-clips" && p.slug.includes("mount"))
+      (p) =>
+        p.category_slug === normalizedSlug ||
+        (normalizedSlug === "pro-clips" && p.slug.includes("mount"))
     );
 
     // If none match exactly, show fallback subset of category
