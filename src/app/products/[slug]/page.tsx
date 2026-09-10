@@ -138,7 +138,7 @@ export default function ProductDetailPage({
             <div className="lg:col-span-6 space-y-3">
               {/* Main Image Display with Touch Swipe and Left/Right Navigation Buttons */}
               <div
-                className="aspect-square max-h-[340px] sm:max-h-[440px] w-full bg-neutral-50/70 rounded-2xl border border-neutral-100 overflow-hidden flex items-center justify-center p-4 sm:p-8 relative select-none touch-pan-y"
+                className="aspect-square max-h-[360px] sm:max-h-[460px] w-full bg-neutral-50/70 rounded-2xl border border-neutral-100 overflow-hidden flex items-center justify-center px-8 sm:px-12 py-4 sm:py-8 relative select-none touch-pan-y"
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
@@ -178,7 +178,7 @@ export default function ProductDetailPage({
                         e.stopPropagation();
                         lang === "ar" ? nextImage() : prevImage();
                       }}
-                      className="absolute left-2.5 sm:left-3.5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20"
+                      className="absolute left-2.5 sm:left-3.5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20 outline-none focus:outline-none"
                       aria-label={lang === "ar" ? "الصورة السابقة" : "Previous image"}
                       title={lang === "ar" ? "السابق" : "Previous"}
                     >
@@ -191,7 +191,7 @@ export default function ProductDetailPage({
                         e.stopPropagation();
                         lang === "ar" ? prevImage() : nextImage();
                       }}
-                      className="absolute right-2.5 sm:right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20"
+                      className="absolute right-2.5 sm:right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20 outline-none focus:outline-none"
                       aria-label={lang === "ar" ? "الصورة التالية" : "Next image"}
                       title={lang === "ar" ? "التالي" : "Next"}
                     >
@@ -205,7 +205,7 @@ export default function ProductDetailPage({
                           key={idx}
                           type="button"
                           onClick={() => setActiveImageIndex(idx)}
-                          className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                          className={`h-1.5 rounded-full transition-all cursor-pointer outline-none focus:outline-none ${
                             activeImageIndex === idx ? "w-5 bg-[#c5a059]" : "w-1.5 bg-white/70 hover:bg-white"
                           }`}
                           aria-label={`View image ${idx + 1}`}
@@ -218,22 +218,22 @@ export default function ProductDetailPage({
 
               {/* Thumbnail Selector */}
               {images.length > 1 && (
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                <div className="flex items-center gap-2.5 overflow-x-auto py-2 px-1 scrollbar-none">
                   {images.map((img, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => setActiveImageIndex(idx)}
-                      className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-neutral-50 border p-1 shrink-0 transition-all cursor-pointer ${
+                      className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-neutral-50 shrink-0 transition-all cursor-pointer relative overflow-hidden outline-none focus:outline-none ${
                         activeImageIndex === idx
-                          ? "border-[#c5a059] ring-2 ring-[#c5a059]/40"
-                          : "border-neutral-200/80 hover:border-neutral-400 opacity-75 hover:opacity-100"
+                          ? "border-2 border-[#c5a059] shadow-sm scale-102"
+                          : "border border-neutral-200/80 hover:border-neutral-400 opacity-75 hover:opacity-100"
                       }`}
                     >
                       <img
                         src={img}
                         alt={`Thumbnail ${idx + 1}`}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-cover"
                         onError={(e) => {
                           e.currentTarget.src = "/admin/banners/accessories.jpg";
                         }}
