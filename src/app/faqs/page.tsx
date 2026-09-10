@@ -85,40 +85,45 @@ export default function FaqsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900 flex flex-col">
+    <div className="min-h-screen bg-[#fafaf9] text-neutral-900 flex flex-col relative overflow-hidden">
+      {/* Ambient background gold glow */}
+      <div className="pointer-events-none absolute -top-40 right-1/4 w-96 h-96 bg-[#c5a059]/5 rounded-full blur-[160px]" />
+      <div className="pointer-events-none absolute top-1/2 -left-40 w-96 h-96 bg-[#c5a059]/5 rounded-full blur-[160px]" />
+
       <Header />
 
-      <main className="flex-1 py-8 sm:py-14">
+      <main className="flex-1 py-8 sm:py-14 relative z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-8">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs text-neutral-500 mb-6">
-            <Link href="/" className="hover:text-neutral-900 transition">
+            <Link href="/" className="hover:text-[#9b7832] transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
             <ChevronRight size={12} className="rtl:rotate-180 text-neutral-400" />
-            <span className="text-neutral-900 font-semibold">
+            <span className="text-neutral-900 font-semibold flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]"></span>
               {lang === "ar" ? "الأسئلة الشائعة والضمان" : "FAQs & Support"}
             </span>
           </nav>
 
           {/* Heading */}
           <div className="text-center max-w-xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#faf6ed] border border-[#c5a059]/30 text-[#9b7832] text-xs font-semibold mb-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#faf6ed] border border-[#c5a059]/30 text-[#9b7832] text-xs font-bold mb-3 shadow-2xs">
               <HelpCircle size={14} className="text-[#c5a059]" />
-              <span>{lang === "ar" ? "مركز المساعدة والدعم" : "Help & Knowledge Base"}</span>
+              <span>{lang === "ar" ? "مركز المساعدة والدعم المعتمد" : "Official Knowledge & Fitment Base"}</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-neutral-950 tracking-tight mb-3">
               {lang === "ar" ? "الأسئلة الشائعة والمواصفات" : "Frequently Asked Questions"}
             </h1>
             <p className="text-xs sm:text-sm text-neutral-600">
               {lang === "ar"
-                ? "إجابات شاملة حول تركيب قواعد برو كليبس، الشحن لدول الخليج، الضمان، والتوافق."
-                : "Find instant answers regarding vehicle fitment, installation, GCC express shipping, and warranty."}
+                ? "إجابات هندسية شاملة حول تركيب قواعد برو كليبس، الشحن السريع للخليج، والضمان الذهبي لمدة سنة."
+                : "Find instant answers regarding vehicle fitment, tool-free installation, GCC express courier, and our 1-year replacement warranty."}
             </p>
           </div>
 
           {/* Search & Topic Custom Dropdown Bar */}
-          <div className="max-w-2xl mx-auto mb-10 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+          <div className="max-w-2xl mx-auto mb-8 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
             <div className="sm:col-span-5">
               <CustomSelect
                 value={selectedCategory}
@@ -140,7 +145,7 @@ export default function FaqsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={lang === "ar" ? "ابحث بالكلمات المفتاحية..." : "Search questions or keywords..."}
-                className="w-full bg-white border border-neutral-200/90 rounded-xl pl-10 pr-4 rtl:pl-4 rtl:pr-10 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] shadow-2xs"
+                className="w-full bg-white border border-neutral-200/90 rounded-xl pl-10 pr-4 rtl:pl-4 rtl:pr-10 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/20 shadow-2xs transition-all"
               />
             </div>
           </div>
@@ -152,26 +157,33 @@ export default function FaqsPage() {
               return (
                 <div
                   key={faq.id}
-                  className="bg-white rounded-2xl border border-neutral-200/90 overflow-hidden shadow-xs transition-all"
+                  className={`bg-white rounded-2xl border transition-all duration-200 ${
+                    isOpen
+                      ? "border-[#c5a059]/60 ring-2 ring-[#c5a059]/15 shadow-md"
+                      : "border-neutral-200/90 hover:border-[#c5a059]/40 shadow-2xs hover:shadow-xs"
+                  } overflow-hidden`}
                 >
                   <button
                     type="button"
                     onClick={() => toggleFaq(faq.id)}
-                    className="w-full p-4 sm:p-5 flex items-center justify-between text-left rtl:text-right gap-4 cursor-pointer hover:bg-neutral-50/70 transition"
+                    className="w-full p-4 sm:p-5 flex items-center justify-between text-left rtl:text-right gap-4 cursor-pointer hover:bg-[#faf6ed]/20 transition"
                   >
-                    <span className="text-xs sm:text-sm font-bold text-neutral-900">
+                    <span className="text-xs sm:text-sm font-bold text-neutral-900 flex items-center gap-2.5">
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${isOpen ? "bg-[#c5a059]" : "bg-neutral-300"}`} />
                       {lang === "ar" ? faq.question_ar : faq.question}
                     </span>
-                    <ChevronDown
-                      size={16}
-                      className={`text-[#c5a059] shrink-0 transition-transform duration-200 ${
-                        isOpen ? "rotate-180" : ""
-                      }`}
-                    />
+                    <div className={`p-1.5 rounded-lg shrink-0 transition-colors ${isOpen ? "bg-[#faf6ed] text-[#9b7832]" : "text-neutral-400"}`}>
+                      <ChevronDown
+                        size={16}
+                        className={`text-[#c5a059] transition-transform duration-200 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </div>
                   </button>
 
                   {isOpen && (
-                    <div className="px-4 pb-5 sm:px-5 text-xs text-neutral-600 leading-relaxed border-t border-neutral-100 pt-3 bg-neutral-50/40">
+                    <div className="px-5 pb-5 sm:px-6 text-xs text-neutral-600 leading-relaxed border-t border-neutral-100/80 pt-4 bg-gradient-to-b from-[#faf6ed]/20 to-white">
                       {lang === "ar" ? faq.answer_ar : faq.answer}
                     </div>
                   )}
@@ -181,15 +193,19 @@ export default function FaqsPage() {
           </div>
 
           {/* WhatsApp Concierge Card */}
-          <div className="bg-[#faf6ed] rounded-3xl border border-[#c5a059]/40 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
-            <div>
-              <h3 className="text-base font-bold text-neutral-900 mb-1">
-                {lang === "ar" ? "لم تجد إجابة لاستفسارك؟" : "Have a question about your car model?"}
+          <div className="bg-gradient-to-br from-white via-[#faf6ed] to-[#f5ebd4]/50 rounded-3xl border border-[#c5a059]/50 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+            <div className="space-y-1 text-center sm:text-left rtl:sm:text-right">
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-black text-[#9b7832] uppercase tracking-wider">
+                <ShieldCheck size={14} className="text-[#c5a059]" />
+                <span>{lang === "ar" ? "خدمة استشارية فورية" : "Thabt Concierge Assistance"}</span>
+              </div>
+              <h3 className="text-base font-extrabold text-neutral-950">
+                {lang === "ar" ? "لم تجد إجابة لاستفسارك أو موديل سيارتك؟" : "Have a specific question about your car or phone?"}
               </h3>
-              <p className="text-xs text-neutral-600 leading-relaxed">
+              <p className="text-xs text-neutral-600 leading-relaxed max-w-lg">
                 {lang === "ar"
-                  ? "فريق التركيب والدعم متاح على مدار اليوم عبر محادثة واتساب المباشرة للمساعدة الفورية."
-                  : "Chat directly with our fitment specialists on WhatsApp for instant guidance."}
+                  ? "فريق المهندسين المتخصصين متاح لمساعدتك في مطابقة طبلون سيارتك وحامل جوالك بالصورة والقياس الفوري عبر واتساب."
+                  : "Chat directly with our installation technicians on WhatsApp for instant confirmation with photos and measurements."}
               </p>
             </div>
 
@@ -197,10 +213,10 @@ export default function FaqsPage() {
               href="https://api.whatsapp.com/send?phone=97450400314"
               target="_blank"
               rel="noreferrer"
-              className="py-3 px-6 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs flex items-center gap-2 shrink-0 transition shadow-sm"
+              className="py-3.5 px-6 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 font-black text-xs flex items-center gap-2 shrink-0 transition-all duration-200 shadow-md cursor-pointer group"
             >
-              <MessageCircle size={16} />
-              <span>{lang === "ar" ? "تواصل عبر واتساب" : "WhatsApp Concierge"}</span>
+              <MessageCircle size={16} className="text-[#25D366] group-hover:text-neutral-950 transition-colors" />
+              <span>{lang === "ar" ? "تواصل مع خبير التركيب" : "Contact Fitment Expert"}</span>
             </a>
           </div>
         </div>

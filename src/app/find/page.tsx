@@ -66,29 +66,33 @@ export default function FindPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900 flex flex-col">
+    <div className="min-h-screen bg-[#fafaf9] text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+      <main className="flex-1 py-8 sm:py-12 relative">
+        {/* Subtle Ambient Gold Glow in Background */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-[#c5a059]/5 blur-[160px] pointer-events-none rounded-full" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs text-neutral-500 mb-6">
-            <Link href="/" className="hover:text-neutral-900 transition">
+            <Link href="/" className="hover:text-[#9b7832] transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
             <ChevronRight size={12} className="rtl:rotate-180 text-neutral-400" />
-            <span className="text-neutral-900 font-semibold">
+            <span className="text-neutral-900 font-semibold flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
               {lang === "ar" ? "مطابق التثبيت الذكي" : "Vehicle & Device Matcher"}
             </span>
           </nav>
 
           {/* Hero Header */}
           <div className="text-center max-w-3xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#faf6ed] border border-[#c5a059]/30 text-[#9b7832] text-xs font-semibold mb-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#faf6ed] border border-[#c5a059]/30 text-[#9b7832] text-xs font-bold mb-3">
               <Sparkles size={14} className="text-[#c5a059]" />
               <span>{lang === "ar" ? "نظام التركيب الثنائي المتكامل" : "The 2-Part Precision Mounting System"}</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-neutral-950 tracking-tight mb-3">
+            <h1 className="text-2xl sm:text-4xl font-black text-neutral-950 tracking-tight mb-3">
               {lang === "ar"
                 ? "اختر سيارتك وهاتفك للحصول على التركيب المثالي"
                 : "Find the Perfect Mount for Your Vehicle & Phone"}
@@ -105,9 +109,9 @@ export default function FindPage() {
             {/* Left Column: Step 1 & Step 2 Selectors (7 cols) */}
             <div className="lg:col-span-7 space-y-6">
               {/* STEP 1: Vehicle Base Selection */}
-              <div className="bg-white rounded-2xl border border-neutral-200/90 p-6 shadow-xs relative overflow-hidden">
+              <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-8 h-8 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-bold text-xs">
+                  <div className="w-8 h-8 rounded-xl bg-neutral-950 text-[#c5a059] border border-[#c5a059]/40 flex items-center justify-center font-bold text-xs shadow-xs">
                     1
                   </div>
                   <div>
@@ -164,18 +168,18 @@ export default function FindPage() {
                 </div>
 
                 {/* Matched Base Quick Preview Card */}
-                <div className="mt-5 p-3.5 bg-neutral-50 rounded-xl border border-neutral-200/60 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
+                <div className="mt-5 p-4 bg-neutral-50/80 rounded-2xl border border-neutral-200/80 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
                     <img
                       src={matchedBase.image}
                       alt={matchedBase.name}
-                      className="w-14 h-14 object-cover rounded-lg bg-white border border-neutral-200 shrink-0"
+                      className="w-14 h-14 object-contain rounded-xl bg-white border border-neutral-200/90 p-1 shrink-0 shadow-2xs"
                     />
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md border border-[#c5a059]/30">
                         {lang === "ar" ? "قاعدة لوحة القيادة المتطابقة" : "Matched Dashboard Base"}
                       </span>
-                      <h4 className="text-xs font-bold text-neutral-900 mt-1 line-clamp-1">
+                      <h4 className="text-xs font-bold text-neutral-950 mt-1 line-clamp-1">
                         {lang === "ar" ? matchedBase.name_ar : matchedBase.name}
                       </h4>
                       <p className="text-[11px] text-neutral-500 font-medium">
@@ -184,8 +188,8 @@ export default function FindPage() {
                     </div>
                   </div>
                   <div className="text-right rtl:text-left shrink-0">
-                    <p className="text-xs font-extrabold text-neutral-900">{formatPrice(matchedBase.price)}</p>
-                    <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                    <p className="text-xs font-black text-neutral-950">{formatPrice(matchedBase.price)}</p>
+                    <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
                       <CheckCircle2 size={11} /> {lang === "ar" ? "متوفر بالمخزن" : "In Stock"}
                     </span>
                   </div>
@@ -193,9 +197,9 @@ export default function FindPage() {
               </div>
 
               {/* STEP 2: Device & Holder Selection */}
-              <div className="bg-white rounded-2xl border border-neutral-200/90 p-6 shadow-xs relative overflow-hidden">
+              <div className="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-7 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-8 h-8 rounded-xl bg-[#c5a059] text-neutral-950 flex items-center justify-center font-bold text-xs">
+                  <div className="w-8 h-8 rounded-xl bg-[#c5a059] text-neutral-950 flex items-center justify-center font-bold text-xs shadow-xs">
                     2
                   </div>
                   <div>
@@ -249,17 +253,17 @@ export default function FindPage() {
                     <button
                       type="button"
                       onClick={() => setHolderType("magsafe")}
-                      className={`p-3 rounded-xl text-left rtl:text-right border transition-all cursor-pointer ${
+                      className={`p-3.5 rounded-2xl text-left rtl:text-right border transition-all cursor-pointer ${
                         holderType === "magsafe"
-                          ? "bg-[#faf6ed] border-[#c5a059] ring-1 ring-[#c5a059]"
-                          : "bg-white border-neutral-200 hover:border-neutral-300"
+                          ? "bg-[#faf6ed] border-[#c5a059] ring-2 ring-[#c5a059]/30 shadow-xs"
+                          : "bg-white border-neutral-200 hover:border-[#c5a059]/40 hover:bg-[#faf6ed]/20"
                       }`}
                     >
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-900 mb-1">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-950 mb-1">
                         <Zap size={14} className="text-[#c5a059]" />
                         <span>MagSafe Qi Fast</span>
                       </div>
-                      <p className="text-[10px] text-neutral-500">
+                      <p className="text-[10px] text-neutral-500 leading-snug">
                         {lang === "ar" ? "مغناطيس 15 واط لاسلكي" : "15W Magnetic wireless charge"}
                       </p>
                     </button>
@@ -268,17 +272,17 @@ export default function FindPage() {
                     <button
                       type="button"
                       onClick={() => setHolderType("offroad")}
-                      className={`p-3 rounded-xl text-left rtl:text-right border transition-all cursor-pointer ${
+                      className={`p-3.5 rounded-2xl text-left rtl:text-right border transition-all cursor-pointer ${
                         holderType === "offroad"
-                          ? "bg-[#faf6ed] border-[#c5a059] ring-1 ring-[#c5a059]"
-                          : "bg-white border-neutral-200 hover:border-neutral-300"
+                          ? "bg-[#faf6ed] border-[#c5a059] ring-2 ring-[#c5a059]/30 shadow-xs"
+                          : "bg-white border-neutral-200 hover:border-[#c5a059]/40 hover:bg-[#faf6ed]/20"
                       }`}
                     >
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-900 mb-1">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-950 mb-1">
                         <ShieldCheck size={14} className="text-[#c5a059]" />
                         <span>Heavy-Duty Off-Road</span>
                       </div>
-                      <p className="text-[10px] text-neutral-500">
+                      <p className="text-[10px] text-neutral-500 leading-snug">
                         {lang === "ar" ? "مخمد اهتزاز للصحراء" : "Dual-arm shock dampening"}
                       </p>
                     </button>
@@ -287,17 +291,17 @@ export default function FindPage() {
                     <button
                       type="button"
                       onClick={() => setHolderType("adjustable")}
-                      className={`p-3 rounded-xl text-left rtl:text-right border transition-all cursor-pointer ${
+                      className={`p-3.5 rounded-2xl text-left rtl:text-right border transition-all cursor-pointer ${
                         holderType === "adjustable"
-                          ? "bg-[#faf6ed] border-[#c5a059] ring-1 ring-[#c5a059]"
-                          : "bg-white border-neutral-200 hover:border-neutral-300"
+                          ? "bg-[#faf6ed] border-[#c5a059] ring-2 ring-[#c5a059]/30 shadow-xs"
+                          : "bg-white border-neutral-200 hover:border-[#c5a059]/40 hover:bg-[#faf6ed]/20"
                       }`}
                     >
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-900 mb-1">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-950 mb-1">
                         <Layers size={14} className="text-[#c5a059]" />
                         <span>Luxury Leather</span>
                       </div>
-                      <p className="text-[10px] text-neutral-500">
+                      <p className="text-[10px] text-neutral-500 leading-snug">
                         {lang === "ar" ? "جلد إيطالي فاخر يدوي" : "Handcrafted Italian leather"}
                       </p>
                     </button>
@@ -305,18 +309,18 @@ export default function FindPage() {
                 </div>
 
                 {/* Matched Holder Quick Preview Card */}
-                <div className="mt-5 p-3.5 bg-neutral-50 rounded-xl border border-neutral-200/60 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
+                <div className="mt-5 p-4 bg-neutral-50/80 rounded-2xl border border-neutral-200/80 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
                     <img
                       src={matchedHolder.image}
                       alt={matchedHolder.name}
-                      className="w-14 h-14 object-cover rounded-lg bg-white border border-neutral-200 shrink-0"
+                      className="w-14 h-14 object-contain rounded-xl bg-white border border-neutral-200/90 p-1 shrink-0 shadow-2xs"
                     />
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md border border-[#c5a059]/30">
                         {lang === "ar" ? "الحامل المتطابق" : "Matched Device Holder"}
                       </span>
-                      <h4 className="text-xs font-bold text-neutral-900 mt-1 line-clamp-1">
+                      <h4 className="text-xs font-bold text-neutral-950 mt-1 line-clamp-1">
                         {lang === "ar" ? matchedHolder.name_ar : matchedHolder.name}
                       </h4>
                       <p className="text-[11px] text-neutral-500 font-medium">
@@ -325,8 +329,8 @@ export default function FindPage() {
                     </div>
                   </div>
                   <div className="text-right rtl:text-left shrink-0">
-                    <p className="text-xs font-extrabold text-neutral-900">{formatPrice(matchedHolder.price)}</p>
-                    <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                    <p className="text-xs font-black text-neutral-950">{formatPrice(matchedHolder.price)}</p>
+                    <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
                       <CheckCircle2 size={11} /> {lang === "ar" ? "متوفر بالمخزن" : "In Stock"}
                     </span>
                   </div>
@@ -336,14 +340,14 @@ export default function FindPage() {
 
             {/* Right Column: Live Combo Summary & Add to Cart (5 cols) */}
             <div className="lg:col-span-5 sticky top-24">
-              <div className="bg-white rounded-2xl border border-neutral-200/90 p-6 shadow-md relative">
+              <div className="bg-gradient-to-b from-white via-white to-[#faf6ed]/40 rounded-3xl border border-[#c5a059]/40 p-6 sm:p-7 shadow-[0_4px_25px_rgba(0,0,0,0.04)] relative">
                 {/* Gold Ribbon */}
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#faf6ed] border border-[#c5a059]/40 text-[#9b7832] text-xs font-bold mb-4">
-                  <Sparkles size={13} />
+                  <Sparkles size={13} className="text-[#c5a059]" />
                   <span>{lang === "ar" ? "خصم الباقة المتكاملة: وفر 10%" : "Complete Pair Bundle: Save 10%"}</span>
                 </div>
 
-                <h3 className="text-base font-extrabold text-neutral-950 mb-4">
+                <h3 className="text-base font-black text-neutral-950 mb-4">
                   {lang === "ar" ? "ملخص باقة التثبيت المتكاملة" : "Complete Fitment Pair Summary"}
                 </h3>
 
@@ -351,11 +355,11 @@ export default function FindPage() {
                 <div className="space-y-3 pb-5 border-b border-neutral-100">
                   {/* Part 1 */}
                   <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-neutral-900 text-white text-[10px] font-bold flex items-center justify-center">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-5 h-5 rounded-full bg-neutral-950 text-[#c5a059] border border-[#c5a059]/40 text-[10px] font-bold flex items-center justify-center shrink-0">
                         1
                       </span>
-                      <span className="text-neutral-700 font-medium line-clamp-1 max-w-[200px]">
+                      <span className="text-neutral-800 font-bold line-clamp-1 max-w-[200px]">
                         {lang === "ar" ? matchedBase.name_ar : matchedBase.name}
                       </span>
                     </div>
@@ -364,11 +368,11 @@ export default function FindPage() {
 
                   {/* Part 2 */}
                   <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-[#c5a059] text-neutral-950 text-[10px] font-bold flex items-center justify-center">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-5 h-5 rounded-full bg-[#c5a059] text-neutral-950 text-[10px] font-bold flex items-center justify-center shrink-0">
                         2
                       </span>
-                      <span className="text-neutral-700 font-medium line-clamp-1 max-w-[200px]">
+                      <span className="text-neutral-800 font-bold line-clamp-1 max-w-[200px]">
                         {lang === "ar" ? matchedHolder.name_ar : matchedHolder.name}
                       </span>
                     </div>
@@ -388,17 +392,17 @@ export default function FindPage() {
                   </div>
                   <div className="flex items-center justify-between text-neutral-950 font-extrabold text-base pt-2">
                     <span>{lang === "ar" ? "الإجمالي للباقة:" : "Bundle Total:"}</span>
-                    <span className="text-[#9b7832] text-lg font-black">{formatPrice(comboTotal)}</span>
+                    <span className="text-[#9b7832] text-xl font-black">{formatPrice(comboTotal)}</span>
                   </div>
                 </div>
 
                 {/* Guarantee Badges */}
-                <div className="grid grid-cols-2 gap-2 my-4 text-[10px] text-neutral-600">
-                  <div className="p-2 bg-neutral-50 rounded-lg flex items-center gap-1.5 border border-neutral-100">
+                <div className="grid grid-cols-2 gap-2 my-4 text-[10px] text-neutral-700">
+                  <div className="p-2 bg-[#faf6ed]/60 rounded-xl flex items-center gap-1.5 border border-[#c5a059]/30">
                     <ShieldCheck size={14} className="text-[#c5a059] shrink-0" />
                     <span>{lang === "ar" ? "ضمان استبدال لسنة كاملة" : "1-Year GCC Warranty"}</span>
                   </div>
-                  <div className="p-2 bg-neutral-50 rounded-lg flex items-center gap-1.5 border border-neutral-100">
+                  <div className="p-2 bg-[#faf6ed]/60 rounded-xl flex items-center gap-1.5 border border-[#c5a059]/30">
                     <Zap size={14} className="text-[#c5a059] shrink-0" />
                     <span>{lang === "ar" ? "توصيل خلال 24 ساعة بقطر" : "24h Express Delivery"}</span>
                   </div>
@@ -408,9 +412,9 @@ export default function FindPage() {
                 <button
                   type="button"
                   onClick={handleAddComboToCart}
-                  className="w-full py-3.5 px-4 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-98 cursor-pointer group"
+                  className="w-full py-4 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(197,160,89,0.3)] hover:shadow-md transition-all active:scale-98 cursor-pointer group"
                 >
-                  <ShoppingBag size={16} className="text-[#c5a059]" />
+                  <ShoppingBag size={16} />
                   <span>{lang === "ar" ? "أضف الباقة المتكاملة إلى السلة" : "Add Complete 2-Part Set to Cart"}</span>
                   <ArrowRight size={14} className="rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
                 </button>
