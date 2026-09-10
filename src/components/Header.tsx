@@ -201,24 +201,26 @@ export const Header: React.FC<HeaderProps> = ({
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative h-16 flex items-center px-3 tracking-tight transition-colors ${
+                  className={`relative h-16 flex items-center px-3.5 tracking-tight transition-colors ${
                     active
                       ? "text-neutral-950 font-bold"
-                      : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-50/70 font-medium"
+                      : "text-neutral-600 hover:text-neutral-950 font-medium"
                   }`}
                 >
-                  {link.href === "/find" && (
-                    <Compass
-                      size={13}
-                      className={`mr-1.5 rtl:mr-0 rtl:ml-1.5 transition-colors ${
-                        active ? "text-[#c5a059]" : "text-neutral-400"
-                      }`}
-                    />
-                  )}
-                  <span>{link.name}</span>
-                  {active && (
-                    <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#c5a059] rounded-t-full shadow-[0_-1px_6px_rgba(197,160,89,0.35)]" />
-                  )}
+                  <span className="relative inline-flex items-center gap-1.5 py-0.5">
+                    {link.href === "/find" && (
+                      <Compass
+                        size={13}
+                        className={`transition-colors ${
+                          active ? "text-[#c5a059]" : "text-neutral-400"
+                        }`}
+                      />
+                    )}
+                    <span>{link.name}</span>
+                    {active && (
+                      <span className="absolute -bottom-1 inset-x-0 h-[2.5px] bg-[#c5a059] rounded-full shadow-[0_1px_4px_rgba(197,160,89,0.35)]" />
+                    )}
+                  </span>
                 </Link>
               );
             })}
@@ -236,22 +238,24 @@ export const Header: React.FC<HeaderProps> = ({
                   if (moreCloseTimeout.current) clearTimeout(moreCloseTimeout.current);
                   setMoreOpen((prev) => !prev);
                 }}
-                className={`relative h-16 flex items-center gap-1 px-3 tracking-tight transition-colors cursor-pointer ${
+                className={`relative h-16 flex items-center px-3 tracking-tight transition-colors cursor-pointer ${
                   isMoreActive
                     ? "text-neutral-950 font-bold"
-                    : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-50/70 font-medium"
+                    : "text-neutral-600 hover:text-neutral-950 font-medium"
                 }`}
               >
-                <span>{lang === "ar" ? "المزيد" : "More"}</span>
-                <ChevronDown
-                  size={12}
-                  className={`transition-transform duration-200 ${
-                    moreOpen ? "rotate-180 text-[#c5a059]" : isMoreActive ? "text-[#c5a059]" : "text-neutral-400"
-                  }`}
-                />
-                {isMoreActive && (
-                  <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#c5a059] rounded-t-full shadow-[0_-1px_6px_rgba(197,160,89,0.35)]" />
-                )}
+                <span className="relative inline-flex items-center gap-1 py-0.5">
+                  <span>{lang === "ar" ? "المزيد" : "More"}</span>
+                  <ChevronDown
+                    size={12}
+                    className={`transition-transform duration-200 ${
+                      moreOpen ? "rotate-180 text-[#c5a059]" : isMoreActive ? "text-[#c5a059]" : "text-neutral-400"
+                    }`}
+                  />
+                  {isMoreActive && (
+                    <span className="absolute -bottom-1 inset-x-0 h-[2.5px] bg-[#c5a059] rounded-full shadow-[0_1px_4px_rgba(197,160,89,0.35)]" />
+                  )}
+                </span>
               </button>
 
               {moreOpen && (
