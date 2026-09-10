@@ -130,14 +130,14 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
 
               return (
                 <SwiperSlide key={product.id} className="h-auto">
-                  <div className="h-full flex flex-col justify-between bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/80 hover:border-neutral-900 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-out group">
+                  <div className="h-full flex flex-col justify-between bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/80 hover:border-neutral-900 active:border-[#c5a059] hover:shadow-xl active:shadow-md hover:-translate-y-1.5 active:scale-[0.99] transition-all duration-300 ease-out group select-none">
                     <div>
                       {/* Product Photo Showcase */}
                       <div className="h-48 sm:h-52 w-full rounded-xl mb-4 sm:mb-5 bg-neutral-100 relative">
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-full h-full object-cover object-center rounded-xl group-hover:scale-105 transition-transform duration-500 ease-out"
+                          className="w-full h-full object-cover object-center rounded-xl group-hover:scale-105 group-active:scale-105 transition-transform duration-500 ease-out"
                         />
                       </div>
 
@@ -148,7 +148,7 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                       </div>
 
                       {/* Product Title */}
-                      <h3 className="font-medium text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 transition-colors">
+                      <h3 className="font-medium text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 group-active:text-[#c5a059] transition-colors">
                         {lang === "ar" ? product.name_ar : product.name}
                       </h3>
                     </div>
