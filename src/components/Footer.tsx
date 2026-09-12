@@ -12,6 +12,7 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
   const context = useAppContext();
   const lang = propLang || context.lang;
+  const { hasStickyBottomBar } = context;
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -137,8 +138,12 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
         </div>
       </footer>
 
-      {/* WhatsApp Concierge floating button */}
-      <div className="fixed bottom-5 right-5 rtl:right-auto rtl:left-5 z-40">
+      {/* WhatsApp Concierge floating button (Moves up smoothly when sticky bottom purchase pill is active) */}
+      <div
+        className={`fixed right-5 rtl:right-auto rtl:left-5 z-40 transition-all duration-300 ease-out ${
+          hasStickyBottomBar ? "bottom-20 sm:bottom-5" : "bottom-5"
+        }`}
+      >
         <a
           href="https://api.whatsapp.com/send?phone=97450400314"
           target="_blank"
@@ -163,7 +168,9 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
       <button
         type="button"
         onClick={scrollToTop}
-        className={`fixed bottom-5 right-18 rtl:right-auto rtl:left-18 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-neutral-300 hover:text-white bg-neutral-900/95 hover:bg-neutral-900 border border-neutral-700/80 rounded-full shadow-lg backdrop-blur-xs transition-all duration-300 active-press cursor-pointer ${
+        className={`fixed right-18 rtl:right-auto rtl:left-18 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-neutral-300 hover:text-white bg-neutral-900/95 hover:bg-neutral-900 border border-neutral-700/80 rounded-full shadow-lg backdrop-blur-xs transition-all duration-300 active-press cursor-pointer ${
+          hasStickyBottomBar ? "bottom-20 sm:bottom-5" : "bottom-5"
+        } ${
           showScrollTop
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-4 pointer-events-none"

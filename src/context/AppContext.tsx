@@ -46,6 +46,8 @@ interface AppContextType {
   setCartDrawerOpen: (open: boolean) => void;
   preOrderProduct: Product | null;
   setPreOrderProduct: (product: Product | null) => void;
+  hasStickyBottomBar: boolean;
+  setHasStickyBottomBar: (visible: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -55,6 +57,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [currency, setCurrencyState] = useState<SupportedCurrency>("QAR");
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [preOrderProduct, setPreOrderProduct] = useState<Product | null>(null);
+  const [hasStickyBottomBar, setHasStickyBottomBar] = useState(false);
 
   // Initialize with sample top seller to provide instant rich visual state
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -200,6 +203,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setCartDrawerOpen,
         preOrderProduct,
         setPreOrderProduct,
+        hasStickyBottomBar,
+        setHasStickyBottomBar,
       }}
     >
       {children}

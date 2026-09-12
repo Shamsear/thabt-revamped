@@ -32,7 +32,7 @@ export default function ProductDetailPage({
   const { slug } = resolvedParams;
   const router = useRouter();
 
-  const { lang, formatPrice, addToCart, currency } = useAppContext();
+  const { lang, formatPrice, addToCart, currency, setHasStickyBottomBar } = useAppContext();
 
   // Find product by slug
   const product = MOCK_ALL_PRODUCTS.find((p) => p.slug === slug);
@@ -71,6 +71,14 @@ export default function ProductDetailPage({
     observer.observe(target);
     return () => observer.disconnect();
   }, []);
+
+  // Sync sticky bar state to Footer (so floating WhatsApp moves above it seamlessly)
+  useEffect(() => {
+    setHasStickyBottomBar(showStickyBar);
+    return () => {
+      setHasStickyBottomBar(false);
+    };
+  }, [showStickyBar, setHasStickyBottomBar]);
 
   // Gallery Navigation Functions
   const nextImage = () => {
@@ -306,7 +314,7 @@ export default function ProductDetailPage({
                 </h1>
 
                 {/* Price Row */}
-                <div className="flex items-baseline gap-2.5 mb-3">
+                <div className="flex items-baseline gap-2.5 mb-4">
                   <span className="text-2xl sm:text-3xl font-bold text-neutral-950">
                     {formatPrice(product.price)}
                   </span>
@@ -322,108 +330,108 @@ export default function ProductDetailPage({
                   )}
                 </div>
 
-                {/* Description */}
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed border-t border-neutral-100 pt-3">
-                  {lang === "ar" ? product.description_ar || product.description : product.description}
-                </p>
-              </div>
+                {/* Action Buttons: Stepper + Add to Cart + Instant Buy (Positioned right below price for fast conversion) */}
+                <div className="space-y-2.5 mb-4">
+                  <div className="flex items-center gap-2.5">
+                    {/* Quantity Stepper */}
+                    <div className="flex items-center border border-neutral-200 rounded-xl h-11 bg-white text-xs shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        className="w-9 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-l-xl transition cursor-pointer"
+                        aria-label="Decrease quantity"
+                      >
+                        -
+                      </button>
+                      <span className="w-8 text-center font-semibold text-neutral-900">
+                        {quantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setQuantity((q) => q + 1)}
+                        className="w-9 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-r-xl transition cursor-pointer"
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
 
-              {/* Key Features List */}
-              {product.features && product.features.length > 0 && (
-                <ul className="space-y-1.5 text-xs text-neutral-700 py-1">
-                  {product.features.slice(0, 4).map((feat, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <Check size={13} className="text-[#c5a059] shrink-0 mt-0.5" />
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              {/* Verified Dashboard Fit Badge */}
-              <div className="p-3 rounded-xl bg-neutral-50/80 border border-neutral-100 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2 text-neutral-700">
-                  <Car size={14} className="text-[#c5a059] shrink-0" />
-                  <span>{lang === "ar" ? "تركيب أصلي بدون حفر أو إتلاف ديكور السيارة" : "100% Tool-Free Dashboard Snap Fit"}</span>
-                </div>
-                <span className="text-emerald-700 font-semibold flex items-center gap-1 shrink-0 text-xs">
-                  <CheckCircle2 size={12} />
-                  <span>{lang === "ar" ? "معتمد" : "Verified"}</span>
-                </span>
-              </div>
-
-              {/* Action Buttons: Stepper + Add to Cart + Instant Buy */}
-              <div className="space-y-2.5 pt-1">
-                <div className="flex items-center gap-2.5">
-                  {/* Quantity Stepper */}
-                  <div className="flex items-center border border-neutral-200 rounded-xl h-11 bg-white text-xs shrink-0">
+                    {/* Add to Cart Button */}
                     <button
+                      ref={addToCartRef}
                       type="button"
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="w-9 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-l-xl transition cursor-pointer"
-                      aria-label="Decrease quantity"
+                      onClick={handleAddToCart}
+                      className="flex-1 h-11 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs"
                     >
-                      -
-                    </button>
-                    <span className="w-8 text-center font-semibold text-neutral-900">
-                      {quantity}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((q) => q + 1)}
-                      className="w-9 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-r-xl transition cursor-pointer"
-                      aria-label="Increase quantity"
-                    >
-                      +
+                      {addedSuccess ? (
+                        <>
+                          <Check size={14} />
+                          <span>{lang === "ar" ? "تمت الإضافة بنجاح!" : "Added to Cart!"}</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingBag size={14} />
+                          <span>{lang === "ar" ? "أضف إلى السلة" : "Add to Cart"}</span>
+                        </>
+                      )}
                     </button>
                   </div>
 
-                  {/* Add to Cart Button */}
+                  {/* Instant Buy Button */}
                   <button
-                    ref={addToCartRef}
                     type="button"
-                    onClick={handleAddToCart}
-                    className="flex-1 h-11 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs"
+                    onClick={handleInstantBuy}
+                    className="w-full h-11 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs"
                   >
-                    {addedSuccess ? (
-                      <>
-                        <Check size={14} />
-                        <span>{lang === "ar" ? "تمت الإضافة بنجاح!" : "Added to Cart!"}</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag size={14} />
-                        <span>{lang === "ar" ? "أضف إلى السلة" : "Add to Cart"}</span>
-                      </>
-                    )}
+                    <Zap size={14} />
+                    <span>{lang === "ar" ? "شراء فوري مباشر" : "Instant Buy"}</span>
                   </button>
                 </div>
 
-                {/* Instant Buy Button */}
-                <button
-                  type="button"
-                  onClick={handleInstantBuy}
-                  className="w-full h-11 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs"
-                >
-                  <Zap size={14} />
-                  <span>{lang === "ar" ? "شراء فوري مباشر" : "Instant Buy"}</span>
-                </button>
-              </div>
+                {/* Minimalist Trust Badges */}
+                <div className="grid grid-cols-3 gap-2 py-3 border-y border-neutral-100 text-center text-xs text-neutral-600 mb-4">
+                  <div className="flex items-center justify-center gap-1.5 py-0.5">
+                    <ShieldCheck size={13} className="text-[#c5a059]" />
+                    <span className="text-[11px] sm:text-xs">{lang === "ar" ? "ضمان سنة" : "1-Yr Warranty"}</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-1.5 py-0.5 border-x border-neutral-100">
+                    <Truck size={13} className="text-[#c5a059]" />
+                    <span className="text-[11px] sm:text-xs">{lang === "ar" ? "توصيل سريع" : "Fast Shipping"}</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-1.5 py-0.5">
+                    <RotateCcw size={13} className="text-[#c5a059]" />
+                    <span className="text-[11px] sm:text-xs">{lang === "ar" ? "إرجاع 14 يوم" : "14-Day Return"}</span>
+                  </div>
+                </div>
 
-              {/* Minimalist Trust Badges */}
-              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-neutral-100 text-center text-xs text-neutral-600">
-                <div className="flex items-center justify-center gap-1.5 py-0.5">
-                  <ShieldCheck size={13} className="text-[#c5a059]" />
-                  <span className="text-[11px] sm:text-xs">{lang === "ar" ? "ضمان سنة" : "1-Yr Warranty"}</span>
+                {/* Verified Dashboard Fit Badge */}
+                <div className="p-3 rounded-xl bg-neutral-50/80 border border-neutral-100 flex items-center justify-between text-xs mb-4">
+                  <div className="flex items-center gap-2 text-neutral-700">
+                    <Car size={14} className="text-[#c5a059] shrink-0" />
+                    <span>{lang === "ar" ? "تركيب أصلي بدون حفر أو إتلاف ديكور السيارة" : "100% Tool-Free Dashboard Snap Fit"}</span>
+                  </div>
+                  <span className="text-emerald-700 font-semibold flex items-center gap-1 shrink-0 text-xs">
+                    <CheckCircle2 size={12} />
+                    <span>{lang === "ar" ? "معتمد" : "Verified"}</span>
+                  </span>
                 </div>
-                <div className="flex items-center justify-center gap-1.5 py-0.5 border-x border-neutral-100">
-                  <Truck size={13} className="text-[#c5a059]" />
-                  <span className="text-[11px] sm:text-xs">{lang === "ar" ? "توصيل سريع" : "Fast Shipping"}</span>
-                </div>
-                <div className="flex items-center justify-center gap-1.5 py-0.5">
-                  <RotateCcw size={13} className="text-[#c5a059]" />
-                  <span className="text-[11px] sm:text-xs">{lang === "ar" ? "إرجاع 14 يوم" : "14-Day Return"}</span>
-                </div>
+
+                {/* Description */}
+                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed mb-3">
+                  {lang === "ar" ? product.description_ar || product.description : product.description}
+                </p>
+
+                {/* Key Features List */}
+                {product.features && product.features.length > 0 && (
+                  <ul className="space-y-1.5 text-xs text-neutral-700 pb-2">
+                    {product.features.slice(0, 4).map((feat, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <Check size={13} className="text-[#c5a059] shrink-0 mt-0.5" />
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
               {/* Complete System Pairing Banner */}
