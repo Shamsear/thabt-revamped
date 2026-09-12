@@ -189,12 +189,35 @@
   animation: gold-glow-pulse 4s ease-in-out infinite;
 }
 
-/* Tactile Active States */
+/* Tactile Active States & Illuminated Link Feedback */
 .active-press {
-  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease;
 }
 .active-press:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
+  opacity: 1 !important;
+}
+
+/* Ensure all links and interactive cards stay fully illuminated and never disappear when clicked */
+a, button, [role="button"], .group {
+  -webkit-tap-highlight-color: rgba(197, 160, 89, 0.15);
+}
+
+a:active, button:active, [role="button"]:active {
+  opacity: 1 !important;
+}
+
+/* Touch Device Active Tap Enhancements: Provides immediate gold illumination feedback when tapped on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .group:active {
+    border-color: #c5a059 !important;
+    box-shadow: 0 0 0 1px rgba(197, 160, 89, 0.4), 0 4px 16px rgba(197, 160, 89, 0.12);
+    opacity: 1 !important;
+  }
+  .group:active img {
+    transform: scale(1.03);
+    opacity: 1 !important;
+  }
 }
 
 /* GPU-Accelerated Link Underline Animation */
@@ -219,16 +242,6 @@
 }
 .hover-underline-gold:hover::after {
   transform: scaleX(1);
-}
-
-/* Touch Device Active Tap Enhancements: Provides immediate visual feedback when tapped on mobile */
-@media (hover: none) and (pointer: coarse) {
-  .group:active img {
-    transform: scale(1.05);
-  }
-  .group:active {
-    border-color: #c5a059 !important;
-  }
 }
 
 /* Skeleton Shimmer Loading Placeholder */

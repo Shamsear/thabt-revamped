@@ -336,9 +336,9 @@ function SearchCatalogContent() {
                       </Link>
 
                       {/* Model SKU & Stock */}
-                      <div className="flex items-center justify-between text-[10px] sm:text-xs font-mono text-neutral-500 mb-1">
-                        <span className="truncate max-w-[60px] sm:max-w-none">{product.product_id}</span>
-                        <span className={`shrink-0 ${inStock ? "text-neutral-600" : "text-[#b38e46] font-medium"}`}>
+                      <div className="flex items-center justify-between text-xs sm:text-xs font-mono text-neutral-500 mb-1">
+                        <span className="truncate max-w-[70px] sm:max-w-none">{product.product_id}</span>
+                        <span className={`shrink-0 ${inStock ? "text-neutral-600 font-medium" : "text-[#b38e46] font-semibold"}`}>
                           {inStock
                             ? lang === "ar"
                               ? "متوفر"
@@ -351,18 +351,18 @@ function SearchCatalogContent() {
 
                       {/* Product Title */}
                       <Link href={`/products/${product.slug}`}>
-                        <h3 className="font-medium text-xs sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-1.5 sm:mb-2 group-hover:text-neutral-950 transition-colors">
+                        <h3 className="font-semibold text-xs sm:text-base text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 transition-colors">
                           {lang === "ar" ? product.name_ar : product.name}
                         </h3>
                       </Link>
                     </div>
 
                     {/* Pricing & Add to Bag */}
-                    <div className="pt-2 sm:pt-4 border-t border-neutral-100 mt-2 sm:mt-3 flex items-center justify-between gap-1">
+                    <div className="pt-2.5 sm:pt-4 border-t border-neutral-100 mt-2 sm:mt-3 flex items-center justify-between gap-1.5">
                       <div className="min-w-0">
-                        <span className="text-xs sm:text-base font-semibold text-neutral-900 block truncate">
+                        <span className="text-sm sm:text-lg font-bold text-neutral-900 block truncate">
                           {product.price}{" "}
-                          <span className="text-[10px] sm:text-xs font-medium text-[#c5a059]">{currency}</span>
+                          <span className="text-xs font-semibold text-[#c5a059]">{currency}</span>
                         </span>
                       </div>
 
@@ -370,7 +370,7 @@ function SearchCatalogContent() {
                         <button
                           type="button"
                           onClick={() => handleAddClick(product)}
-                          className={`flex items-center justify-center gap-1 text-[11px] sm:text-xs font-semibold py-1.5 px-2 sm:py-2 sm:px-3.5 rounded-lg transition-all duration-200 cursor-pointer shrink-0 ${
+                          className={`flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-4 rounded-xl transition-all duration-200 cursor-pointer shrink-0 active-press ${
                             isAdded
                               ? "bg-[#25D366] text-white"
                               : "bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950"
@@ -378,12 +378,12 @@ function SearchCatalogContent() {
                         >
                           {isAdded ? (
                             <>
-                              <Check size={12} className="stroke-[2.5]" />
-                              <span className="hidden xs:inline">{lang === "ar" ? "تم" : "Added"}</span>
+                              <Check size={13} className="stroke-[2.5]" />
+                              <span>{lang === "ar" ? "تم" : "Added"}</span>
                             </>
                           ) : (
                             <>
-                              <Plus size={12} />
+                              <Plus size={13} />
                               <span>{lang === "ar" ? "أضف" : "Add"}</span>
                             </>
                           )}
@@ -391,7 +391,7 @@ function SearchCatalogContent() {
                       ) : (
                         <Link
                           href={`/products/${product.slug}`}
-                          className="text-[11px] sm:text-xs font-semibold py-1.5 px-2 sm:py-2 sm:px-3 rounded-lg border border-neutral-200 text-neutral-700 hover:border-neutral-900 transition shrink-0"
+                          className="text-xs sm:text-sm font-semibold py-2 px-3 rounded-xl border border-neutral-200 text-neutral-700 hover:border-neutral-900 transition shrink-0"
                         >
                           {lang === "ar" ? "تفاصيل" : "Details"}
                         </Link>

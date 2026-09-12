@@ -27,6 +27,9 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
+import { Suspense } from "react";
+import { NavigationManager } from "@/components/NavigationManager";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -50,6 +53,9 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
       </head>
       <body className="antialiased">
+        <Suspense fallback={null}>
+          <NavigationManager />
+        </Suspense>
         <AppProvider>
           {children}
           <GlobalModals />

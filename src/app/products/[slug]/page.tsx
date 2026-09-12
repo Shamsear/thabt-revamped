@@ -20,10 +20,13 @@ import {
   RotateCcw,
   Check,
   ZoomIn,
+  ZoomOut,
+  Maximize2,
   X,
   Plus,
   Share2,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ProductDetailPage({
   params,
@@ -56,10 +59,38 @@ export default function ProductDetailPage({
   const images = product.images && product.images.length > 0 ? product.images : [product.image];
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [isZoomedIn, setIsZoomedIn] = useState(false);
   const activeImage = images[activeImageIndex] || images[0];
   const [quantity, setQuantity] = useState(1);
   const [addedSuccess, setAddedSuccess] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Keyboard navigation and body scroll lock for Zoom Modal
+  useEffect(() => {
+    if (!isZoomOpen) {
+      setIsZoomedIn(false);
+      return;
+    }
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsZoomOpen(false);
+      } else if (e.key === "ArrowRight") {
+        lang === "ar" ? prevImage() : nextImage();
+      } else if (e.key === "ArrowLeft") {
+        lang === "ar" ? nextImage() : prevImage();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isZoomOpen, lang, images.length]);
 
   const handleShare = async () => {
     const shareData = {
@@ -233,7 +264,7 @@ export default function ProductDetailPage({
               {/* Main Image Display with Touch Swipe and Left/Right Navigation Buttons */}
               <div
                 onClick={() => setIsZoomOpen(true)}
-                className="aspect-square max-h-[360px] sm:max-h-[460px] w-full bg-neutral-50/70 rounded-2xl border border-neutral-100 overflow-hidden flex items-center justify-center px-6 sm:px-12 py-4 sm:py-8 relative select-none touch-pan-y cursor-zoom-in group"
+                className="aspect-square max-h-[360px] sm:max-h-[460px] w-full flex items-center justify-center relative select-none touch-pan-y cursor-zoom-in"
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
@@ -243,7 +274,7 @@ export default function ProductDetailPage({
                   key={activeImageIndex}
                   src={activeImage}
                   alt={`${product.name} - View ${activeImageIndex + 1}`}
-                  className="max-h-full max-w-full object-contain transition-all duration-300 pointer-events-none select-none group-hover:scale-105"
+                  className="max-h-full max-w-full object-contain pointer-events-none select-none"
                   draggable={false}
                   onError={(e) => {
                     e.currentTarget.src = "/admin/banners/accessories.jpg";
@@ -252,13 +283,13 @@ export default function ProductDetailPage({
 
                 {/* Special Offer Badge */}
                 {product.original_price && (
-                  <span className="absolute top-3 left-3 rtl:left-auto rtl:right-3 bg-neutral-900 text-[#c5a059] text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-2xs z-10 pointer-events-none">
+                  <span className="absolute top-2 left-2 rtl:left-auto rtl:right-2 bg-neutral-900 text-[#c5a059] text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-2xs z-10 pointer-events-none">
                     {lang === "ar" ? "خصم خاص" : "Special Offer"}
                   </span>
                 )}
 
                 {/* Counter & Zoom Indicator Badge */}
-                <div className="absolute top-3 right-3 rtl:right-auto rtl:left-3 flex items-center gap-1.5 z-10 pointer-events-none">
+                <div className="absolute top-2 right-2 rtl:right-auto rtl:left-2 flex items-center gap-1.5 z-10 pointer-events-none">
                   <span className="bg-neutral-900/75 backdrop-blur-xs text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded-full">
                     {activeImageIndex + 1} / {images.length}
                   </span>
@@ -267,7 +298,7 @@ export default function ProductDetailPage({
                   </span>
                 </div>
 
-                {/* Previous & Next Arrow Buttons on the Image */}
+                {/* Previous & Next Arrow Buttons on the Image (Sleek, minimal, taking zero space) */}
                 {images.length > 1 && (
                   <>
                     <button
@@ -276,11 +307,11 @@ export default function ProductDetailPage({
                         e.stopPropagation();
                         lang === "ar" ? nextImage() : prevImage();
                       }}
-                      className="absolute left-2.5 sm:left-3.5 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20 outline-none focus:outline-none"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-neutral-400 hover:text-neutral-950 transition-all z-20 outline-none focus:outline-none cursor-pointer"
                       aria-label={lang === "ar" ? "الصورة السابقة" : "Previous image"}
                       title={lang === "ar" ? "السابق" : "Previous"}
                     >
-                      <ChevronLeft size={16} className="rtl:rotate-180" />
+                      <ChevronLeft size={24} className="rtl:rotate-180" />
                     </button>
 
                     <button
@@ -289,15 +320,15 @@ export default function ProductDetailPage({
                         e.stopPropagation();
                         lang === "ar" ? prevImage() : nextImage();
                       }}
-                      className="absolute right-2.5 sm:right-3.5 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20 outline-none focus:outline-none"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-neutral-400 hover:text-neutral-950 transition-all z-20 outline-none focus:outline-none cursor-pointer"
                       aria-label={lang === "ar" ? "الصورة التالية" : "Next image"}
                       title={lang === "ar" ? "التالي" : "Next"}
                     >
-                      <ChevronRight size={16} className="rtl:rotate-180" />
+                      <ChevronRight size={24} className="rtl:rotate-180" />
                     </button>
 
                     {/* Pagination Indicator Dots */}
-                    <div className="absolute bottom-2.5 sm:bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 bg-neutral-950/40 backdrop-blur-xs px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">
+                    <div className="absolute bottom-1.5 sm:bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 bg-neutral-950/40 backdrop-blur-xs px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">
                       {images.map((_, idx) => (
                         <button
                           key={idx}
@@ -317,30 +348,31 @@ export default function ProductDetailPage({
                 )}
               </div>
 
-              {/* Thumbnail Selector */}
+              {/* Bottom Thumbnails (Clean, borderless, highlight-free, Left-aligned) */}
               {images.length > 1 && (
-                <div className="flex items-center gap-2 sm:gap-2.5 overflow-x-auto py-1 sm:py-2 px-1 scrollbar-none">
-                  {images.map((img, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setActiveImageIndex(idx)}
-                      className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-neutral-50 shrink-0 transition-all cursor-pointer relative overflow-hidden outline-none focus:outline-none ${
-                        activeImageIndex === idx
-                          ? "border-2 border-[#c5a059] shadow-sm scale-102"
-                          : "border border-neutral-200/80 hover:border-neutral-400 opacity-75 hover:opacity-100"
-                      }`}
-                    >
-                      <img
-                        src={img}
-                        alt={`Thumbnail ${idx + 1}`}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = "/admin/banners/accessories.jpg";
-                        }}
-                      />
-                    </button>
-                  ))}
+                <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto py-2 px-1 scrollbar-none justify-start">
+                  {images.map((img, idx) => {
+                    const isSelected = activeImageIndex === idx;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setActiveImageIndex(idx)}
+                        className={`w-14 h-14 sm:w-16 sm:h-16 shrink-0 transition-opacity duration-150 cursor-pointer relative outline-none focus:outline-none p-0.5 ${
+                          isSelected ? "opacity-100" : "opacity-40 hover:opacity-75"
+                        }`}
+                      >
+                        <img
+                          src={img}
+                          alt={`Thumbnail ${idx + 1}`}
+                          className="w-full h-full object-contain"
+                          onError={(e) => {
+                            e.currentTarget.src = "/admin/banners/accessories.jpg";
+                          }}
+                        />
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -349,9 +381,9 @@ export default function ProductDetailPage({
             <div className="lg:col-span-6 space-y-4">
               <div>
                 {/* SKU, Stock & Share Action */}
-                <div className="flex items-center justify-between gap-2 text-xs mb-1.5">
+                <div className="flex items-center justify-between gap-2 text-xs sm:text-sm mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-neutral-400">{product.product_id}</span>
+                    <span className="font-mono text-neutral-400 font-medium">{product.product_id}</span>
                     <span className="text-neutral-300">•</span>
                     <span
                       className={`font-semibold flex items-center gap-1 ${
@@ -360,7 +392,7 @@ export default function ProductDetailPage({
                     >
                       {product.stock > 0 ? (
                         <>
-                          <CheckCircle2 size={12} />
+                          <CheckCircle2 size={13} />
                           <span>{lang === "ar" ? "متوفر بالمخزن" : "In Stock"}</span>
                         </>
                       ) : (
@@ -374,16 +406,16 @@ export default function ProductDetailPage({
                     type="button"
                     onClick={handleShare}
                     aria-label="Share product"
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 transition-colors text-[11px] font-medium cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900 transition-colors text-xs font-semibold cursor-pointer"
                   >
                     {copiedLink ? (
                       <>
-                        <Check size={12} className="text-emerald-600 stroke-[2.5]" />
-                        <span className="text-emerald-700 font-semibold">{lang === "ar" ? "تم النسخ!" : "Copied!"}</span>
+                        <Check size={13} className="text-emerald-600 stroke-[2.5]" />
+                        <span className="text-emerald-700 font-bold">{lang === "ar" ? "تم النسخ!" : "Copied!"}</span>
                       </>
                     ) : (
                       <>
-                        <Share2 size={12} />
+                        <Share2 size={13} />
                         <span>{lang === "ar" ? "مشاركة" : "Share"}</span>
                       </>
                     )}
@@ -391,47 +423,47 @@ export default function ProductDetailPage({
                 </div>
 
                 {/* Product Title */}
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-neutral-950 leading-snug mb-2">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950 leading-snug mb-3">
                   {lang === "ar" ? product.name_ar : product.name}
                 </h1>
 
                 {/* Price Row */}
-                <div className="flex items-baseline gap-2.5 mb-4">
-                  <span className="text-2xl sm:text-3xl font-bold text-neutral-950">
+                <div className="flex items-baseline gap-2.5 mb-5">
+                  <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-950">
                     {formatPrice(product.price)}
                   </span>
                   {product.original_price && (
-                    <span className="text-sm text-neutral-400 line-through">
+                    <span className="text-sm sm:text-base text-neutral-400 line-through">
                       {formatPrice(product.original_price)}
                     </span>
                   )}
                   {product.original_price && (
-                    <span className="text-xs font-semibold text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md border border-[#c5a059]/20">
+                    <span className="text-xs font-semibold text-[#9b7832] bg-[#faf6ed] px-2.5 py-0.5 rounded-md border border-[#c5a059]/20">
                       {Math.round(((product.original_price - product.price) / product.original_price) * 100)}% {lang === "ar" ? "خصم" : "OFF"}
                     </span>
                   )}
                 </div>
 
                 {/* Action Buttons: Stepper + Add to Cart + Instant Buy (Positioned right below price for fast conversion) */}
-                <div className="space-y-2.5 mb-4">
+                <div className="space-y-3 mb-5">
                   <div className="flex items-center gap-2.5">
                     {/* Quantity Stepper */}
-                    <div className="flex items-center border border-neutral-200 rounded-xl h-11 bg-white text-xs shrink-0">
+                    <div className="flex items-center border border-neutral-200 rounded-xl h-12 bg-white text-sm shrink-0">
                       <button
                         type="button"
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        className="w-9 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-l-xl transition cursor-pointer"
+                        className="w-10 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-l-xl transition cursor-pointer text-base"
                         aria-label="Decrease quantity"
                       >
                         -
                       </button>
-                      <span className="w-8 text-center font-semibold text-neutral-900">
+                      <span className="w-9 text-center font-bold text-neutral-900 text-sm">
                         {quantity}
                       </span>
                       <button
                         type="button"
                         onClick={() => setQuantity((q) => q + 1)}
-                        className="w-9 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-r-xl transition cursor-pointer"
+                        className="w-10 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-r-xl transition cursor-pointer text-base"
                         aria-label="Increase quantity"
                       >
                         +
@@ -443,16 +475,16 @@ export default function ProductDetailPage({
                       ref={addToCartRef}
                       type="button"
                       onClick={handleAddToCart}
-                      className="flex-1 h-11 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs"
+                      className="flex-1 h-12 px-5 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-sm font-semibold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs active-press"
                     >
                       {addedSuccess ? (
                         <>
-                          <Check size={14} />
+                          <Check size={16} />
                           <span>{lang === "ar" ? "تمت الإضافة بنجاح!" : "Added to Cart!"}</span>
                         </>
                       ) : (
                         <>
-                          <ShoppingBag size={14} />
+                          <ShoppingBag size={16} />
                           <span>{lang === "ar" ? "أضف إلى السلة" : "Add to Cart"}</span>
                         </>
                       )}
@@ -463,52 +495,52 @@ export default function ProductDetailPage({
                   <button
                     type="button"
                     onClick={handleInstantBuy}
-                    className="w-full h-11 px-4 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs"
+                    className="w-full h-12 px-5 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-sm font-bold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs active-press"
                   >
-                    <Zap size={14} />
+                    <Zap size={16} />
                     <span>{lang === "ar" ? "شراء فوري مباشر" : "Instant Buy"}</span>
                   </button>
                 </div>
 
                 {/* Minimalist Trust Badges */}
-                <div className="grid grid-cols-3 gap-2 py-3 border-y border-neutral-100 text-center text-xs text-neutral-600 mb-4">
+                <div className="grid grid-cols-3 gap-2 py-3.5 border-y border-neutral-100 text-center text-xs sm:text-sm text-neutral-600 mb-4">
                   <div className="flex items-center justify-center gap-1.5 py-0.5">
-                    <ShieldCheck size={13} className="text-[#c5a059]" />
-                    <span className="text-[11px] sm:text-xs">{lang === "ar" ? "ضمان سنة" : "1-Yr Warranty"}</span>
+                    <ShieldCheck size={14} className="text-[#c5a059]" />
+                    <span className="text-xs sm:text-xs font-medium">{lang === "ar" ? "ضمان سنة" : "1-Yr Warranty"}</span>
                   </div>
                   <div className="flex items-center justify-center gap-1.5 py-0.5 border-x border-neutral-100">
-                    <Truck size={13} className="text-[#c5a059]" />
-                    <span className="text-[11px] sm:text-xs">{lang === "ar" ? "توصيل سريع" : "Fast Shipping"}</span>
+                    <Truck size={14} className="text-[#c5a059]" />
+                    <span className="text-xs sm:text-xs font-medium">{lang === "ar" ? "توصيل سريع" : "Fast Shipping"}</span>
                   </div>
                   <div className="flex items-center justify-center gap-1.5 py-0.5">
-                    <RotateCcw size={13} className="text-[#c5a059]" />
-                    <span className="text-[11px] sm:text-xs">{lang === "ar" ? "إرجاع 14 يوم" : "14-Day Return"}</span>
+                    <RotateCcw size={14} className="text-[#c5a059]" />
+                    <span className="text-xs sm:text-xs font-medium">{lang === "ar" ? "إرجاع 14 يوم" : "14-Day Return"}</span>
                   </div>
                 </div>
 
                 {/* Verified Dashboard Fit Badge */}
-                <div className="p-3 rounded-xl bg-neutral-50/80 border border-neutral-100 flex items-center justify-between text-xs mb-4">
+                <div className="p-3.5 rounded-xl bg-neutral-50/80 border border-neutral-100 flex items-center justify-between text-xs sm:text-sm mb-4">
                   <div className="flex items-center gap-2 text-neutral-700">
-                    <Car size={14} className="text-[#c5a059] shrink-0" />
-                    <span>{lang === "ar" ? "تركيب أصلي بدون حفر أو إتلاف ديكور السيارة" : "100% Tool-Free Dashboard Snap Fit"}</span>
+                    <Car size={16} className="text-[#c5a059] shrink-0" />
+                    <span className="font-medium">{lang === "ar" ? "تركيب أصلي بدون حفر أو إتلاف ديكور السيارة" : "100% Tool-Free Dashboard Snap Fit"}</span>
                   </div>
-                  <span className="text-emerald-700 font-semibold flex items-center gap-1 shrink-0 text-xs">
-                    <CheckCircle2 size={12} />
+                  <span className="text-emerald-700 font-bold flex items-center gap-1 shrink-0 text-xs sm:text-sm">
+                    <CheckCircle2 size={14} />
                     <span>{lang === "ar" ? "معتمد" : "Verified"}</span>
                   </span>
                 </div>
 
                 {/* Description */}
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed mb-3">
+                <p className="text-sm sm:text-base text-neutral-600 leading-relaxed mb-4">
                   {lang === "ar" ? product.description_ar || product.description : product.description}
                 </p>
 
                 {/* Key Features List */}
                 {product.features && product.features.length > 0 && (
-                  <ul className="space-y-1.5 text-xs text-neutral-700 pb-2">
+                  <ul className="space-y-2 text-xs sm:text-sm text-neutral-700 pb-2">
                     {product.features.slice(0, 4).map((feat, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <Check size={13} className="text-[#c5a059] shrink-0 mt-0.5" />
+                        <Check size={14} className="text-[#c5a059] shrink-0 mt-0.5" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -670,15 +702,15 @@ export default function ProductDetailPage({
           <img
             src={activeImage}
             alt={product.name}
-            className="w-10 h-10 object-contain rounded-xl bg-neutral-50 border border-neutral-200/60 p-1 shrink-0"
+            className="w-11 h-11 object-contain rounded-xl bg-neutral-50 border border-neutral-200/60 p-1 shrink-0"
           />
           <div className="min-w-0">
-            <h4 className="text-xs font-semibold text-neutral-900 truncate">
+            <h4 className="text-sm font-bold text-neutral-900 truncate">
               {lang === "ar" ? product.name_ar : product.name}
             </h4>
-            <span className="text-xs font-bold text-neutral-950">
+            <span className="text-sm font-extrabold text-neutral-950">
               {product.price}{" "}
-              <span className="text-[10px] text-[#c5a059] font-medium">{currency}</span>
+              <span className="text-xs text-[#c5a059] font-bold">{currency}</span>
             </span>
           </div>
         </div>
@@ -694,71 +726,164 @@ export default function ProductDetailPage({
         >
           {addedSuccess ? (
             <>
-              <Check size={14} className="stroke-[2.5]" />
+              <Check size={15} className="stroke-[2.5]" />
               <span>{lang === "ar" ? "تمت الإضافة" : "Added"}</span>
             </>
           ) : (
             <>
-              <ShoppingBag size={14} />
+              <ShoppingBag size={15} />
               <span>{lang === "ar" ? "أضف للسلة" : "Add to Bag"}</span>
             </>
           )}
         </button>
       </div>
 
-      {/* Fullscreen Image Lightbox Modal */}
-      {isZoomOpen && (
-        <div
-          onClick={() => setIsZoomOpen(false)}
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-w-2xl w-full max-h-[85vh] flex flex-col items-center justify-center cursor-default"
+      {/* Studio Image Zoom Lightbox */}
+      <AnimatePresence>
+        {isZoomOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 bg-neutral-950/96 backdrop-blur-xl flex flex-col justify-between p-3 sm:p-6 select-none touch-pan-y"
+            onClick={() => setIsZoomOpen(false)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
-            {/* Close Button */}
-            <button
-              type="button"
-              onClick={() => setIsZoomOpen(false)}
-              className="absolute -top-12 right-0 text-white/80 hover:text-white p-2 rounded-full hover:bg-white/10 transition cursor-pointer"
+            {/* Top Toolbar */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center justify-between gap-3 w-full max-w-6xl mx-auto z-20"
             >
-              <X size={24} />
-            </button>
-
-            {/* High-res Image */}
-            <div className="w-full aspect-square max-h-[70vh] flex items-center justify-center p-4 bg-white/5 rounded-2xl border border-white/10">
-              <img
-                src={activeImage}
-                alt={product.name}
-                className="max-h-full max-w-full object-contain"
-              />
-            </div>
-
-            {/* Lightbox Controls */}
-            {images.length > 1 && (
-              <div className="flex items-center gap-3 mt-4">
-                <button
-                  type="button"
-                  onClick={() => (lang === "ar" ? nextImage() : prevImage())}
-                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition"
-                >
-                  <ChevronLeft size={20} className="rtl:rotate-180" />
-                </button>
-                <span className="text-white text-xs font-mono">
-                  {activeImageIndex + 1} / {images.length}
+              {/* Product Info */}
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="font-mono text-[11px] text-[#c5a059] bg-[#c5a059]/15 px-2 py-0.5 rounded-md shrink-0">
+                  {product.product_id}
                 </span>
+                <h3 className="text-xs sm:text-sm font-semibold text-white truncate max-w-[180px] sm:max-w-md">
+                  {lang === "ar" ? product.name_ar : product.name}
+                </h3>
+              </div>
+
+              {/* Counter Pill */}
+              <div className="hidden xs:flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-mono">
+                <span>{activeImageIndex + 1}</span>
+                <span className="text-neutral-500">/</span>
+                <span>{images.length}</span>
+              </div>
+
+              {/* Actions: Zoom Scale Toggle & Close Button */}
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   type="button"
-                  onClick={() => (lang === "ar" ? prevImage() : nextImage())}
-                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition"
+                  onClick={() => setIsZoomedIn((prev) => !prev)}
+                  className="p-2 rounded-full text-neutral-300 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                  title={isZoomedIn ? (lang === "ar" ? "تصغير" : "Zoom out") : (lang === "ar" ? "تكبير" : "Zoom in")}
+                  aria-label="Toggle zoom scale"
                 >
-                  <ChevronRight size={20} className="rtl:rotate-180" />
+                  {isZoomedIn ? <ZoomOut size={18} /> : <ZoomIn size={18} />}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsZoomOpen(false)}
+                  className="p-2 rounded-full text-neutral-300 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                  title={lang === "ar" ? "إغلاق" : "Close"}
+                  aria-label="Close zoom"
+                >
+                  <X size={20} />
                 </button>
               </div>
+            </div>
+
+            {/* Central Studio Image Stage */}
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsZoomedIn((prev) => !prev);
+              }}
+              className={`relative flex-1 flex items-center justify-center my-2 sm:my-4 overflow-hidden ${
+                isZoomedIn ? "cursor-zoom-out" : "cursor-zoom-in"
+              }`}
+            >
+              <motion.img
+                key={activeImageIndex}
+                initial={{ opacity: 0.8, scale: 0.98 }}
+                animate={{
+                  opacity: 1,
+                  scale: isZoomedIn ? 1.6 : 1,
+                }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                src={activeImage}
+                alt={product.name}
+                className="max-h-[72vh] sm:max-h-[76vh] max-w-[92vw] sm:max-w-[85vw] object-contain select-none pointer-events-auto"
+                draggable={false}
+              />
+
+              {/* Left & Right Edge Chevrons */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      lang === "ar" ? nextImage() : prevImage();
+                    }}
+                    className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 p-3 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition cursor-pointer z-30 outline-none"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={28} className="rtl:rotate-180 drop-shadow-md" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      lang === "ar" ? prevImage() : nextImage();
+                    }}
+                    className="absolute right-1 sm:right-4 top-1/2 -translate-y-1/2 p-3 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition cursor-pointer z-30 outline-none"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={28} className="rtl:rotate-180 drop-shadow-md" />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Bottom Thumbnail Strip */}
+            {images.length > 1 && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center justify-center gap-2.5 sm:gap-3 overflow-x-auto py-1 scrollbar-none z-20"
+              >
+                {images.map((img, idx) => {
+                  const isSelected = activeImageIndex === idx;
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl shrink-0 transition-all cursor-pointer p-1 ${
+                        isSelected
+                          ? "opacity-100 ring-2 ring-[#c5a059] bg-white/10 scale-105"
+                          : "opacity-40 hover:opacity-80 bg-white/5"
+                      }`}
+                    >
+                      <img
+                        src={img}
+                        alt={`Thumbnail ${idx + 1}`}
+                        className="w-full h-full object-contain"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
             )}
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Footer />
     </div>

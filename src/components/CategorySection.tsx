@@ -17,10 +17,10 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ categories, la
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-12 gap-3 sm:gap-4">
           <div>
-            <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2">
+            <p className="text-xs sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2">
               {lang === "ar" ? "تشكيلة المنتجات" : "Product Catalog"}
             </p>
-            <h2 className="text-xl sm:text-4xl font-light tracking-tight text-neutral-900">
+            <h2 className="text-2xl sm:text-4xl font-light tracking-tight text-neutral-900">
               {lang === "ar" ? (
                 <>
                   استكشف <span className="font-semibold">فئات التثبيت</span>
@@ -46,14 +46,14 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ categories, la
               key={cat.id}
               id={cat.slug}
               href={`/categories/${cat.slug}`}
-              className="group bg-neutral-50/60 hover:bg-white active:bg-white rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-neutral-200/60 hover:border-neutral-300 active:border-[#c5a059] hover:shadow-lg active:shadow-md hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 ease-out flex flex-col justify-between scroll-mt-24 cursor-pointer select-none"
+              className="group bg-neutral-50/60 hover:bg-white active:bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-neutral-200/60 hover:border-neutral-300 active:border-[#c5a059] hover:shadow-lg active:shadow-md hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 ease-out flex flex-col justify-between scroll-mt-24 cursor-pointer select-none"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs sm:text-xs font-semibold text-neutral-900 group-hover:text-[#c5a059] group-active:text-[#c5a059] transition-colors duration-200 truncate">
+                <span className="text-sm sm:text-base font-bold text-neutral-900 group-hover:text-[#c5a059] group-active:text-[#c5a059] transition-colors duration-200 truncate">
                   {lang === "ar" ? cat.category_ar : cat.category}
                 </span>
                 <ArrowUpRight
-                  size={14}
+                  size={15}
                   className="text-neutral-400 group-hover:text-[#c5a059] group-active:text-[#c5a059] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200 shrink-0"
                 />
               </div>
@@ -66,7 +66,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ categories, la
                 />
               </div>
 
-              <p className="text-[11px] sm:text-xs text-neutral-500 line-clamp-2 leading-relaxed">
+              <p className="text-xs sm:text-sm text-neutral-500 line-clamp-2 leading-relaxed">
                 {lang === "ar" ? cat.descriptionar : cat.description}
               </p>
             </Link>

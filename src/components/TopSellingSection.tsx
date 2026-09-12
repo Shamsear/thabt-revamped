@@ -70,21 +70,21 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                 : "Rigid dash bases and MagSafe inductive holders tested for zero wobble."}
             </p>
 
-            {/* Quiet, Minimalist Navigation Buttons with Subtle Gold Hover */}
-            <div className="flex items-center gap-2 shrink-0">
+            {/* Sleek, Minimalist Navigation Buttons */}
+            <div className="flex items-center gap-1 shrink-0">
               <button
                 type="button"
-                className="custom-swiper-prev w-9 h-9 rounded-full border border-neutral-200 hover:border-[#c5a059] hover:text-[#c5a059] flex items-center justify-center text-neutral-700 transition-all duration-200 cursor-pointer active-press hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="custom-swiper-prev p-2 text-neutral-400 hover:text-neutral-950 transition-all duration-200 cursor-pointer hover:scale-115 active:scale-90 disabled:opacity-20 disabled:cursor-not-allowed"
                 aria-label="Previous Slide"
               >
-                <ChevronLeft size={16} className="rtl:rotate-180" />
+                <ChevronLeft size={20} className="rtl:rotate-180" />
               </button>
               <button
                 type="button"
-                className="custom-swiper-next w-9 h-9 rounded-full border border-neutral-200 hover:border-[#c5a059] hover:text-[#c5a059] flex items-center justify-center text-neutral-700 transition-all duration-200 cursor-pointer active-press hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="custom-swiper-next p-2 text-neutral-400 hover:text-neutral-950 transition-all duration-200 cursor-pointer hover:scale-115 active:scale-90 disabled:opacity-20 disabled:cursor-not-allowed"
                 aria-label="Next Slide"
               >
-                <ChevronRight size={16} className="rtl:rotate-180" />
+                <ChevronRight size={20} className="rtl:rotate-180" />
               </button>
             </div>
           </div>
