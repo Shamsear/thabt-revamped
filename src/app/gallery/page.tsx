@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
 import { CustomSelect } from "@/components/CustomSelect";
+import { Pagination } from "@/components/Pagination";
 import { MOCK_GALLERY_ITEMS, GalleryItem } from "@/data/mockData";
 import {
   Camera,
@@ -16,16 +17,20 @@ import {
   Compass,
 } from "lucide-react";
 
+const PAGE_SIZE = 12;
+
 export default function GalleryPage() {
   const { lang } = useAppContext();
 
   const [selectedBrand, setSelectedBrand] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [activeModalItem, setActiveModalItem] = useState<GalleryItem | null>(null);
 
   const brands = ["Toyota", "Nissan", "Land Rover", "GMC"];
 
   // Auto-center selected pill inside horizontal scroll container
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const galleryGridRef = React.useRef<HTMLDivElement>(null);
   const pillRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
 
   const centerActivePill = (behavior: ScrollBehavior = "smooth") => {
@@ -62,10 +67,29 @@ export default function GalleryPage() {
     };
   }, [selectedBrand]);
 
+  // Reset page when filter changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedBrand]);
+
   const filteredItems =
     selectedBrand === "all"
       ? MOCK_GALLERY_ITEMS
       : MOCK_GALLERY_ITEMS.filter((item) => item.vehicle_brand.toLowerCase() === selectedBrand.toLowerCase());
+
+  const totalPages = Math.ceil(filteredItems.length / PAGE_SIZE);
+  const paginatedItems = React.useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredItems.slice(start, start + PAGE_SIZE);
+  }, [filteredItems, currentPage]);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    if (galleryGridRef.current) {
+      const topOffset = galleryGridRef.current.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: Math.max(0, topOffset), behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
@@ -182,53 +206,66 @@ export default function GalleryPage() {
           </div>
 
           {/* Animated Gallery Grid: 2 columns on mobile */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`gallery-${selectedBrand}`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
-              className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 mb-8 sm:mb-16"
-            >
-              {filteredItems.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => setActiveModalItem(item)}
-                  className="bg-white rounded-xl sm:rounded-2xl border border-neutral-200/80 hover:border-neutral-900 overflow-hidden transition-all duration-300 cursor-pointer group flex flex-col justify-between shadow-2xs hover:shadow-md active:scale-[0.99]"
-                >
-                  {/* Photo */}
-                  <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5 sm:p-4">
-                      <span className="text-[#c5a059] text-[10px] sm:text-xs font-semibold flex items-center gap-1 uppercase tracking-wider">
-                        <span>{lang === "ar" ? "عرض التفاصيل" : "View Fitment"}</span>
-                        <ArrowRight size={11} className="rtl:rotate-180" />
+          <div ref={galleryGridRef}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`gallery-${selectedBrand}-${currentPage}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 mb-6 sm:mb-8"
+              >
+                {paginatedItems.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => setActiveModalItem(item)}
+                    className="bg-white rounded-xl sm:rounded-2xl border border-neutral-200/80 hover:border-neutral-900 overflow-hidden transition-all duration-300 cursor-pointer group flex flex-col justify-between shadow-2xs hover:shadow-md active:scale-[0.99]"
+                  >
+                    {/* Photo */}
+                    <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5 sm:p-4">
+                        <span className="text-[#c5a059] text-[10px] sm:text-xs font-semibold flex items-center gap-1 uppercase tracking-wider">
+                          <span>{lang === "ar" ? "عرض التفاصيل" : "View Fitment"}</span>
+                          <ArrowRight size={11} className="rtl:rotate-180" />
+                        </span>
+                      </div>
+                      <span className="absolute top-2 left-2 rtl:left-auto rtl:right-2 bg-neutral-950/80 text-white text-[10px] sm:text-xs font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl">
+                        {item.vehicle}
                       </span>
                     </div>
-                    <span className="absolute top-2 left-2 rtl:left-auto rtl:right-2 bg-neutral-950/80 text-white text-[10px] sm:text-xs font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl">
-                      {item.vehicle}
-                    </span>
-                  </div>
 
-                  {/* Card Footer */}
-                  <div className="p-2.5 sm:p-5 space-y-0.5 sm:space-y-1">
-                    <h3 className="text-xs sm:text-sm font-semibold text-neutral-950 group-hover:text-[#9b7832] transition-colors line-clamp-1">
-                      {lang === "ar" ? item.title_ar : item.title}
-                    </h3>
-                    <p className="text-[10px] sm:text-xs text-neutral-500 flex items-center gap-1 truncate">
-                      <span className="w-1 h-1 rounded-full bg-[#c5a059] shrink-0"></span>
-                      <span className="truncate">{item.mounting_base} + {item.device_holder}</span>
-                    </p>
+                    {/* Card Footer */}
+                    <div className="p-2.5 sm:p-5 space-y-0.5 sm:space-y-1">
+                      <h3 className="text-xs sm:text-sm font-semibold text-neutral-950 group-hover:text-[#9b7832] transition-colors line-clamp-1">
+                        {lang === "ar" ? item.title_ar : item.title}
+                      </h3>
+                      <p className="text-[10px] sm:text-xs text-neutral-500 flex items-center gap-1 truncate">
+                        <span className="w-1 h-1 rounded-full bg-[#c5a059] shrink-0"></span>
+                        <span className="truncate">{item.mounting_base} + {item.device_holder}</span>
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
+                ))}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Numbered Pagination */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredItems.length}
+              pageSize={PAGE_SIZE}
+              onPageChange={handlePageChange}
+              lang={lang}
+              className="mb-8 sm:mb-12"
+            />
+          </div>
 
           {/* Callout */}
           <div className="bg-neutral-50 rounded-xl sm:rounded-2xl border border-neutral-200/80 p-5 sm:p-8 text-center max-w-2xl mx-auto">

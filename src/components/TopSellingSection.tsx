@@ -159,10 +159,10 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                             e.currentTarget.src = "/admin/banners/accessories.jpg";
                           }}
                         />
-                        {/* Minimal In-Stock / Backorder Pill Badge */}
+                        {/* Minimal In-Stock / Pre-Order Pill Badge */}
                         <div className="absolute top-1 start-1 px-2 py-0.5 rounded-full bg-neutral-100/90 text-[10px] sm:text-[11px] font-medium shadow-2xs">
                           <span className={inStock ? "text-neutral-700" : "text-[#b38e46]"}>
-                            {inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Backorder")}
+                            {inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Pre-Order")}
                           </span>
                         </div>
                       </div>

@@ -420,7 +420,7 @@ export const MOCK_ALL_PRODUCTS: Product[] = [
     slug: "motorbike-handlebar-clamp",
     category_slug: "motorbike-mount",
     price: 160,
-    stock: 7,
+    stock: 0,
     weight: 0.3,
     image: "/admin/banners/bike.jpg",
     images: ["/admin/banners/bike.jpg", "/admin/banners/accessories.jpg"],

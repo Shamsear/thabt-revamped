@@ -5,7 +5,7 @@ import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext, CURRENCY_MAP } from "@/context/AppContext";
 import { MOCK_ALL_PRODUCTS, Product } from "@/data/mockData";
 import {
   ChevronRight,
@@ -19,6 +19,7 @@ import {
   Truck,
   RotateCcw,
   Check,
+  Clock,
   ZoomIn,
   ZoomOut,
   Maximize2,
@@ -44,6 +45,7 @@ export default function ProductDetailPage({
     currency,
     setHasStickyBottomBar,
     setCustomWhatsAppMessage,
+    setPreOrderProduct,
   } = useAppContext();
 
   // Find product by slug
@@ -64,6 +66,22 @@ export default function ProductDetailPage({
   const [quantity, setQuantity] = useState(1);
   const [addedSuccess, setAddedSuccess] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Dynamic currency & formatted amounts for high-impact display
+  const curRate = CURRENCY_MAP[currency] || CURRENCY_MAP.QAR;
+  const currentConverted = Number.isFinite(product.price) ? product.price * (curRate?.rate || 1) : 0;
+  const formattedAmount = currentConverted % 1 === 0 ? currentConverted.toFixed(0) : currentConverted.toFixed(2);
+  const currencySymbol = lang === "ar" ? (curRate?.symbol_ar || "ر.ق") : (curRate?.symbol || "QAR");
+
+  const originalConverted = product.original_price && Number.isFinite(product.original_price)
+    ? product.original_price * (curRate?.rate || 1)
+    : null;
+  const formattedOriginalAmount = originalConverted !== null
+    ? (originalConverted % 1 === 0 ? originalConverted.toFixed(0) : originalConverted.toFixed(2))
+    : null;
+  const discountPercent = product.original_price && product.original_price > product.price
+    ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+    : null;
 
   // Keyboard navigation and body scroll lock for Zoom Modal
   useEffect(() => {
@@ -259,12 +277,12 @@ export default function ProductDetailPage({
 
           {/* Main Product Two-Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-12 mb-10 sm:mb-12 items-start">
-            {/* Left: Gallery (6 cols) */}
-            <div className="lg:col-span-6 space-y-2.5 sm:space-y-3">
+            {/* Left: Floating Gallery (6 cols) - Sticky & Viewport Height Fitted */}
+            <div className="lg:col-span-6 lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-5.5rem)] flex flex-col justify-start space-y-2.5 sm:space-y-3">
               {/* Main Image Display with Touch Swipe and Left/Right Navigation Buttons */}
               <div
                 onClick={() => setIsZoomOpen(true)}
-                className="aspect-square max-h-[320px] xs:max-h-[380px] sm:max-h-[460px] w-full flex items-center justify-center relative select-none touch-pan-y cursor-zoom-in overflow-hidden"
+                className="aspect-square max-h-[320px] xs:max-h-[380px] sm:max-h-[460px] lg:max-h-[min(480px,calc(100vh-13rem))] w-full flex items-center justify-center relative select-none touch-pan-y cursor-zoom-in overflow-hidden"
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
@@ -385,7 +403,9 @@ export default function ProductDetailPage({
                     <span className="text-neutral-300">•</span>
                     <span
                       className={`font-semibold flex items-center gap-1 text-[11px] sm:text-xs ${
-                        product.stock > 0 ? "text-emerald-700" : "text-[#c5a059]"
+                        product.stock > 0
+                          ? "text-emerald-700"
+                          : "text-[#9b7832] bg-[#faf6ed] border border-[#c5a059]/30 px-2 py-0.5 rounded-md"
                       }`}
                     >
                       {product.stock > 0 ? (
@@ -394,7 +414,10 @@ export default function ProductDetailPage({
                           <span>{lang === "ar" ? "متوفر بالمخزن" : "In Stock"}</span>
                         </>
                       ) : (
-                        <span>{lang === "ar" ? "حجز مسبق" : "Pre-Order"}</span>
+                        <>
+                          <Clock size={12} />
+                          <span>{lang === "ar" ? "طلب مسبق (نفدت الكمية)" : "Pre-Order (Out of Stock)"}</span>
+                        </>
                       )}
                     </span>
                   </div>
@@ -425,79 +448,107 @@ export default function ProductDetailPage({
                   {lang === "ar" ? product.name_ar : product.name}
                 </h1>
 
-                {/* Price Row */}
-                <div className="flex flex-wrap items-baseline gap-2 sm:gap-2.5 mb-4 sm:mb-5">
-                  <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-950 font-mono">
-                    {formatPrice(product.price)}
-                  </span>
-                  {product.original_price && (
-                    <span className="text-xs sm:text-base text-neutral-400 line-through font-mono">
-                      {formatPrice(product.original_price)}
+                {/* Minimal Standout Price Display */}
+                <div className="flex flex-wrap items-baseline gap-2.5 sm:gap-3 mb-5 sm:mb-6">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-neutral-950 tracking-tight leading-none">
+                      {formattedAmount}
+                    </span>
+                    <span className="text-sm sm:text-base font-bold text-[#c5a059] tracking-normal uppercase">
+                      {currencySymbol}
+                    </span>
+                  </div>
+
+                  {formattedOriginalAmount && (
+                    <span className="text-sm sm:text-base text-neutral-400 line-through font-medium">
+                      {formattedOriginalAmount} {currencySymbol}
                     </span>
                   )}
-                  {product.original_price && (
-                    <span className="text-[10px] sm:text-xs font-semibold text-[#9b7832] bg-[#faf6ed] px-2 py-0.5 rounded-md border border-[#c5a059]/20">
-                      {Math.round(((product.original_price - product.price) / product.original_price) * 100)}% {lang === "ar" ? "خصم" : "OFF"}
+
+                  {discountPercent !== null && discountPercent > 0 && (
+                    <span className="text-[11px] sm:text-xs font-semibold text-[#9b7832] bg-[#faf6ed] px-2.5 py-0.5 rounded-full border border-[#c5a059]/25">
+                      {discountPercent}% {lang === "ar" ? "خصم" : "OFF"}
                     </span>
                   )}
                 </div>
 
-                {/* Action Buttons: Stepper + Add to Cart + Instant Buy */}
+                {/* Action Buttons: In Stock (Stepper + Add to Cart + Instant Buy) vs Out of Stock (Pre-Order) */}
                 <div className="space-y-2.5 sm:space-y-3 mb-4 sm:mb-5">
-                  <div className="flex items-center gap-2 sm:gap-2.5">
-                    {/* Quantity Stepper */}
-                    <div className="flex items-center border border-neutral-200 rounded-xl h-11 sm:h-12 bg-white text-sm shrink-0">
+                  {product.stock > 0 ? (
+                    <>
+                      <div className="flex items-center gap-2 sm:gap-2.5">
+                        {/* Quantity Stepper */}
+                        <div className="flex items-center border border-neutral-200 rounded-xl h-11 sm:h-12 bg-white text-sm shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                            className="w-9 sm:w-10 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-l-xl transition cursor-pointer text-base"
+                            aria-label="Decrease quantity"
+                          >
+                            -
+                          </button>
+                          <span className="w-8 sm:w-9 text-center font-bold text-neutral-900 text-sm font-mono">
+                            {quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setQuantity((q) => q + 1)}
+                            className="w-9 sm:w-10 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-r-xl transition cursor-pointer text-base"
+                            aria-label="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        {/* Add to Cart Button */}
+                        <button
+                          ref={addToCartRef}
+                          type="button"
+                          onClick={handleAddToCart}
+                          className="flex-1 h-11 sm:h-12 px-3.5 sm:px-5 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer shadow-xs active-press whitespace-nowrap"
+                        >
+                          {addedSuccess ? (
+                            <>
+                              <Check size={15} />
+                              <span>{lang === "ar" ? "تمت الإضافة بنجاح!" : "Added to Cart!"}</span>
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingBag size={15} />
+                              <span>{lang === "ar" ? "أضف إلى السلة" : "Add to Cart"}</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Instant Buy Button */}
                       <button
                         type="button"
-                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        className="w-9 sm:w-10 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-l-xl transition cursor-pointer text-base"
-                        aria-label="Decrease quantity"
+                        onClick={handleInstantBuy}
+                        className="w-full h-11 sm:h-12 px-4 sm:px-5 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer shadow-xs active-press"
                       >
-                        -
+                        <Zap size={15} />
+                        <span>{lang === "ar" ? "شراء فوري مباشر" : "Instant Buy"}</span>
                       </button>
-                      <span className="w-8 sm:w-9 text-center font-bold text-neutral-900 text-sm font-mono">
-                        {quantity}
-                      </span>
+                    </>
+                  ) : (
+                    <div className="space-y-2">
                       <button
+                        ref={addToCartRef}
                         type="button"
-                        onClick={() => setQuantity((q) => q + 1)}
-                        className="w-9 sm:w-10 h-full flex items-center justify-center text-neutral-600 hover:text-neutral-900 font-bold hover:bg-neutral-50 rounded-r-xl transition cursor-pointer text-base"
-                        aria-label="Increase quantity"
+                        onClick={() => setPreOrderProduct(product)}
+                        className="w-full h-12 px-4 sm:px-5 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs active-press"
                       >
-                        +
+                        <Clock size={16} />
+                        <span>{lang === "ar" ? "طلب حجز مسبق الآن" : "Pre-Order Now"}</span>
                       </button>
+                      <p className="text-[11px] text-neutral-500 text-center">
+                        {lang === "ar"
+                          ? "المنتج غير متوفر حالياً بالمخزن — يمكنك طلب حجز مسبق وسنتواصل معك فور توفره"
+                          : "Currently out of stock — submit a pre-order request and we will notify you immediately"}
+                      </p>
                     </div>
-
-                    {/* Add to Cart Button */}
-                    <button
-                      ref={addToCartRef}
-                      type="button"
-                      onClick={handleAddToCart}
-                      className="flex-1 h-11 sm:h-12 px-3.5 sm:px-5 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer shadow-xs active-press whitespace-nowrap"
-                    >
-                      {addedSuccess ? (
-                        <>
-                          <Check size={15} />
-                          <span>{lang === "ar" ? "تمت الإضافة بنجاح!" : "Added to Cart!"}</span>
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingBag size={15} />
-                          <span>{lang === "ar" ? "أضف إلى السلة" : "Add to Cart"}</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Instant Buy Button */}
-                  <button
-                    type="button"
-                    onClick={handleInstantBuy}
-                    className="w-full h-11 sm:h-12 px-4 sm:px-5 rounded-xl bg-[#c5a059] hover:bg-[#b08e4d] text-neutral-950 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer shadow-xs active-press"
-                  >
-                    <Zap size={15} />
-                    <span>{lang === "ar" ? "شراء فوري مباشر" : "Instant Buy"}</span>
-                  </button>
+                  )}
                 </div>
 
                 {/* Minimalist Trust Badges (Optimized for narrow screens) */}
@@ -725,27 +776,38 @@ export default function ProductDetailPage({
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          className={`px-3.5 py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shrink-0 transition-all cursor-pointer shadow-xs active-press ${
-            addedSuccess
-              ? "bg-[#25D366] text-white"
-              : "bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950"
-          }`}
-        >
-          {addedSuccess ? (
-            <>
-              <Check size={14} className="stroke-[2.5]" />
-              <span>{lang === "ar" ? "تمت" : "Added"}</span>
-            </>
-          ) : (
-            <>
-              <ShoppingBag size={14} />
-              <span>{lang === "ar" ? "أضف" : "Add"}</span>
-            </>
-          )}
-        </button>
+        {product.stock > 0 ? (
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className={`px-3.5 py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shrink-0 transition-all cursor-pointer shadow-xs active-press ${
+              addedSuccess
+                ? "bg-[#25D366] text-white"
+                : "bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950"
+            }`}
+          >
+            {addedSuccess ? (
+              <>
+                <Check size={14} className="stroke-[2.5]" />
+                <span>{lang === "ar" ? "تمت" : "Added"}</span>
+              </>
+            ) : (
+              <>
+                <ShoppingBag size={14} />
+                <span>{lang === "ar" ? "أضف" : "Add"}</span>
+              </>
+            )}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setPreOrderProduct(product)}
+            className="px-3.5 py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shrink-0 bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 shadow-xs cursor-pointer active-press"
+          >
+            <Clock size={14} />
+            <span>{lang === "ar" ? "طلب مسبق" : "Pre-Order"}</span>
+          </button>
+        )}
       </div>
 
       {/* Studio Image Zoom Lightbox */}

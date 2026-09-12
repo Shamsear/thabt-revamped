@@ -17,6 +17,7 @@ import {
   Check,
   X,
   Car,
+  Clock,
   MessageCircle,
   RotateCcw,
   Sparkles,
@@ -30,7 +31,7 @@ function SearchCatalogContent() {
   const initialBrand = searchParams.get("brand") || "all";
   const initialCategory = searchParams.get("category") || "all";
 
-  const { lang, formatPrice, addToCart, currency } = useAppContext();
+  const { lang, formatPrice, addToCart, currency, setPreOrderProduct } = useAppContext();
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
@@ -422,10 +423,10 @@ function SearchCatalogContent() {
                                 e.currentTarget.src = "/admin/banners/accessories.jpg";
                               }}
                             />
-                            {/* Minimal In-Stock / Backorder Pill Badge */}
+                            {/* Minimal In-Stock / Pre-Order Pill Badge */}
                             <div className="absolute top-1 start-1 px-2 py-0.5 rounded-full bg-neutral-100/90 text-[10px] sm:text-[11px] font-medium shadow-2xs">
                               <span className={inStock ? "text-neutral-700" : "text-[#b38e46]"}>
-                                {inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Backorder")}
+                                {inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Pre-Order")}
                               </span>
                             </div>
                           </Link>
@@ -477,12 +478,14 @@ function SearchCatalogContent() {
                               )}
                             </button>
                           ) : (
-                            <Link
-                              href={`/products/${product.slug}`}
-                              className="flex items-center justify-center text-[11px] sm:text-xs font-medium py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl bg-neutral-100 hover:bg-[#faf6ed] text-neutral-700 hover:text-[#c5a059] transition-colors shrink-0"
+                            <button
+                              type="button"
+                              onClick={() => setPreOrderProduct(product)}
+                              className="flex items-center justify-center gap-1 text-[11px] sm:text-xs font-semibold py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 transition-colors shrink-0 cursor-pointer active-press shadow-2xs"
                             >
-                              <span>{lang === "ar" ? "حجز" : "Reserve"}</span>
-                            </Link>
+                              <Clock size={11} />
+                              <span>{lang === "ar" ? "طلب مسبق" : "Pre-Order"}</span>
+                            </button>
                           )}
                         </div>
                       </div>
