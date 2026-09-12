@@ -15,6 +15,9 @@ import {
   Check,
   X,
   Car,
+  MessageCircle,
+  RotateCcw,
+  Sparkles,
 } from "lucide-react";
 
 function SearchCatalogContent() {

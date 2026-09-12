@@ -22,6 +22,7 @@ import {
   ZoomIn,
   X,
   Plus,
+  Share2,
 } from "lucide-react";
 
 export default function ProductDetailPage({
@@ -43,7 +44,9 @@ export default function ProductDetailPage({
   } = useAppContext();
 
   // Find product by slug
-  const product = MOCK_ALL_PRODUCTS.find((p) => p.slug === slug);
+  const product = useMemo(() => {
+    return MOCK_ALL_PRODUCTS.find((p) => p.slug === slug);
+  }, [slug]);
 
   if (!product) {
     notFound();
@@ -56,29 +59,60 @@ export default function ProductDetailPage({
   const activeImage = images[activeImageIndex] || images[0];
   const [quantity, setQuantity] = useState(1);
   const [addedSuccess, setAddedSuccess] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
-  // Viewport Intersection for Sticky Mobile Pill
+  const handleShare = async () => {
+    const shareData = {
+      title: product ? (lang === "ar" ? product.name_ar : product.name) : "Thabt Mounts",
+      text: lang === "ar" ? "قاعدة جوال أصلية من ثقة:" : "Custom mount from Thabt:",
+      url: typeof window !== "undefined" ? window.location.href : "",
+    };
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        // User cancelled or share unsupported fallback
+      }
+    }
+
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        setCopiedLink(true);
+        setTimeout(() => setCopiedLink(false), 2200);
+      } catch (err) {
+        // clipboard fallback
+      }
+    }
+  };
+
+  // Viewport scroll detection for Sticky Mobile Pill
   const addToCartRef = useRef<HTMLButtonElement | null>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
 
   useEffect(() => {
-    const target = addToCartRef.current;
-    if (!target) return;
+    const handleScroll = () => {
+      const target = addToCartRef.current;
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      // Only show sticky pill when user has scrolled past the top Add to Bag button
+      const hasScrolledPast = rect.bottom < 0;
+      setShowStickyBar(hasScrolledPast);
+    };
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Show floating pill only when main CTA is NOT visible in the viewport
-        setShowStickyBar(!entry.isIntersecting);
-      },
-      {
-        root: null,
-        threshold: 0.1,
-      }
-    );
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
 
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, []);
+    // Initial check
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [product]);
 
   // Sync sticky bar state to Footer (so floating WhatsApp moves above it seamlessly)
   useEffect(() => {
@@ -314,24 +348,46 @@ export default function ProductDetailPage({
             {/* Right: Buy Box & Product Details (6 cols) */}
             <div className="lg:col-span-6 space-y-4">
               <div>
-                {/* SKU & Stock */}
-                <div className="flex items-center gap-2 text-xs mb-1.5">
-                  <span className="font-mono text-neutral-400">{product.product_id}</span>
-                  <span className="text-neutral-300">•</span>
-                  <span
-                    className={`font-semibold flex items-center gap-1 ${
-                      product.stock > 0 ? "text-emerald-700" : "text-[#c5a059]"
-                    }`}
+                {/* SKU, Stock & Share Action */}
+                <div className="flex items-center justify-between gap-2 text-xs mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-neutral-400">{product.product_id}</span>
+                    <span className="text-neutral-300">•</span>
+                    <span
+                      className={`font-semibold flex items-center gap-1 ${
+                        product.stock > 0 ? "text-emerald-700" : "text-[#c5a059]"
+                      }`}
+                    >
+                      {product.stock > 0 ? (
+                        <>
+                          <CheckCircle2 size={12} />
+                          <span>{lang === "ar" ? "متوفر بالمخزن" : "In Stock"}</span>
+                        </>
+                      ) : (
+                        <span>{lang === "ar" ? "حجز مسبق" : "Pre-Order"}</span>
+                      )}
+                    </span>
+                  </div>
+
+                  {/* Share / Copy Link Button */}
+                  <button
+                    type="button"
+                    onClick={handleShare}
+                    aria-label="Share product"
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 transition-colors text-[11px] font-medium cursor-pointer"
                   >
-                    {product.stock > 0 ? (
+                    {copiedLink ? (
                       <>
-                        <CheckCircle2 size={12} />
-                        <span>{lang === "ar" ? "متوفر بالمخزن" : "In Stock"}</span>
+                        <Check size={12} className="text-emerald-600 stroke-[2.5]" />
+                        <span className="text-emerald-700 font-semibold">{lang === "ar" ? "تم النسخ!" : "Copied!"}</span>
                       </>
                     ) : (
-                      <span>{lang === "ar" ? "حجز مسبق" : "Pre-Order"}</span>
+                      <>
+                        <Share2 size={12} />
+                        <span>{lang === "ar" ? "مشاركة" : "Share"}</span>
+                      </>
                     )}
-                  </span>
+                  </button>
                 </div>
 
                 {/* Product Title */}
