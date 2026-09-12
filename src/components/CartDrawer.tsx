@@ -53,10 +53,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               className="w-full sm:w-[420px] max-w-full bg-white shadow-2xl flex flex-col border-l rtl:border-l-0 rtl:border-r border-neutral-100 h-full"
             >
           {/* Header */}
-          <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <ShoppingBag size={18} className="text-[#c5a059]" />
-              <h3 className="font-semibold text-base text-neutral-900">
+          <div className="px-4 sm:px-6 py-3.5 sm:py-5 border-b border-neutral-100 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <ShoppingBag size={17} className="text-[#c5a059]" />
+              <h3 className="font-semibold text-sm sm:text-base text-neutral-900">
                 {lang === "ar" ? "حقيبة التسوق" : "Shopping Bag"}
               </h3>
               <span className="text-xs text-neutral-400 font-mono">
@@ -68,15 +68,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               className="p-1.5 text-neutral-400 hover:text-neutral-950 rounded-full hover:bg-neutral-100 transition cursor-pointer"
               aria-label="Close"
             >
-              <X size={18} />
+              <X size={17} />
             </button>
           </div>
 
           {/* Items List */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <div className="flex-1 overflow-y-auto p-3.5 sm:p-6 space-y-2.5 sm:space-y-4">
             {cartItems.length === 0 ? (
-              <div className="text-center py-20 text-neutral-400 space-y-2">
-                <ShoppingBag size={40} className="mx-auto text-neutral-300 stroke-[1.25]" />
+              <div className="text-center py-16 sm:py-20 text-neutral-400 space-y-2">
+                <ShoppingBag size={36} className="mx-auto text-neutral-300 stroke-[1.25]" />
                 <p className="font-medium text-sm text-neutral-900">
                   {lang === "ar" ? "الحقيبة فارغة حالياً" : "Your bag is empty"}
                 </p>
@@ -88,9 +88,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               cartItems.map(({ product, quantity }) => (
                 <div
                   key={product.id}
-                  className="flex gap-4 p-4 rounded-xl border border-neutral-100 bg-neutral-50/50 items-center justify-between"
+                  className="flex gap-3 p-3 rounded-xl border border-neutral-100 bg-neutral-50/50 items-center justify-between"
                 >
-                  <div className="w-16 h-16 bg-white rounded-lg p-2 border border-neutral-100 shrink-0 flex items-center justify-center">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-lg p-1.5 border border-neutral-100 shrink-0 flex items-center justify-center">
                     <img
                       src={product.image}
                       alt={product.name}
@@ -98,27 +98,27 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     />
                   </div>
 
-                  <div className="flex-1 min-w-0 pr-2 rtl:pr-0 rtl:pl-2">
-                    <h4 className="font-medium text-sm text-neutral-900 line-clamp-1">
+                  <div className="flex-1 min-w-0 pr-1 rtl:pr-0 rtl:pl-1">
+                    <h4 className="font-medium text-xs sm:text-sm text-neutral-900 line-clamp-1">
                       {lang === "ar" ? product.name_ar : product.name}
                     </h4>
-                    <p className="text-sm font-semibold text-neutral-900 mt-0.5">
-                      {product.price} <span className="text-xs font-normal text-[#c5a059]">{currency}</span>
+                    <p className="text-xs sm:text-sm font-semibold text-neutral-900 mt-0.5">
+                      {product.price} <span className="text-[10px] sm:text-xs font-normal text-[#c5a059]">{currency}</span>
                     </p>
 
                     {/* Quantity Selector */}
-                    <div className="flex items-center gap-3 mt-2.5">
-                      <div className="flex items-center border border-neutral-200 rounded-md bg-white text-sm">
+                    <div className="flex items-center gap-2.5 mt-2">
+                      <div className="flex items-center border border-neutral-200 rounded-md bg-white text-xs">
                         <button
                           onClick={() => onUpdateQty(product.id, -1)}
-                          className="px-2.5 py-1 hover:bg-neutral-100 transition cursor-pointer text-neutral-600 font-bold"
+                          className="px-2 py-0.5 hover:bg-neutral-100 transition cursor-pointer text-neutral-600 font-bold"
                         >
                           -
                         </button>
                         <span className="px-2 font-mono text-neutral-900">{quantity}</span>
                         <button
                           onClick={() => onUpdateQty(product.id, 1)}
-                          className="px-2.5 py-1 hover:bg-neutral-100 transition cursor-pointer text-neutral-600 font-bold"
+                          className="px-2 py-0.5 hover:bg-neutral-100 transition cursor-pointer text-neutral-600 font-bold"
                         >
                           +
                         </button>
@@ -126,10 +126,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                       <button
                         onClick={() => onRemoveItem(product.id)}
-                        className="text-neutral-400 hover:text-neutral-900 transition p-1 cursor-pointer"
+                        className="text-neutral-400 hover:text-rose-600 transition p-1 cursor-pointer"
                         title={lang === "ar" ? "حذف" : "Remove"}
                       >
-                        <Trash2 size={15} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </div>
@@ -140,36 +140,36 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
           {/* Footer Checkout */}
           {cartItems.length > 0 && (
-            <div className="p-6 border-t border-neutral-100 bg-white space-y-4">
-              <div className="flex justify-between items-center text-sm sm:text-base">
+            <div className="p-4 sm:p-6 border-t border-neutral-100 bg-white space-y-3">
+              <div className="flex justify-between items-center text-xs sm:text-sm">
                 <span className="text-neutral-600">{lang === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
-                <span className="text-lg sm:text-xl font-semibold text-neutral-900">
+                <span className="text-base sm:text-lg font-semibold text-neutral-900">
                   {totalAmount} <span className="text-xs font-normal text-[#c5a059]">{currency}</span>
                 </span>
               </div>
 
-              <div className="space-y-2.5">
-                <Link
-                  href="/cart"
-                  onClick={onClose}
-                  className="w-full bg-neutral-900 hover:bg-[#c5a059] hover:text-neutral-950 text-white text-sm font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer shadow-xs active:scale-98"
-                >
-                  <ShoppingBag size={16} />
-                  <span>{lang === "ar" ? "الانتقال إلى سلة المشتريات" : "Go to Cart Page"}</span>
-                  <ArrowRight size={15} className="rtl:rotate-180" />
-                </Link>
-
+              <div className="space-y-2">
                 <Link
                   href="/checkout"
                   onClick={onClose}
-                  className="w-full bg-[#faf6ed] hover:bg-[#f3ead3] text-[#9b7832] border border-[#c5a059]/40 text-sm font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer active:scale-98"
+                  className="w-full bg-[#faf6ed] hover:bg-[#f3ead3] text-[#9b7832] border border-[#c5a059]/40 text-xs sm:text-sm font-bold py-2.5 sm:py-3 px-4 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer active-press shadow-2xs"
                 >
                   <span>{lang === "ar" ? "الدفع والشراء المباشر" : "Proceed to Checkout"}</span>
-                  <ArrowRight size={14} className="rtl:rotate-180" />
+                  <ArrowRight size={13} className="rtl:rotate-180" />
+                </Link>
+
+                <Link
+                  href="/cart"
+                  onClick={onClose}
+                  className="w-full bg-neutral-900 hover:bg-[#c5a059] hover:text-neutral-950 text-white text-xs sm:text-sm font-semibold py-2.5 sm:py-3.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs active-press"
+                >
+                  <ShoppingBag size={14} />
+                  <span>{lang === "ar" ? "الانتقال إلى سلة المشتريات" : "Go to Cart Page"}</span>
+                  <ArrowRight size={13} className="rtl:rotate-180" />
                 </Link>
               </div>
 
-              <p className="text-xs text-neutral-500 text-center">
+              <p className="text-[10px] sm:text-xs text-neutral-500 text-center">
                 {lang === "ar"
                   ? "توصيل سريع لكافة دول الخليج • ضمان سلامة الديكور"
                   : "Express GCC delivery • 100% Damage-free warranty"}

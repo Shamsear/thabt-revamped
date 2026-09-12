@@ -86,25 +86,25 @@ function SearchCatalogContent() {
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+      <main className="flex-1 py-5 sm:py-12">
+        <div className="max-w-7xl mx-auto px-3 sm:px-8">
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-6">
+          <nav className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
             <Link href="/" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
             <ChevronRight size={11} className="rtl:rotate-180" />
-            <span className="text-neutral-900 font-semibold">
+            <span className="text-neutral-900 font-semibold truncate max-w-[180px] sm:max-w-none">
               {lang === "ar" ? "كتالوج المنتجات والبحث" : "Product Catalog & Search"}
             </span>
           </nav>
 
           {/* Minimalist Section Header (Matches Home Page Model) */}
-          <div className="mb-8 sm:mb-10">
-            <p className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2">
+          <div className="mb-4 sm:mb-10">
+            <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2">
               {lang === "ar" ? "الكتالوج الشامل" : "Full Catalog"}
             </p>
-            <h1 className="text-2xl sm:text-4xl font-light tracking-tight text-neutral-900 mb-2">
+            <h1 className="text-xl sm:text-4xl font-light tracking-tight text-neutral-900 mb-1 sm:mb-2">
               {lang === "ar" ? (
                 <>
                   جميع حلول التثبيت <span className="font-semibold text-neutral-950">الأصلية</span>
@@ -115,7 +115,7 @@ function SearchCatalogContent() {
                 </>
               )}
             </h1>
-            <p className="text-sm sm:text-base text-neutral-600 max-w-xl leading-relaxed">
+            <p className="text-xs sm:text-base text-neutral-600 max-w-xl leading-relaxed">
               {lang === "ar"
                 ? "تصفح جميع قواعد التثبيت المخصصة وحوامل الأجهزة المتوافقة مع أحدث سيارات الشرق الأوسط والخليج."
                 : "Browse custom dashboard mounts, MagSafe charging holders, and heavy-duty off-road systems engineered for the GCC."}
@@ -123,11 +123,11 @@ function SearchCatalogContent() {
           </div>
 
           {/* Category Tabs: Open, Minimalist Pill Bar (No boxed container) */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none text-sm sm:text-xs">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2.5 sm:pb-4 mb-4 sm:mb-6 scrollbar-none text-xs">
             <button
               type="button"
               onClick={() => setSelectedCategory("all")}
-              className={`px-4 py-2.5 sm:py-2 rounded-full font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 text-xs ${
                 selectedCategory === "all"
                   ? "bg-neutral-900 text-white font-semibold shadow-xs"
                   : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900"
@@ -143,7 +143,7 @@ function SearchCatalogContent() {
                   key={cat.slug}
                   type="button"
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`px-4 py-2.5 sm:py-2 rounded-full font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 text-xs ${
                     isSelected
                       ? "bg-neutral-900 text-white font-semibold shadow-xs"
                       : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900"
@@ -155,13 +155,13 @@ function SearchCatalogContent() {
             })}
           </div>
 
-          {/* Minimalist Filter Toolbar (Directly on white canvas with standardized element sizes) */}
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center mb-6 pb-6 border-b border-neutral-100">
+          {/* Minimalist Filter Toolbar (Compact on mobile: 2 neat rows) */}
+          <div className="grid grid-cols-12 gap-2 sm:gap-3 items-center mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-neutral-100">
             {/* Search Input */}
-            <div className="sm:col-span-12 md:col-span-5 relative flex items-center">
+            <div className="col-span-12 md:col-span-5 relative flex items-center">
               <Search
-                size={15}
-                className="absolute left-3.5 rtl:left-auto rtl:right-3.5 text-neutral-400 pointer-events-none"
+                size={14}
+                className="absolute left-3 rtl:left-auto rtl:right-3 text-neutral-400 pointer-events-none"
               />
               <input
                 type="search"
@@ -172,26 +172,26 @@ function SearchCatalogContent() {
                     ? "ابحث باسم السيارة، الموديل، أو المنتج..."
                     : "Search by vehicle, model, or product..."
                 }
-                className="w-full h-11 sm:h-10 bg-neutral-50 hover:bg-neutral-100/70 focus:bg-white border border-neutral-200 rounded-xl pl-9 pr-8 rtl:pl-8 rtl:pr-9 text-sm sm:text-xs text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#c5a059] transition-colors"
+                className="w-full h-9 sm:h-10 bg-neutral-50 hover:bg-neutral-100/70 focus:bg-white border border-neutral-200 rounded-xl pl-8 pr-7 rtl:pl-7 rtl:pr-8 text-xs text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#c5a059] transition-colors"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 rtl:right-auto rtl:left-3 text-neutral-400 hover:text-neutral-700 p-0.5 rounded-full cursor-pointer"
+                  className="absolute right-2.5 rtl:right-auto rtl:left-2.5 text-neutral-400 hover:text-neutral-700 p-0.5 rounded-full cursor-pointer"
                 >
-                  <X size={14} />
+                  <X size={13} />
                 </button>
               )}
             </div>
 
             {/* Vehicle Filter */}
-            <div className="sm:col-span-6 md:col-span-3">
+            <div className="col-span-6 md:col-span-3">
               <CustomSelect
                 value={selectedBrand}
                 onChange={(val) => setSelectedBrand(val)}
                 options={[
-                  { label: lang === "ar" ? "كل ماركات السيارات" : "All Vehicles", value: "all" },
+                  { label: lang === "ar" ? "كل السيارات" : "All Vehicles", value: "all" },
                   ...vehicleBrands.map((b) => ({ label: b, value: b })),
                 ]}
                 placeholder={lang === "ar" ? "نوع السيارة" : "Vehicle Make"}
@@ -200,14 +200,14 @@ function SearchCatalogContent() {
             </div>
 
             {/* Sort Order */}
-            <div className="sm:col-span-6 md:col-span-2">
+            <div className="col-span-6 md:col-span-2">
               <CustomSelect
                 value={sortBy}
                 onChange={(val) => setSortBy(val as any)}
                 options={[
                   { label: lang === "ar" ? "الأكثر تميزاً" : "Featured", value: "featured" },
-                  { label: lang === "ar" ? "السعر: الأقل" : "Price: Low to High", value: "price-asc" },
-                  { label: lang === "ar" ? "السعر: الأعلى" : "Price: High to Low", value: "price-desc" },
+                  { label: lang === "ar" ? "السعر: الأقل" : "Price: Low", value: "price-asc" },
+                  { label: lang === "ar" ? "السعر: الأعلى" : "Price: High", value: "price-desc" },
                 ]}
                 placeholder={lang === "ar" ? "الترتيب" : "Sort By"}
                 lang={lang}
@@ -215,11 +215,11 @@ function SearchCatalogContent() {
             </div>
 
             {/* In-Stock Filter Toggle */}
-            <div className="sm:col-span-12 md:col-span-2">
+            <div className="col-span-12 md:col-span-2">
               <button
                 type="button"
                 onClick={() => setOnlyInStock((prev) => !prev)}
-                className={`w-full h-11 sm:h-10 px-3.5 rounded-xl border text-sm sm:text-xs font-normal flex items-center justify-center gap-2 transition-colors cursor-pointer ${
+                className={`w-full h-9 sm:h-10 px-3 rounded-xl border text-xs font-normal flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
                   onlyInStock
                     ? "bg-[#faf6ed] border-[#c5a059] text-[#9b7832] font-semibold"
                     : "bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-neutral-100/70 hover:text-neutral-900"
@@ -237,43 +237,43 @@ function SearchCatalogContent() {
 
           {/* Active Filter Chips (Quiet and minimal) */}
           {(searchQuery || selectedCategory !== "all" || selectedBrand !== "all" || onlyInStock) && (
-            <div className="flex flex-wrap items-center gap-2 text-xs mb-8">
-              <span className="text-[11px] uppercase tracking-wider text-neutral-400 font-semibold">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs mb-4 sm:mb-8">
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-neutral-400 font-semibold">
                 {lang === "ar" ? "الفلاتر النشطة:" : "Active:"}
               </span>
 
               {searchQuery && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-800 text-[11px]">
-                  <span>&ldquo;{searchQuery}&rdquo;</span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-neutral-100 text-neutral-800 text-[10px] sm:text-[11px]">
+                  <span className="truncate max-w-[100px]">&ldquo;{searchQuery}&rdquo;</span>
                   <button type="button" onClick={() => setSearchQuery("")} className="hover:text-neutral-950 cursor-pointer">
-                    <X size={11} />
+                    <X size={10} />
                   </button>
                 </span>
               )}
 
               {selectedCategory !== "all" && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-800 text-[11px]">
-                  <span>{MOCK_CATEGORIES.find((c) => c.slug === selectedCategory)?.category || selectedCategory}</span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-neutral-100 text-neutral-800 text-[10px] sm:text-[11px]">
+                  <span>{selectedCategory}</span>
                   <button type="button" onClick={() => setSelectedCategory("all")} className="hover:text-neutral-950 cursor-pointer">
-                    <X size={11} />
+                    <X size={10} />
                   </button>
                 </span>
               )}
 
               {selectedBrand !== "all" && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-800 text-[11px]">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-neutral-100 text-neutral-800 text-[10px] sm:text-[11px]">
                   <span>{selectedBrand}</span>
                   <button type="button" onClick={() => setSelectedBrand("all")} className="hover:text-neutral-950 cursor-pointer">
-                    <X size={11} />
+                    <X size={10} />
                   </button>
                 </span>
               )}
 
               {onlyInStock && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-800 text-[11px]">
-                  <span>{lang === "ar" ? "المتوفر بالمخزن" : "In Stock"}</span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-neutral-100 text-neutral-800 text-[10px] sm:text-[11px]">
+                  <span>{lang === "ar" ? "المتوفر" : "In Stock"}</span>
                   <button type="button" onClick={() => setOnlyInStock(false)} className="hover:text-neutral-950 cursor-pointer">
-                    <X size={11} />
+                    <X size={10} />
                   </button>
                 </span>
               )}
@@ -286,16 +286,16 @@ function SearchCatalogContent() {
                   setSelectedBrand("all");
                   setOnlyInStock(false);
                 }}
-                className="text-[11px] text-neutral-500 hover:text-neutral-950 underline ml-1 rtl:ml-0 rtl:mr-1 cursor-pointer transition-colors"
+                className="text-[10px] sm:text-[11px] text-neutral-500 hover:text-neutral-950 underline ml-1 rtl:ml-0 rtl:mr-1 cursor-pointer transition-colors"
               >
                 {lang === "ar" ? "إلغاء التصفية" : "Reset"}
               </button>
             </div>
           )}
 
-          {/* Product Cards Grid: Exactly matches Home Page TopSellingSection Card Model */}
+          {/* Product Cards Grid: 2 columns on mobile, 3 on tablet, 4 on desktop */}
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6 mb-10 sm:mb-16">
               {filteredProducts.map((product) => {
                 const inStock = product.stock > 0;
                 const isAdded = justAddedId === product.id;
@@ -303,13 +303,13 @@ function SearchCatalogContent() {
                 return (
                   <div
                     key={product.id}
-                    className="h-full flex flex-col justify-between bg-white rounded-2xl p-5 border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 group"
+                    className="h-full flex flex-col justify-between bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-5 border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 group"
                   >
                     <div>
                       {/* Product Photo Showcase */}
                       <Link
                         href={`/products/${product.slug}`}
-                        className="block h-48 sm:h-52 w-full rounded-xl mb-4 bg-neutral-100 relative overflow-hidden p-4 group-hover:scale-[1.02] transition-transform duration-300"
+                        className="block h-32 sm:h-52 w-full rounded-lg sm:rounded-xl mb-2 sm:mb-4 bg-neutral-100 relative overflow-hidden p-2 sm:p-4 group-hover:scale-[1.02] transition-transform duration-300"
                       >
                         <img
                           src={product.image}
@@ -322,9 +322,9 @@ function SearchCatalogContent() {
                       </Link>
 
                       {/* Model SKU & Stock */}
-                      <div className="flex items-center justify-between text-xs font-mono text-neutral-500 mb-1.5">
-                        <span>{product.product_id}</span>
-                        <span className={inStock ? "text-neutral-600" : "text-[#b38e46] font-medium"}>
+                      <div className="flex items-center justify-between text-[10px] sm:text-xs font-mono text-neutral-500 mb-1">
+                        <span className="truncate max-w-[60px] sm:max-w-none">{product.product_id}</span>
+                        <span className={`shrink-0 ${inStock ? "text-neutral-600" : "text-[#b38e46] font-medium"}`}>
                           {inStock
                             ? lang === "ar"
                               ? "متوفر"
@@ -337,18 +337,18 @@ function SearchCatalogContent() {
 
                       {/* Product Title */}
                       <Link href={`/products/${product.slug}`}>
-                        <h3 className="font-medium text-sm sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 transition-colors">
+                        <h3 className="font-medium text-xs sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-1.5 sm:mb-2 group-hover:text-neutral-950 transition-colors">
                           {lang === "ar" ? product.name_ar : product.name}
                         </h3>
                       </Link>
                     </div>
 
-                    {/* Pricing & Add to Bag (Identical to Home Page) */}
-                    <div className="pt-4 border-t border-neutral-100 mt-3 flex items-center justify-between">
-                      <div>
-                        <span className="text-base font-semibold text-neutral-900">
+                    {/* Pricing & Add to Bag */}
+                    <div className="pt-2 sm:pt-4 border-t border-neutral-100 mt-2 sm:mt-3 flex items-center justify-between gap-1">
+                      <div className="min-w-0">
+                        <span className="text-xs sm:text-base font-semibold text-neutral-900 block truncate">
                           {product.price}{" "}
-                          <span className="text-xs font-medium text-[#c5a059]">{currency}</span>
+                          <span className="text-[10px] sm:text-xs font-medium text-[#c5a059]">{currency}</span>
                         </span>
                       </div>
 
@@ -356,7 +356,7 @@ function SearchCatalogContent() {
                         <button
                           type="button"
                           onClick={() => handleAddClick(product)}
-                          className={`flex items-center gap-1.5 text-xs font-semibold py-2 px-3.5 rounded-lg transition-all duration-200 cursor-pointer ${
+                          className={`flex items-center justify-center gap-1 text-[11px] sm:text-xs font-semibold py-1.5 px-2 sm:py-2 sm:px-3.5 rounded-lg transition-all duration-200 cursor-pointer shrink-0 ${
                             isAdded
                               ? "bg-[#25D366] text-white"
                               : "bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950"
@@ -364,20 +364,20 @@ function SearchCatalogContent() {
                         >
                           {isAdded ? (
                             <>
-                              <Check size={13} className="stroke-[2.5]" />
-                              <span>{lang === "ar" ? "تمت الإضافة" : "Added!"}</span>
+                              <Check size={12} className="stroke-[2.5]" />
+                              <span className="hidden xs:inline">{lang === "ar" ? "تم" : "Added"}</span>
                             </>
                           ) : (
                             <>
-                              <Plus size={13} />
-                              <span>{lang === "ar" ? "أضف للسلة" : "Add"}</span>
+                              <Plus size={12} />
+                              <span>{lang === "ar" ? "أضف" : "Add"}</span>
                             </>
                           )}
                         </button>
                       ) : (
                         <Link
                           href={`/products/${product.slug}`}
-                          className="text-xs font-semibold py-2 px-3 rounded-lg border border-neutral-200 text-neutral-700 hover:border-neutral-900 transition"
+                          className="text-[11px] sm:text-xs font-semibold py-1.5 px-2 sm:py-2 sm:px-3 rounded-lg border border-neutral-200 text-neutral-700 hover:border-neutral-900 transition shrink-0"
                         >
                           {lang === "ar" ? "تفاصيل" : "Details"}
                         </Link>

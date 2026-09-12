@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Product } from "@/data/mockData";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay, Mousewheel, FreeMode } from "swiper/modules";
@@ -24,6 +26,7 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
   currency,
   lang,
 }) => {
+  const router = useRouter();
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
 
   const handleAddClick = (product: Product) => {
@@ -32,6 +35,10 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
     setTimeout(() => {
       setJustAddedId(null);
     }, 1500);
+  };
+
+  const handleProductNavigate = (slug: string) => {
+    router.push(`/products/${slug}`);
   };
 
   return (
@@ -98,6 +105,9 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
             autoplay={{ delay: 6000, disableOnInteraction: true, pauseOnMouseEnter: true }}
             simulateTouch={false}
             allowTouchMove={true}
+            preventClicks={false}
+            preventClicksPropagation={false}
+            touchStartPreventDefault={false}
             mousewheel={{
               forceToAxis: true,
               releaseOnEdges: true,
@@ -130,10 +140,17 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
 
               return (
                 <SwiperSlide key={product.id} className="h-auto">
-                  <div className="h-full flex flex-col justify-between bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/80 hover:border-neutral-900 active:border-[#c5a059] hover:shadow-xl active:shadow-md hover:-translate-y-1.5 active:scale-[0.99] transition-all duration-300 ease-out group select-none">
-                    <div>
+                  <div
+                    onClick={() => handleProductNavigate(product.slug)}
+                    className="h-full flex flex-col justify-between bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/80 hover:border-neutral-900 active:border-[#c5a059] hover:shadow-xl active:shadow-md hover:-translate-y-1.5 active:scale-[0.99] transition-all duration-300 ease-out group select-none cursor-pointer"
+                  >
+                    <Link
+                      href={`/products/${product.slug}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="block focus:outline-none"
+                    >
                       {/* Product Photo Showcase */}
-                      <div className="h-48 sm:h-52 w-full rounded-xl mb-4 sm:mb-5 bg-neutral-100 relative">
+                      <div className="h-48 sm:h-52 w-full rounded-xl mb-4 sm:mb-5 bg-neutral-100 relative overflow-hidden">
                         <img
                           src={product.image}
                           alt={product.name}
@@ -153,19 +170,22 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                       </div>
 
                       {/* Product Title */}
-                      <h3 className="font-medium text-sm sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 group-active:text-[#c5a059] transition-colors">
+                      <h3 className="font-medium text-sm sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-[#c5a059] transition-colors">
                         {lang === "ar" ? product.name_ar : product.name}
                       </h3>
-                    </div>
+                    </Link>
 
                     {/* Pricing & Add to Bag */}
-                    <div className="pt-4 border-t border-neutral-100 mt-3 flex items-center justify-between">
-                      <div>
-                        <span className="text-base font-semibold text-neutral-900">
+                    <div
+                      className="pt-4 border-t border-neutral-100 mt-3 flex items-center justify-between"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Link href={`/products/${product.slug}`}>
+                        <span className="text-base font-semibold text-neutral-900 hover:text-[#c5a059] transition-colors">
                           {product.price}{" "}
                           <span className="text-xs font-medium text-[#c5a059]">{currency}</span>
                         </span>
-                      </div>
+                      </Link>
 
                       {inStock ? (
                         <button

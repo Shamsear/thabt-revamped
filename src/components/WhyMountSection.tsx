@@ -1,6 +1,5 @@
-"use client";
-
 import React from "react";
+import Link from "next/link";
 
 interface WhyMountSectionProps {
   lang: "en" | "ar";
@@ -17,6 +16,7 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
           ? "تُصنع بدقة متناهية لكل طراز سيارة لتثبت داخل فواصل لوحة القيادة الأصلية بالضغط الميكانيكي. لا حفر، لا شريط لاصق، ولا أثر على الإطلاق عند الإزالة."
           : "Engineered specifically for your vehicle model to snap into factory dashboard panel seams. Zero drilling, zero adhesives, and 100% reversible without a trace.",
       image: "/user/images/mount-sc.png",
+      href: "/categories/pro-clips",
     },
     {
       num: "02",
@@ -27,6 +27,7 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
           ? "يثبت مباشرة على القاعدة: اختر بين شاحن MagSafe Qi2 المغناطيسي السريع، حامل القفل الميكانيكي، أو سلسلة الجلد الفاخر المصنوع يدوياً."
           : "Locks directly onto the base: Choose between MagSafe Qi2 inductive charging, mechanical clamp, or luxury handcrafted leather.",
       image: "/user/images/holder-sc.png",
+      href: "/categories/device-holders",
     },
   ];
 
@@ -54,14 +55,14 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
   ];
 
   return (
-    <section id="architecture" className="py-12 sm:py-16 lg:py-20 bg-neutral-50 text-neutral-900 border-b border-neutral-100">
-      <div className="max-w-6xl mx-auto px-4 sm:px-8">
+    <section id="architecture" className="py-10 sm:py-16 lg:py-20 bg-neutral-50 text-neutral-900 border-b border-neutral-100">
+      <div className="max-w-6xl mx-auto px-3 sm:px-8">
         {/* Section Header */}
-        <div className="max-w-2xl mb-10 sm:mb-12">
-          <p className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2">
+        <div className="max-w-2xl mb-6 sm:mb-12">
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2">
             {lang === "ar" ? "هندسة التثبيت المزدوجة" : "The Two-Part Architecture"}
           </p>
-          <h2 className="text-2xl sm:text-4xl font-light tracking-tight text-neutral-900">
+          <h2 className="text-xl sm:text-4xl font-light tracking-tight text-neutral-900">
             {lang === "ar" ? (
               <>
                 كيف يعمل <span className="font-semibold text-neutral-950">نظام ثابـت</span>
@@ -75,13 +76,14 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
         </div>
 
         {/* 2-Part System Display */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-10 sm:mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-8 mb-6 sm:mb-12">
           {steps.map((step) => (
-            <div
+            <Link
               key={step.num}
-              className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/80 hover:border-[#c5a059] active:border-[#c5a059] shadow-xs hover:shadow-lg active:shadow-md hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 ease-out flex flex-col justify-between group cursor-pointer active-press select-none"
+              href={step.href}
+              className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-8 border border-neutral-200/80 hover:border-[#c5a059] active:border-[#c5a059] shadow-xs hover:shadow-lg active:shadow-md hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 ease-out flex flex-col justify-between group cursor-pointer active-press select-none"
             >
-              <div className="h-48 flex items-center justify-center p-4 mb-6">
+              <div className="h-32 sm:h-48 flex items-center justify-center p-2 sm:p-4 mb-3 sm:mb-6">
                 <img
                   src={step.image}
                   alt={step.title}
@@ -90,39 +92,39 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
               </div>
 
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[11px] font-mono text-[#c5a059] font-semibold">
+                <div className="flex items-center gap-1.5 mb-1 sm:mb-2">
+                  <span className="text-[10px] sm:text-[11px] font-mono text-[#c5a059] font-semibold">
                     {step.num}
                   </span>
-                  <span className="text-[11px] text-neutral-400 uppercase tracking-wider font-medium">
+                  <span className="text-[10px] sm:text-[11px] text-neutral-400 uppercase tracking-wider font-medium">
                     // {step.tag}
                   </span>
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-[#c5a059] group-active:text-[#c5a059] mb-2 transition-colors duration-200">
+                <h3 className="text-sm sm:text-lg font-semibold text-neutral-900 group-hover:text-[#c5a059] group-active:text-[#c5a059] mb-1 sm:mb-2 transition-colors duration-200">
                   {step.title}
                 </h3>
                 <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
                   {step.desc}
                 </p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
         {/* 4 Minimalist Engineering Standards: 2x2 grid on mobile, 4-col on desktop */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 pt-8 sm:pt-10 border-t border-neutral-200/80">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 pt-5 sm:pt-10 border-t border-neutral-200/80">
           {specs.map((item) => (
             <div
               key={item.num}
-              className="group space-y-1 p-3 sm:p-3.5 rounded-xl bg-white/70 hover:bg-white active:bg-white border border-neutral-200/60 hover:border-[#c5a059] active:border-[#c5a059] shadow-2xs hover:shadow-md active:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer select-none active-press"
+              className="group space-y-0.5 sm:space-y-1 p-2.5 sm:p-3.5 rounded-xl bg-white/70 hover:bg-white active:bg-white border border-neutral-200/60 hover:border-[#c5a059] active:border-[#c5a059] shadow-2xs hover:shadow-md active:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer select-none active-press"
             >
-              <span className="text-[11px] sm:text-xs font-mono text-[#c5a059] group-hover:text-[#b38e46] group-active:text-[#b38e46] tracking-wider font-semibold transition-colors duration-200">
+              <span className="text-[10px] sm:text-xs font-mono text-[#c5a059] group-hover:text-[#b38e46] group-active:text-[#b38e46] tracking-wider font-semibold transition-colors duration-200">
                 {item.num}
               </span>
               <h4 className="text-xs sm:text-sm font-semibold text-neutral-900 group-hover:text-[#0b0d11] group-active:text-[#b38e46] leading-snug transition-colors duration-200">
                 {item.title}
               </h4>
-              <p className="text-[11px] sm:text-xs text-neutral-500 leading-relaxed">
+              <p className="text-[10px] sm:text-xs text-neutral-500 leading-relaxed">
                 {item.desc}
               </p>
             </div>

@@ -84,26 +84,26 @@ export default function CartPage() {
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+      <main className="flex-1 py-5 sm:py-12">
+        <div className="max-w-7xl mx-auto px-3 sm:px-8">
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-6">
+          <nav className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
             <Link href="/" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
             <ChevronRight size={11} className="rtl:rotate-180" />
-            <span className="text-neutral-900 font-semibold">
+            <span className="text-neutral-900 font-semibold truncate max-w-[180px] sm:max-w-none">
               {lang === "ar" ? "سلة المشتريات" : "Shopping Cart"}
             </span>
           </nav>
 
           {/* Minimalist Section Header */}
-          <div className="flex items-center justify-between mb-8 sm:mb-10">
+          <div className="flex items-center justify-between mb-4 sm:mb-10">
             <div>
-              <p className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2">
+              <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2">
                 {lang === "ar" ? "الحقيبة الشخصية" : "Shopping Bag"}
               </p>
-              <h1 className="text-2xl sm:text-4xl font-light tracking-tight text-neutral-900">
+              <h1 className="text-xl sm:text-4xl font-light tracking-tight text-neutral-900">
                 {lang === "ar" ? (
                   <>
                     سلة <span className="font-semibold text-neutral-950">المشتريات</span>
@@ -116,22 +116,22 @@ export default function CartPage() {
               </h1>
             </div>
             {cartItems.length > 0 && (
-              <span className="text-xs font-semibold text-neutral-600 bg-neutral-100 px-3 py-1 rounded-full">
+              <span className="text-xs font-semibold text-neutral-600 bg-neutral-100 px-2.5 py-1 rounded-full">
                 {cartItems.reduce((acc, item) => acc + item.quantity, 0)} {lang === "ar" ? "منتجات" : "items"}
               </span>
             )}
           </div>
 
           {cartItems.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-10 items-start">
               {/* Left Column: Cart Items (8 cols) */}
-              <div className="lg:col-span-8 space-y-4">
+              <div className="lg:col-span-8 space-y-3 sm:space-y-4">
                 {/* 2-Part Fitment Advice Banner */}
                 {showTwoPartWarning && (
-                  <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/80 flex items-start gap-3 text-xs">
-                    <Sparkles size={16} className="text-[#c5a059] shrink-0 mt-0.5" />
+                  <div className="p-3 sm:p-4 rounded-xl bg-neutral-50 border border-neutral-200/80 flex items-start gap-2.5 text-xs">
+                    <Sparkles size={15} className="text-[#c5a059] shrink-0 mt-0.5" />
                     <div className="flex-1">
-                      <h4 className="font-semibold text-neutral-900">
+                      <h4 className="font-semibold text-neutral-900 text-xs sm:text-sm">
                         {lang === "ar"
                           ? "تذكير مهندسي ثقة: هل نسيت القطعة المكملة؟"
                           : "ProClips Engineering Tip: Complete Your 2-Part Setup"}

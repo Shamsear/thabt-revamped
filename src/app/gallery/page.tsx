@@ -32,26 +32,26 @@ export default function GalleryPage() {
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-8 sm:py-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+      <main className="flex-1 py-5 sm:py-14">
+        <div className="max-w-7xl mx-auto px-3 sm:px-8">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-6">
+          <nav className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
             <Link href="/" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
-            <ChevronRight size={12} className="rtl:rotate-180 text-neutral-300" />
-            <span className="text-neutral-900 font-medium flex items-center gap-1.5">
+            <ChevronRight size={11} className="rtl:rotate-180 text-neutral-300" />
+            <span className="text-neutral-900 font-medium flex items-center gap-1.5 truncate">
               <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]"></span>
               {lang === "ar" ? "معرض صور التركيبات" : "Customer Builds Gallery"}
             </span>
           </nav>
 
           {/* Heading */}
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2 block">
+          <div className="text-center max-w-2xl mx-auto mb-4 sm:mb-10">
+            <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2 block">
               {lang === "ar" ? "تركيبات حقيقية في قطر" : "Real Customer Setups"}
             </span>
-            <h1 className="text-2xl sm:text-4xl font-light tracking-tight text-neutral-900 mb-3">
+            <h1 className="text-xl sm:text-4xl font-light tracking-tight text-neutral-900 mb-1.5 sm:mb-3">
               {lang === "ar" ? "معرض تركيبات " : "Customer Installation "}
               <span className="font-semibold text-neutral-950">{lang === "ar" ? "عملاء ثقة" : "Gallery"}</span>
             </h1>
@@ -62,25 +62,12 @@ export default function GalleryPage() {
             </p>
           </div>
 
-          {/* Filter Bar */}
-          <div className="max-w-xs mx-auto mb-6 sm:hidden">
-            <CustomSelect
-              label={lang === "ar" ? "تصفية حسب نوع السيارة" : "Filter by Vehicle"}
-              value={selectedBrand}
-              onChange={(val) => setSelectedBrand(val)}
-              options={[
-                { value: "all", label: lang === "ar" ? "جميع السيارات" : "All Vehicles" },
-                ...brands.map((b) => ({ value: b, label: b })),
-              ]}
-              lang={lang}
-            />
-          </div>
-
-          <div className="hidden sm:flex items-center justify-center gap-2 mb-10 overflow-x-auto pb-2 scrollbar-none text-xs">
+          {/* Horizontal Pill Filter Bar */}
+          <div className="flex items-center justify-start sm:justify-center gap-1.5 sm:gap-2 mb-4 sm:mb-10 overflow-x-auto pb-2 scrollbar-none text-xs">
             <button
               type="button"
               onClick={() => setSelectedBrand("all")}
-              className={`px-4 py-2 rounded-full font-medium transition-all cursor-pointer ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium transition-all cursor-pointer shrink-0 text-xs ${
                 selectedBrand === "all"
                   ? "bg-neutral-900 text-[#c5a059]"
                   : "bg-neutral-100 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200"
@@ -93,7 +80,7 @@ export default function GalleryPage() {
                 key={b}
                 type="button"
                 onClick={() => setSelectedBrand(b)}
-                className={`px-4 py-2 rounded-full font-medium transition-all cursor-pointer ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium transition-all cursor-pointer shrink-0 text-xs ${
                   selectedBrand === b
                     ? "bg-neutral-900 text-[#c5a059]"
                     : "bg-neutral-100 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200"
@@ -104,13 +91,13 @@ export default function GalleryPage() {
             ))}
           </div>
 
-          {/* Gallery Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          {/* Gallery Grid: 2 columns on mobile */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 mb-8 sm:mb-16">
             {filteredItems.map((item) => (
               <div
                 key={item.id}
                 onClick={() => setActiveModalItem(item)}
-                className="bg-white rounded-2xl border border-neutral-200/80 hover:border-neutral-900 overflow-hidden transition-all duration-300 cursor-pointer group flex flex-col justify-between"
+                className="bg-white rounded-xl sm:rounded-2xl border border-neutral-200/80 hover:border-neutral-900 overflow-hidden transition-all duration-300 cursor-pointer group flex flex-col justify-between shadow-2xs hover:shadow-md"
               >
                 {/* Photo */}
                 <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
@@ -119,25 +106,25 @@ export default function GalleryPage() {
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                    <span className="text-[#c5a059] text-xs font-semibold flex items-center gap-1.5 uppercase tracking-wider">
-                      <span>{lang === "ar" ? "عرض تفاصيل القطع" : "View Fitment"}</span>
-                      <ArrowRight size={13} className="rtl:rotate-180" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5 sm:p-4">
+                    <span className="text-[#c5a059] text-[10px] sm:text-xs font-semibold flex items-center gap-1 uppercase tracking-wider">
+                      <span>{lang === "ar" ? "عرض التفاصيل" : "View Fitment"}</span>
+                      <ArrowRight size={11} className="rtl:rotate-180" />
                     </span>
                   </div>
-                  <span className="absolute top-3 left-3 rtl:left-auto rtl:right-3 bg-neutral-950/80 text-white text-xs font-medium px-2.5 py-1 rounded-full">
+                  <span className="absolute top-2 left-2 rtl:left-auto rtl:right-2 bg-neutral-950/80 text-white text-[10px] sm:text-xs font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">
                     {item.vehicle}
                   </span>
                 </div>
 
                 {/* Card Footer */}
-                <div className="p-4 sm:p-5 space-y-1">
-                  <h3 className="text-sm font-semibold text-neutral-950 group-hover:text-[#9b7832] transition-colors">
+                <div className="p-2.5 sm:p-5 space-y-0.5 sm:space-y-1">
+                  <h3 className="text-xs sm:text-sm font-semibold text-neutral-950 group-hover:text-[#9b7832] transition-colors line-clamp-1">
                     {lang === "ar" ? item.title_ar : item.title}
                   </h3>
-                  <p className="text-xs text-neutral-600 flex items-center gap-1.5">
-                    <span className="w-1 h-1 rounded-full bg-[#c5a059]"></span>
-                    <span>{item.mounting_base} + {item.device_holder}</span>
+                  <p className="text-[10px] sm:text-xs text-neutral-500 flex items-center gap-1 truncate">
+                    <span className="w-1 h-1 rounded-full bg-[#c5a059] shrink-0"></span>
+                    <span className="truncate">{item.mounting_base} + {item.device_holder}</span>
                   </p>
                 </div>
               </div>
@@ -145,20 +132,20 @@ export default function GalleryPage() {
           </div>
 
           {/* Callout */}
-          <div className="bg-neutral-50 rounded-2xl border border-neutral-200/80 p-8 text-center max-w-2xl mx-auto">
-            <h3 className="text-base font-semibold text-neutral-950 mb-2">
+          <div className="bg-neutral-50 rounded-xl sm:rounded-2xl border border-neutral-200/80 p-5 sm:p-8 text-center max-w-2xl mx-auto">
+            <h3 className="text-sm sm:text-base font-semibold text-neutral-950 mb-1 sm:mb-2">
               {lang === "ar" ? "هل ترغب في الحصول على نفس المظهر لسيارتك؟" : "Want the exact same clean setup for your car?"}
             </h3>
-            <p className="text-xs text-neutral-500 mb-6">
+            <p className="text-xs text-neutral-500 mb-4 sm:mb-6 leading-relaxed">
               {lang === "ar"
                 ? "استخدم مطابق السيارات الذكي لاختيار القطع المتوافقة تماماً مع طبلون سيارتك وموديل هاتفك."
                 : "Use our interactive fitment matcher to pair your specific vehicle dashboard with the right holder."}
             </p>
             <Link
               href="/find"
-              className="inline-flex items-center gap-2 py-3 px-6 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 font-semibold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 py-2.5 px-5 sm:py-3 sm:px-6 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 font-semibold text-xs uppercase tracking-wider transition-colors cursor-pointer"
             >
-              <Compass size={15} className="text-[#c5a059]" />
+              <Compass size={14} className="text-[#c5a059]" />
               <span>{lang === "ar" ? "مطابق السيارات الآن" : "Launch Fitment Matcher"}</span>
             </Link>
           </div>

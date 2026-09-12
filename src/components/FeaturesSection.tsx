@@ -59,13 +59,13 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ lang }) => {
   ];
 
   return (
-    <section className="py-20 md:py-28 bg-[#0b0d11] text-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="max-w-2xl mb-16">
-          <p className="text-xs uppercase tracking-[0.2em] text-neutral-500 font-medium mb-2">
+    <section className="py-10 sm:py-16 md:py-24 bg-[#0b0d11] text-white">
+      <div className="max-w-6xl mx-auto px-3 sm:px-6">
+        <div className="max-w-2xl mb-6 sm:mb-12">
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#c5a059] font-medium mb-1 sm:mb-2">
             {lang === "ar" ? "المعايير الهندسية" : "Engineering Standards"}
           </p>
-          <h2 className="text-2xl sm:text-4xl font-light tracking-tight text-white">
+          <h2 className="text-xl sm:text-4xl font-light tracking-tight text-white">
             {lang === "ar" ? (
               <>
                 الدقة في كل <span className="font-semibold">تفصيل</span>
@@ -78,18 +78,18 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ lang }) => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
           {specs.map((spec) => (
             <div
               key={spec.num}
-              className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col justify-between"
+              className="p-3 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col justify-between"
             >
-              <span className="text-xs font-mono text-neutral-500 tracking-wider mb-4">
+              <span className="text-[10px] sm:text-xs font-mono text-[#c5a059] tracking-wider mb-2 sm:mb-4">
                 {spec.num}
               </span>
               <div>
-                <h3 className="text-base font-semibold text-white mb-2">{spec.title}</h3>
-                <p className="text-xs text-neutral-400 leading-relaxed">{spec.desc}</p>
+                <h3 className="text-xs sm:text-base font-semibold text-white mb-1 sm:mb-2 leading-snug">{spec.title}</h3>
+                <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed">{spec.desc}</p>
               </div>
             </div>
           ))}

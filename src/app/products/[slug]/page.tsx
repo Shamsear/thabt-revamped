@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
@@ -19,6 +19,8 @@ import {
   Truck,
   RotateCcw,
   Check,
+  ZoomIn,
+  X,
 } from "lucide-react";
 
 export default function ProductDetailPage({
@@ -30,7 +32,7 @@ export default function ProductDetailPage({
   const { slug } = resolvedParams;
   const router = useRouter();
 
-  const { lang, formatPrice, addToCart } = useAppContext();
+  const { lang, formatPrice, addToCart, currency } = useAppContext();
 
   // Find product by slug
   const product = MOCK_ALL_PRODUCTS.find((p) => p.slug === slug);
@@ -42,9 +44,33 @@ export default function ProductDetailPage({
   // Gallery state
   const images = product.images && product.images.length > 0 ? product.images : [product.image];
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
   const activeImage = images[activeImageIndex] || images[0];
   const [quantity, setQuantity] = useState(1);
   const [addedSuccess, setAddedSuccess] = useState(false);
+
+  // Viewport Intersection for Sticky Mobile Pill
+  const addToCartRef = useRef<HTMLButtonElement | null>(null);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  useEffect(() => {
+    const target = addToCartRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Show floating pill only when main CTA is NOT visible in the viewport
+        setShowStickyBar(!entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
 
   // Gallery Navigation Functions
   const nextImage = () => {
@@ -112,7 +138,7 @@ export default function ProductDetailPage({
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-4 sm:py-8">
+      <main className="flex-1 py-4 sm:py-8 pb-24 sm:pb-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-1.5 text-xs text-neutral-400 mb-4 sm:mb-6 overflow-x-auto whitespace-nowrap scrollbar-none pb-1">
@@ -138,7 +164,8 @@ export default function ProductDetailPage({
             <div className="lg:col-span-6 space-y-3">
               {/* Main Image Display with Touch Swipe and Left/Right Navigation Buttons */}
               <div
-                className="aspect-square max-h-[360px] sm:max-h-[460px] w-full bg-neutral-50/70 rounded-2xl border border-neutral-100 overflow-hidden flex items-center justify-center px-8 sm:px-12 py-4 sm:py-8 relative select-none touch-pan-y"
+                onClick={() => setIsZoomOpen(true)}
+                className="aspect-square max-h-[360px] sm:max-h-[460px] w-full bg-neutral-50/70 rounded-2xl border border-neutral-100 overflow-hidden flex items-center justify-center px-6 sm:px-12 py-4 sm:py-8 relative select-none touch-pan-y cursor-zoom-in group"
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
@@ -148,7 +175,7 @@ export default function ProductDetailPage({
                   key={activeImageIndex}
                   src={activeImage}
                   alt={`${product.name} - View ${activeImageIndex + 1}`}
-                  className="max-h-full max-w-full object-contain transition-all duration-300 pointer-events-none select-none"
+                  className="max-h-full max-w-full object-contain transition-all duration-300 pointer-events-none select-none group-hover:scale-105"
                   draggable={false}
                   onError={(e) => {
                     e.currentTarget.src = "/admin/banners/accessories.jpg";
@@ -162,12 +189,15 @@ export default function ProductDetailPage({
                   </span>
                 )}
 
-                {/* Counter Badge (e.g. 1 / 3) */}
-                {images.length > 1 && (
-                  <span className="absolute top-3 right-3 rtl:right-auto rtl:left-3 bg-neutral-900/75 backdrop-blur-xs text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded-full z-10 pointer-events-none">
+                {/* Counter & Zoom Indicator Badge */}
+                <div className="absolute top-3 right-3 rtl:right-auto rtl:left-3 flex items-center gap-1.5 z-10 pointer-events-none">
+                  <span className="bg-neutral-900/75 backdrop-blur-xs text-white text-[10px] font-mono font-medium px-2 py-0.5 rounded-full">
                     {activeImageIndex + 1} / {images.length}
                   </span>
-                )}
+                  <span className="hidden sm:inline-flex bg-neutral-900/75 backdrop-blur-xs text-[#c5a059] text-[10px] px-1.5 py-0.5 rounded-full items-center gap-0.5">
+                    <ZoomIn size={11} />
+                  </span>
+                </div>
 
                 {/* Previous & Next Arrow Buttons on the Image */}
                 {images.length > 1 && (
@@ -178,11 +208,11 @@ export default function ProductDetailPage({
                         e.stopPropagation();
                         lang === "ar" ? nextImage() : prevImage();
                       }}
-                      className="absolute left-2.5 sm:left-3.5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20 outline-none focus:outline-none"
+                      className="absolute left-2.5 sm:left-3.5 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20 outline-none focus:outline-none"
                       aria-label={lang === "ar" ? "الصورة السابقة" : "Previous image"}
                       title={lang === "ar" ? "السابق" : "Previous"}
                     >
-                      <ChevronLeft size={18} className="rtl:rotate-180" />
+                      <ChevronLeft size={16} className="rtl:rotate-180" />
                     </button>
 
                     <button
@@ -191,22 +221,25 @@ export default function ProductDetailPage({
                         e.stopPropagation();
                         lang === "ar" ? prevImage() : nextImage();
                       }}
-                      className="absolute right-2.5 sm:right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20 outline-none focus:outline-none"
+                      className="absolute right-2.5 sm:right-3.5 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-neutral-900 shadow-md border border-neutral-200/80 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 z-20 outline-none focus:outline-none"
                       aria-label={lang === "ar" ? "الصورة التالية" : "Next image"}
                       title={lang === "ar" ? "التالي" : "Next"}
                     >
-                      <ChevronRight size={18} className="rtl:rotate-180" />
+                      <ChevronRight size={16} className="rtl:rotate-180" />
                     </button>
 
                     {/* Pagination Indicator Dots */}
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 bg-neutral-950/40 backdrop-blur-xs px-2.5 py-1 rounded-full">
+                    <div className="absolute bottom-2.5 sm:bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 bg-neutral-950/40 backdrop-blur-xs px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">
                       {images.map((_, idx) => (
                         <button
                           key={idx}
                           type="button"
-                          onClick={() => setActiveImageIndex(idx)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveImageIndex(idx);
+                          }}
                           className={`h-1.5 rounded-full transition-all cursor-pointer outline-none focus:outline-none ${
-                            activeImageIndex === idx ? "w-5 bg-[#c5a059]" : "w-1.5 bg-white/70 hover:bg-white"
+                            activeImageIndex === idx ? "w-4 sm:w-5 bg-[#c5a059]" : "w-1.5 bg-white/70 hover:bg-white"
                           }`}
                           aria-label={`View image ${idx + 1}`}
                         />
@@ -218,13 +251,13 @@ export default function ProductDetailPage({
 
               {/* Thumbnail Selector */}
               {images.length > 1 && (
-                <div className="flex items-center gap-2.5 overflow-x-auto py-2 px-1 scrollbar-none">
+                <div className="flex items-center gap-2 sm:gap-2.5 overflow-x-auto py-1 sm:py-2 px-1 scrollbar-none">
                   {images.map((img, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => setActiveImageIndex(idx)}
-                      className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-neutral-50 shrink-0 transition-all cursor-pointer relative overflow-hidden outline-none focus:outline-none ${
+                      className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-neutral-50 shrink-0 transition-all cursor-pointer relative overflow-hidden outline-none focus:outline-none ${
                         activeImageIndex === idx
                           ? "border-2 border-[#c5a059] shadow-sm scale-102"
                           : "border border-neutral-200/80 hover:border-neutral-400 opacity-75 hover:opacity-100"
@@ -347,6 +380,7 @@ export default function ProductDetailPage({
 
                   {/* Add to Cart Button */}
                   <button
+                    ref={addToCartRef}
                     type="button"
                     onClick={handleAddToCart}
                     className="flex-1 h-11 px-4 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs"
@@ -472,6 +506,108 @@ export default function ProductDetailPage({
           )}
         </div>
       </main>
+
+      {/* Sticky Mobile Purchase Pill (Floating rounded rectangle, appears only when main CTA is scrolled away) */}
+      <div
+        className={`sm:hidden fixed bottom-4 left-3 right-3 z-40 max-w-md mx-auto bg-white/95 backdrop-blur-md border border-neutral-200/90 rounded-2xl p-2.5 shadow-2xl flex items-center justify-between gap-3 transition-all duration-300 transform ${
+          showStickyBar
+            ? "translate-y-0 opacity-100 scale-100 pointer-events-auto"
+            : "translate-y-16 opacity-0 scale-95 pointer-events-none"
+        }`}
+      >
+        <div className="flex items-center gap-2.5 min-w-0">
+          <img
+            src={activeImage}
+            alt={product.name}
+            className="w-10 h-10 object-contain rounded-xl bg-neutral-50 border border-neutral-200/60 p-1 shrink-0"
+          />
+          <div className="min-w-0">
+            <h4 className="text-xs font-semibold text-neutral-900 truncate">
+              {lang === "ar" ? product.name_ar : product.name}
+            </h4>
+            <span className="text-xs font-bold text-neutral-950">
+              {product.price}{" "}
+              <span className="text-[10px] text-[#c5a059] font-medium">{currency}</span>
+            </span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className={`px-4 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shrink-0 transition-all cursor-pointer shadow-xs active-press ${
+            addedSuccess
+              ? "bg-[#25D366] text-white"
+              : "bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950"
+          }`}
+        >
+          {addedSuccess ? (
+            <>
+              <Check size={14} className="stroke-[2.5]" />
+              <span>{lang === "ar" ? "تمت الإضافة" : "Added"}</span>
+            </>
+          ) : (
+            <>
+              <ShoppingBag size={14} />
+              <span>{lang === "ar" ? "أضف للسلة" : "Add to Bag"}</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Fullscreen Image Lightbox Modal */}
+      {isZoomOpen && (
+        <div
+          onClick={() => setIsZoomOpen(false)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-2xl w-full max-h-[85vh] flex flex-col items-center justify-center cursor-default"
+          >
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setIsZoomOpen(false)}
+              className="absolute -top-12 right-0 text-white/80 hover:text-white p-2 rounded-full hover:bg-white/10 transition cursor-pointer"
+            >
+              <X size={24} />
+            </button>
+
+            {/* High-res Image */}
+            <div className="w-full aspect-square max-h-[70vh] flex items-center justify-center p-4 bg-white/5 rounded-2xl border border-white/10">
+              <img
+                src={activeImage}
+                alt={product.name}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
+
+            {/* Lightbox Controls */}
+            {images.length > 1 && (
+              <div className="flex items-center gap-3 mt-4">
+                <button
+                  type="button"
+                  onClick={() => (lang === "ar" ? nextImage() : prevImage())}
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition"
+                >
+                  <ChevronLeft size={20} className="rtl:rotate-180" />
+                </button>
+                <span className="text-white text-xs font-mono">
+                  {activeImageIndex + 1} / {images.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => (lang === "ar" ? prevImage() : nextImage())}
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition"
+                >
+                  <ChevronRight size={20} className="rtl:rotate-180" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>
