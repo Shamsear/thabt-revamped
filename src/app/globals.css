@@ -62,15 +62,6 @@
     touch-action: manipulation;
   }
 
-  /* Prevent iOS Safari from auto-zooming into inputs on tap/click (iOS zooms if font-size < 16px) */
-  @media screen and (max-width: 768px) {
-    input,
-    select,
-    textarea {
-      font-size: 16px !important;
-    }
-  }
-
   [dir="rtl"] {
     font-family: var(--font-arabic);
   }

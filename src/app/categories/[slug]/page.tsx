@@ -186,8 +186,8 @@ export default function CategoryPage({
             {/* Search Input */}
             <div className="col-span-12 md:col-span-5 relative flex items-center">
               <Search
-                size={14}
-                className="absolute left-3 rtl:left-auto rtl:right-3 text-neutral-400 pointer-events-none"
+                size={15}
+                className="absolute left-3.5 rtl:left-auto rtl:right-3.5 text-neutral-400 pointer-events-none"
               />
               <input
                 type="search"
@@ -198,15 +198,15 @@ export default function CategoryPage({
                     ? `ابحث داخل ${category.category_ar}...`
                     : `Search in ${category.category}...`
                 }
-                className="w-full h-9 sm:h-10 bg-neutral-50 hover:bg-neutral-100/70 focus:bg-white border border-neutral-200 rounded-xl pl-8 pr-7 rtl:pl-7 rtl:pr-8 text-xs text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#c5a059] transition-colors"
+                className="w-full h-11 sm:h-10 bg-neutral-50 hover:bg-neutral-100/70 focus:bg-white border border-neutral-200 rounded-xl pl-9 pr-8 rtl:pl-8 rtl:pr-9 text-sm sm:text-xs text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#c5a059] transition-colors"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-2.5 rtl:right-auto rtl:left-2.5 text-neutral-400 hover:text-neutral-700 p-0.5 rounded-full cursor-pointer"
+                  className="absolute right-2.5 rtl:right-auto rtl:left-2.5 text-neutral-400 hover:text-neutral-700 p-1 rounded-full cursor-pointer"
                 >
-                  <X size={13} />
+                  <X size={14} />
                 </button>
               )}
             </div>
@@ -413,24 +413,24 @@ export default function CategoryPage({
             </div>
           ) : (
             /* Smart Fallback Zero-Result State */
-            <div className="text-center py-12 px-4 max-w-lg mx-auto mb-16 bg-neutral-50/80 border border-neutral-200/80 rounded-2xl p-6 sm:p-8">
-              <div className="w-14 h-14 rounded-2xl bg-white shadow-xs border border-neutral-200 flex items-center justify-center mx-auto mb-4 text-[#c5a059]">
-                <Car size={26} />
+            <div className="text-center py-8 px-4 max-w-md mx-auto mb-10 bg-neutral-50/60 border border-neutral-200/70 rounded-2xl p-5 sm:p-6">
+              <div className="w-10 h-10 rounded-xl bg-white shadow-2xs border border-neutral-200 flex items-center justify-center mx-auto mb-3 text-[#c5a059]">
+                <Car size={20} />
               </div>
               
-              <h3 className="text-base font-bold text-neutral-900 mb-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-neutral-900 mb-1">
                 {lang === "ar" ? "لم نجد قواعد تطابق بحثك" : "No matching mounts found"}
               </h3>
               
-              <p className="text-xs text-neutral-600 mb-6 leading-relaxed max-w-sm mx-auto">
+              <p className="text-xs text-neutral-500 mb-4 leading-relaxed max-w-xs mx-auto">
                 {lang === "ar"
                   ? "جرب إزالة بعض الفلاتر، أو تواصل معنا مباشرة عبر الواتساب لتوفير القاعدة المناسبة لسيارتك وموديلها."
                   : "Try resetting filters or chat directly with our fitment team on WhatsApp for custom car matching."}
               </p>
 
               {/* Popular Vehicle Quick Picks */}
-              <div className="mb-6">
-                <span className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-2.5">
+              <div className="mb-5">
+                <span className="block text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mb-2">
                   {lang === "ar" ? "سيارات شائعة:" : "Popular Vehicles:"}
                 </span>
                 <div className="flex flex-wrap items-center justify-center gap-1.5">
@@ -442,7 +442,7 @@ export default function CategoryPage({
                         setSelectedVehicle(brand);
                         setSearchQuery("");
                       }}
-                      className="px-2.5 py-1 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-xs font-medium text-neutral-700 hover:text-neutral-950 transition cursor-pointer"
+                      className="px-2.5 py-1 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-[11px] font-medium text-neutral-700 hover:text-neutral-950 transition cursor-pointer"
                     >
                       {brand}
                     </button>
@@ -451,7 +451,7 @@ export default function CategoryPage({
               </div>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
                 <button
                   type="button"
                   onClick={() => {
@@ -459,9 +459,9 @@ export default function CategoryPage({
                     setSelectedVehicle("all");
                     setOnlyInStock(false);
                   }}
-                  className="w-full sm:w-auto px-5 py-2.5 bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                  className="w-full sm:w-auto px-4 py-2 bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
                 >
-                  <RotateCcw size={13} />
+                  <RotateCcw size={12} />
                   <span>{lang === "ar" ? "إعادة تعيين الفلاتر" : "Reset All Filters"}</span>
                 </button>
 
@@ -473,9 +473,9 @@ export default function CategoryPage({
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-5 py-2.5 bg-[#25D366] hover:bg-[#20b858] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                  className="w-full sm:w-auto px-4 py-2 bg-[#25D366] hover:bg-[#20b858] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
                 >
-                  <MessageCircle size={14} />
+                  <MessageCircle size={13} />
                   <span>{lang === "ar" ? "استفسر عبر الواتساب" : "Ask on WhatsApp"}</span>
                 </a>
               </div>

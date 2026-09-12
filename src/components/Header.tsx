@@ -315,7 +315,7 @@ export const Header: React.FC<HeaderProps> = ({
               ) : (
                 <form
                   onSubmit={handleSearchSubmit}
-                  className="flex items-center bg-neutral-100 rounded-full pl-3 pr-2 py-1 border border-neutral-300 shadow-sm animate-in fade-in zoom-in-95 duration-150"
+                  className="flex items-center h-9 bg-neutral-100/90 rounded-full pl-3 pr-2 border border-neutral-300 shadow-sm animate-in fade-in zoom-in-95 duration-150"
                 >
                   <Search size={14} className="text-neutral-400 shrink-0 mr-2 rtl:mr-0 rtl:ml-2" />
                   <input
@@ -324,7 +324,7 @@ export const Header: React.FC<HeaderProps> = ({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={lang === "ar" ? "ابحث هنا..." : "Search..."}
-                    className="bg-transparent text-xs text-neutral-900 w-32 sm:w-48 focus:outline-none placeholder-neutral-400"
+                    className="bg-transparent text-xs text-neutral-900 w-32 sm:w-48 focus:outline-none placeholder-neutral-400 py-1"
                   />
                   <button
                     type="button"
@@ -471,17 +471,17 @@ export const Header: React.FC<HeaderProps> = ({
 
                 {/* Search Bar in Mobile Drawer */}
                 <div className="px-5 py-3 border-b border-neutral-100 shrink-0 bg-neutral-50/50">
-                  <form onSubmit={handleSearchSubmit} className="relative">
+                  <form onSubmit={handleSearchSubmit} className="relative flex items-center">
                     <Search
-                      size={14}
-                      className="absolute left-3 rtl:left-auto rtl:right-3 top-3 text-neutral-400 pointer-events-none"
+                      size={15}
+                      className="absolute left-3.5 rtl:left-auto rtl:right-3.5 text-neutral-400 pointer-events-none"
                     />
                     <input
                       type="search"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={lang === "ar" ? "ابحث عن سيارتك أو جهازك..." : "Search car or device..."}
-                      className="w-full bg-white text-xs text-neutral-900 placeholder-neutral-400 rounded-xl pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-2.5 border border-neutral-200 focus:outline-none focus:border-[#c5a059]"
+                      className="w-full h-11 bg-white text-sm text-neutral-900 placeholder-neutral-400 rounded-xl pl-9 pr-4 rtl:pl-4 rtl:pr-9 border border-neutral-200 focus:outline-none focus:border-[#c5a059]"
                     />
                   </form>
                 </div>
