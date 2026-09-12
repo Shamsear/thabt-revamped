@@ -351,8 +351,8 @@ export default function CheckoutPage() {
             </form>
           </div>
 
-          {/* Right Summary Sidebar (5 cols) */}
-          <div className="lg:col-span-5 sticky top-24 space-y-4">
+          {/* Right Summary Sidebar (5 cols, sticky on desktop) */}
+          <div className="lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-4">
             <div className="bg-white rounded-2xl border border-neutral-200/80 p-6">
               <h3 className="text-sm font-semibold text-neutral-950 pb-3 border-b border-neutral-100 flex items-center justify-between">
                 <span>{lang === "ar" ? "طلبك" : "Your Order"} ({cartItems.length})</span>

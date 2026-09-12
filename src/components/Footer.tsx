@@ -12,7 +12,7 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
   const context = useAppContext();
   const lang = propLang || context.lang;
-  const { hasStickyBottomBar } = context;
+  const { hasStickyBottomBar, customWhatsAppMessage } = context;
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -27,6 +27,10 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const whatsappHref = `https://api.whatsapp.com/send?phone=97450400314${
+    customWhatsAppMessage ? `&text=${encodeURIComponent(customWhatsAppMessage)}` : ""
+  }`;
 
   return (
     <>
@@ -145,7 +149,7 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
         }`}
       >
         <a
-          href="https://api.whatsapp.com/send?phone=97450400314"
+          href={whatsappHref}
           target="_blank"
           rel="noreferrer"
           className="flex items-center justify-center w-11 h-11 bg-[#25D366] text-white rounded-full shadow-lg hover:scale-105 active-press transition-transform cursor-pointer"
@@ -164,11 +168,11 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
         </a>
       </div>
 
-      {/* Back to Top / To Up Button */}
+      {/* Back to Top / To Up Button (Positioned on the opposite left side for balanced spacing) */}
       <button
         type="button"
         onClick={scrollToTop}
-        className={`fixed right-18 rtl:right-auto rtl:left-18 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-neutral-300 hover:text-white bg-neutral-900/95 hover:bg-neutral-900 border border-neutral-700/80 rounded-full shadow-lg backdrop-blur-xs transition-all duration-300 active-press cursor-pointer ${
+        className={`fixed left-5 rtl:left-auto rtl:right-5 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-neutral-300 hover:text-white bg-neutral-900/95 hover:bg-neutral-900 border border-neutral-700/80 rounded-full shadow-lg backdrop-blur-xs transition-all duration-300 active-press cursor-pointer ${
           hasStickyBottomBar ? "bottom-20 sm:bottom-5" : "bottom-5"
         } ${
           showScrollTop

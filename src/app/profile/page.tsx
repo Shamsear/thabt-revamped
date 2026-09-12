@@ -6,20 +6,47 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
 import { CustomSelect } from "@/components/CustomSelect";
-import { MOCK_ORDERS } from "@/data/mockData";
+import { MOCK_ORDERS, MOCK_ALL_PRODUCTS } from "@/data/mockData";
 import {
   Package,
   MapPin,
   Car,
   ChevronRight,
   Plus,
+  RotateCcw,
+  Check,
+  ShoppingBag,
 } from "lucide-react";
 
 export default function ProfilePage() {
-  const { lang, formatPrice } = useAppContext();
+  const { lang, formatPrice, addToCart, setCartDrawerOpen } = useAppContext();
 
   const [activeTab, setActiveTab] = useState<"orders" | "addresses" | "garage">("orders");
   const [orderStatusFilter, setOrderStatusFilter] = useState("all");
+  const [reorderingOrderId, setReorderingOrderId] = useState<string | null>(null);
+
+  const handleReorder = (order: typeof MOCK_ORDERS[0]) => {
+    order.products.forEach((p) => {
+      const matched = MOCK_ALL_PRODUCTS.find((item) => item.name === p.name) || {
+        id: Math.random().toString(),
+        product_id: "TH-REORDER",
+        name: p.name,
+        name_ar: p.name,
+        slug: "proclip-land-cruiser-lc300",
+        price: p.price,
+        stock: 10,
+        weight: 0.3,
+        image: "/admin/banners/proclip-1.jpg",
+        link: "products",
+      };
+      addToCart(matched, 1);
+    });
+    setReorderingOrderId(order.id);
+    setTimeout(() => {
+      setReorderingOrderId(null);
+      setCartDrawerOpen(true);
+    }, 400);
+  };
 
   const filteredOrders =
     orderStatusFilter === "all"
@@ -177,18 +204,39 @@ export default function ProfilePage() {
                     ))}
                   </div>
 
-                  {/* Tracking link */}
-                  <div className="pt-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  {/* Tracking link & Reorder Action */}
+                  <div className="pt-2 flex flex-wrap items-center justify-between gap-3 text-xs">
                     <span className="font-mono text-neutral-400 text-[11px]">
                       Courier: {order.courier} ({order.tracking_number})
                     </span>
-                    <Link
-                      href="/order-success"
-                      className="text-neutral-900 font-semibold hover:text-[#c5a059] flex items-center gap-1 transition-colors"
-                    >
-                      <span>{lang === "ar" ? "تتبع الشحنة بالتفصيل" : "Live Package Tracking"}</span>
-                      <ChevronRight size={12} className="rtl:rotate-180 text-[#c5a059]" />
-                    </Link>
+
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => handleReorder(order)}
+                        className="py-1.5 px-3 rounded-lg bg-neutral-100 hover:bg-[#faf6ed] text-neutral-800 hover:text-[#9b7832] border border-neutral-200/80 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer active-press"
+                      >
+                        {reorderingOrderId === order.id ? (
+                          <>
+                            <Check size={12} className="text-emerald-600 stroke-[2.5]" />
+                            <span>{lang === "ar" ? "تمت الإضافة للسلة" : "Added to Cart"}</span>
+                          </>
+                        ) : (
+                          <>
+                            <RotateCcw size={12} className="text-[#c5a059]" />
+                            <span>{lang === "ar" ? "إعادة الطلب" : "Buy Again"}</span>
+                          </>
+                        )}
+                      </button>
+
+                      <Link
+                        href="/order-success"
+                        className="text-neutral-900 font-semibold hover:text-[#c5a059] flex items-center gap-1 transition-colors"
+                      >
+                        <span>{lang === "ar" ? "تتبع الشحنة" : "Track Order"}</span>
+                        <ChevronRight size={12} className="rtl:rotate-180 text-[#c5a059]" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ))}

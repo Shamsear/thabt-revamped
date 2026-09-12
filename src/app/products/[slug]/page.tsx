@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef, useMemo, use } from "react";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
@@ -21,6 +21,7 @@ import {
   Check,
   ZoomIn,
   X,
+  Plus,
 } from "lucide-react";
 
 export default function ProductDetailPage({
@@ -32,7 +33,14 @@ export default function ProductDetailPage({
   const { slug } = resolvedParams;
   const router = useRouter();
 
-  const { lang, formatPrice, addToCart, currency, setHasStickyBottomBar } = useAppContext();
+  const {
+    lang,
+    formatPrice,
+    addToCart,
+    currency,
+    setHasStickyBottomBar,
+    setCustomWhatsAppMessage,
+  } = useAppContext();
 
   // Find product by slug
   const product = MOCK_ALL_PRODUCTS.find((p) => p.slug === slug);
@@ -79,6 +87,24 @@ export default function ProductDetailPage({
       setHasStickyBottomBar(false);
     };
   }, [showStickyBar, setHasStickyBottomBar]);
+
+  // Sync WhatsApp custom message with current product name and SKU
+  useEffect(() => {
+    if (!product) return;
+    const msg =
+      lang === "ar"
+        ? `مرحباً ثقة، أود الاستفسار عن منتج: ${product.name_ar} (رمز المنتج: ${product.product_id})`
+        : `Hello Thabt, I'm inquiring about: ${product.name} (SKU: ${product.product_id})`;
+    setCustomWhatsAppMessage(msg);
+    return () => {
+      setCustomWhatsAppMessage(null);
+    };
+  }, [product, lang, setCustomWhatsAppMessage]);
+
+  // Related products recommendation
+  const relatedProducts = useMemo(() => {
+    return MOCK_ALL_PRODUCTS.filter((p) => p.slug !== slug).slice(0, 4);
+  }, [slug]);
 
   // Gallery Navigation Functions
   const nextImage = () => {
@@ -512,6 +538,67 @@ export default function ProductDetailPage({
               </div>
             </div>
           )}
+
+          {/* Related Hardware Section */}
+          <div className="border-t border-neutral-100 pt-10 sm:pt-14 mt-10 sm:mt-14">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
+              <div>
+                <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#c5a059] font-semibold mb-1">
+                  {lang === "ar" ? "قطع تكميلية موصى بها" : "Complete Your Rig"}
+                </p>
+                <h2 className="text-lg sm:text-2xl font-light text-neutral-900 tracking-tight">
+                  {lang === "ar" ? "منتجات قد " : "You Might Also "}
+                  <span className="font-semibold text-neutral-950">{lang === "ar" ? "تعجبك أيضاً" : "Like"}</span>
+                </h2>
+              </div>
+              <Link
+                href="/search"
+                className="text-xs font-semibold text-neutral-700 hover:text-[#c5a059] flex items-center gap-1 transition-colors"
+              >
+                <span>{lang === "ar" ? "تصفح الكتالوج بالكامل" : "View All Hardware"}</span>
+                <ChevronRight size={13} className="rtl:rotate-180" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-5">
+              {relatedProducts.map((relProd) => (
+                <div
+                  key={relProd.id}
+                  className="h-full flex flex-col justify-between bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 group"
+                >
+                  <Link href={`/products/${relProd.slug}`} className="block focus:outline-none">
+                    <div className="h-28 sm:h-40 w-full rounded-lg sm:rounded-xl mb-2 sm:mb-3 bg-neutral-100 relative overflow-hidden p-2">
+                      <img
+                        src={relProd.image}
+                        alt={relProd.name}
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.src = "/admin/banners/accessories.jpg";
+                        }}
+                      />
+                    </div>
+                    <p className="text-[10px] font-mono text-neutral-400 mb-1">{relProd.product_id}</p>
+                    <h3 className="text-xs font-medium text-neutral-900 line-clamp-2 leading-snug group-hover:text-[#c5a059] transition-colors mb-2">
+                      {lang === "ar" ? relProd.name_ar : relProd.name}
+                    </h3>
+                  </Link>
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between">
+                    <span className="text-xs sm:text-sm font-semibold text-neutral-900">
+                      {formatPrice(relProd.price)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => addToCart(relProd, 1)}
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 flex items-center justify-center transition cursor-pointer"
+                      title={lang === "ar" ? "أضف للسلة" : "Add to Cart"}
+                    >
+                      <Plus size={13} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </main>
 

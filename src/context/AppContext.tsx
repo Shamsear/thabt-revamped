@@ -48,6 +48,8 @@ interface AppContextType {
   setPreOrderProduct: (product: Product | null) => void;
   hasStickyBottomBar: boolean;
   setHasStickyBottomBar: (visible: boolean) => void;
+  customWhatsAppMessage: string | null;
+  setCustomWhatsAppMessage: (msg: string | null) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -58,6 +60,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [preOrderProduct, setPreOrderProduct] = useState<Product | null>(null);
   const [hasStickyBottomBar, setHasStickyBottomBar] = useState(false);
+  const [customWhatsAppMessage, setCustomWhatsAppMessage] = useState<string | null>(null);
 
   // Initialize with sample top seller to provide instant rich visual state
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -205,6 +208,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setPreOrderProduct,
         hasStickyBottomBar,
         setHasStickyBottomBar,
+        customWhatsAppMessage,
+        setCustomWhatsAppMessage,
       }}
     >
       {children}

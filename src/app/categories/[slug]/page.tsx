@@ -258,53 +258,64 @@ export default function CategoryPage({
             </div>
           </div>
 
-          {/* Active Filter Chips (Quiet and minimal) */}
-          {(searchQuery || selectedVehicle !== "all" || onlyInStock) && (
-            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs mb-4 sm:mb-8">
-              <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-neutral-400 font-semibold">
-                {lang === "ar" ? "الفلاتر النشطة:" : "Active:"}
+          {/* Results Counter & Active Filter Chips Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs mb-4 sm:mb-6">
+            <div className="flex items-center gap-2">
+              <span className="text-xs sm:text-sm font-semibold text-neutral-900">
+                {lang === "ar"
+                  ? `عرض ${filteredProducts.length} ${filteredProducts.length === 1 ? "منتج" : "منتجات"}`
+                  : `Showing ${filteredProducts.length} ${filteredProducts.length === 1 ? "mount" : "mounts"}`}
               </span>
-
-              {searchQuery && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-neutral-100 text-neutral-800 text-[10px] sm:text-[11px]">
-                  <span className="truncate max-w-[100px]">&ldquo;{searchQuery}&rdquo;</span>
-                  <button type="button" onClick={() => setSearchQuery("")} className="hover:text-neutral-950 cursor-pointer">
-                    <X size={10} />
-                  </button>
+              {(searchQuery || selectedVehicle !== "all" || onlyInStock) && (
+                <span className="text-[11px] text-neutral-400">
+                  ({lang === "ar" ? "مُصفى" : "filtered"})
                 </span>
               )}
-
-              {selectedVehicle !== "all" && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-neutral-100 text-neutral-800 text-[10px] sm:text-[11px]">
-                  <span>{selectedVehicle}</span>
-                  <button type="button" onClick={() => setSelectedVehicle("all")} className="hover:text-neutral-950 cursor-pointer">
-                    <X size={10} />
-                  </button>
-                </span>
-              )}
-
-              {onlyInStock && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-neutral-100 text-neutral-800 text-[10px] sm:text-[11px]">
-                  <span>{lang === "ar" ? "المتوفر" : "In Stock"}</span>
-                  <button type="button" onClick={() => setOnlyInStock(false)} className="hover:text-neutral-950 cursor-pointer">
-                    <X size={10} />
-                  </button>
-                </span>
-              )}
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedVehicle("all");
-                  setOnlyInStock(false);
-                }}
-                className="text-[10px] sm:text-[11px] text-neutral-500 hover:text-neutral-950 underline ml-1 rtl:ml-0 rtl:mr-1 cursor-pointer transition-colors"
-              >
-                {lang === "ar" ? "إلغاء التصفية" : "Reset"}
-              </button>
             </div>
-          )}
+
+            {(searchQuery || selectedVehicle !== "all" || onlyInStock) && (
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                {searchQuery && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-neutral-100 text-neutral-800 text-[10px] sm:text-[11px]">
+                    <span className="truncate max-w-[100px]">&ldquo;{searchQuery}&rdquo;</span>
+                    <button type="button" onClick={() => setSearchQuery("")} className="hover:text-neutral-950 cursor-pointer">
+                      <X size={10} />
+                    </button>
+                  </span>
+                )}
+
+                {selectedVehicle !== "all" && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-neutral-100 text-neutral-800 text-[10px] sm:text-[11px]">
+                    <span>{selectedVehicle}</span>
+                    <button type="button" onClick={() => setSelectedVehicle("all")} className="hover:text-neutral-950 cursor-pointer">
+                      <X size={10} />
+                    </button>
+                  </span>
+                )}
+
+                {onlyInStock && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-neutral-100 text-neutral-800 text-[10px] sm:text-[11px]">
+                    <span>{lang === "ar" ? "المتوفر" : "In Stock"}</span>
+                    <button type="button" onClick={() => setOnlyInStock(false)} className="hover:text-neutral-950 cursor-pointer">
+                      <X size={10} />
+                    </button>
+                  </span>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedVehicle("all");
+                    setOnlyInStock(false);
+                  }}
+                  className="px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-medium text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200 cursor-pointer transition-colors"
+                >
+                  {lang === "ar" ? "إعادة تعيين الكل" : "Clear All"}
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Product Cards Grid: 2 columns on mobile, 3 on tablet, 4 on desktop */}
           {filteredProducts.length > 0 ? (
