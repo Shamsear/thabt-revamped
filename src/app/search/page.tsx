@@ -39,13 +39,41 @@ function SearchCatalogContent() {
   const vehicleBrands = ["Toyota", "Nissan", "Lexus", "Land Rover", "GMC", "Ford", "Chevrolet", "Jeep"];
 
   // Auto-center selected pill inside horizontal scroll container
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const pillRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
 
-  React.useEffect(() => {
+  const centerActivePill = (behavior: ScrollBehavior = "smooth") => {
+    const container = containerRef.current;
     const activeEl = pillRefs.current[selectedCategory];
-    if (activeEl) {
-      activeEl.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    if (!container || !activeEl) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const pillRect = activeEl.getBoundingClientRect();
+    if (containerRect.width === 0 || pillRect.width === 0) return;
+
+    const offsetDiff = (pillRect.left - containerRect.left) + (pillRect.width / 2) - (containerRect.width / 2);
+
+    if (Math.abs(offsetDiff) > 3) {
+      const targetScroll = container.scrollLeft + offsetDiff;
+      if (behavior === "auto") {
+        container.scrollLeft = targetScroll;
+      } else {
+        container.scrollTo({
+          left: targetScroll,
+          behavior: "smooth",
+        });
+      }
     }
+  };
+
+  React.useEffect(() => {
+    centerActivePill("auto");
+    const raf = requestAnimationFrame(() => centerActivePill("auto"));
+    const timer = setTimeout(() => centerActivePill("smooth"), 100);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(timer);
+    };
   }, [selectedCategory]);
 
   // Filter products based on query, category, brand, and stock
@@ -137,14 +165,24 @@ function SearchCatalogContent() {
           </div>
 
           {/* Category Tabs: Animated Sliding Pill Switcher */}
-          <div className="mb-4 sm:mb-6 overflow-x-auto scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0">
+          <div ref={containerRef} className="mb-4 sm:mb-6 overflow-x-auto scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0">
             <LayoutGroup id="searchCategoryPillsGroup">
               <div className="inline-flex p-1 sm:p-1.5 bg-neutral-100/90 rounded-2xl border border-neutral-200/70 gap-1 sm:gap-1.5 min-w-max shadow-2xs">
                 {/* All Categories */}
                 <button
                   type="button"
                   ref={(el) => { pillRefs.current["all"] = el; }}
-                  onClick={() => setSelectedCategory("all")}
+                  onClick={() => {
+                    setSelectedCategory("all");
+                    const container = containerRef.current;
+                    const el = pillRefs.current["all"];
+                    if (container && el) {
+                      const cRect = container.getBoundingClientRect();
+                      const pRect = el.getBoundingClientRect();
+                      const diff = (pRect.left - cRect.left) + (pRect.width / 2) - (cRect.width / 2);
+                      container.scrollTo({ left: container.scrollLeft + diff, behavior: "smooth" });
+                    }
+                  }}
                   className={`relative px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-semibold whitespace-nowrap text-xs transition-colors duration-200 cursor-pointer flex items-center justify-center outline-none focus:outline-none select-none active:scale-[0.98] ${
                     selectedCategory === "all"
                       ? "text-white"
@@ -155,7 +193,7 @@ function SearchCatalogContent() {
                     <motion.span
                       layoutId="searchActiveCategoryPill"
                       className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs -z-0"
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                      transition={{ type: "spring", stiffness: 380, damping: 30, mass: 0.8 }}
                     />
                   )}
                   <span className="relative z-10">{lang === "ar" ? "جميع الفئات" : "All Categories"}</span>
@@ -168,7 +206,17 @@ function SearchCatalogContent() {
                       key={cat.slug}
                       type="button"
                       ref={(el) => { pillRefs.current[cat.slug] = el; }}
-                      onClick={() => setSelectedCategory(cat.slug)}
+                      onClick={() => {
+                        setSelectedCategory(cat.slug);
+                        const container = containerRef.current;
+                        const el = pillRefs.current[cat.slug];
+                        if (container && el) {
+                          const cRect = container.getBoundingClientRect();
+                          const pRect = el.getBoundingClientRect();
+                          const diff = (pRect.left - cRect.left) + (pRect.width / 2) - (cRect.width / 2);
+                          container.scrollTo({ left: container.scrollLeft + diff, behavior: "smooth" });
+                        }
+                      }}
                       className={`relative px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-semibold whitespace-nowrap text-xs transition-colors duration-200 cursor-pointer flex items-center justify-center outline-none focus:outline-none select-none active:scale-[0.98] ${
                         isSelected
                           ? "text-white"
@@ -179,7 +227,7 @@ function SearchCatalogContent() {
                         <motion.span
                           layoutId="searchActiveCategoryPill"
                           className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs -z-0"
-                          transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                          transition={{ type: "spring", stiffness: 380, damping: 30, mass: 0.8 }}
                         />
                       )}
                       <span className="relative z-10">{lang === "ar" ? cat.category_ar : cat.category}</span>
@@ -340,15 +388,15 @@ function SearchCatalogContent() {
           </div>
 
           {/* Animated Product Cards Grid or Fallback State */}
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout">
             {filteredProducts.length > 0 ? (
               <motion.div
                 key={`grid-${selectedCategory}-${selectedBrand}-${searchQuery}-${onlyInStock}-${sortBy}`}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.22, ease: "easeOut" }}
-                className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6 mb-10 sm:mb-16"
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:gap-x-10 lg:gap-y-14 mb-12 sm:mb-16"
               >
                 {filteredProducts.map((product) => {
                   const inStock = product.stock > 0;
@@ -357,52 +405,51 @@ function SearchCatalogContent() {
                   return (
                     <div
                       key={product.id}
-                      className="h-full flex flex-col justify-between bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-5 border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 group"
+                      className="h-full flex flex-col justify-between group select-none"
                     >
                       <div>
-                        {/* Product Photo Showcase */}
+                        {/* Pure Container-less Product Photo Showcase */}
                         <Link
                           href={`/products/${product.slug}`}
-                          className="block h-32 sm:h-52 w-full rounded-lg sm:rounded-xl mb-2 sm:mb-4 bg-neutral-100 relative overflow-hidden p-2 sm:p-4 group-hover:scale-[1.02] transition-transform duration-300"
+                          className="block relative w-full h-44 sm:h-60 flex items-center justify-center mb-3 sm:mb-4 overflow-hidden"
                         >
                           <img
                             src={product.image}
                             alt={product.name}
-                            className="w-full h-full object-contain object-center"
+                            className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 ease-out"
                             onError={(e) => {
                               e.currentTarget.src = "/admin/banners/accessories.jpg";
                             }}
                           />
+                          {/* Minimal In-Stock / Backorder Pill Badge */}
+                          <div className="absolute top-1 start-1 px-2 py-0.5 rounded-full bg-neutral-100/90 text-[10px] sm:text-[11px] font-medium shadow-2xs">
+                            <span className={inStock ? "text-neutral-700" : "text-[#b38e46]"}>
+                              {inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Backorder")}
+                            </span>
+                          </div>
                         </Link>
 
-                        {/* Model SKU & Stock */}
-                        <div className="flex items-center justify-between text-xs sm:text-xs font-mono text-neutral-500 mb-1">
-                          <span className="truncate max-w-[70px] sm:max-w-none">{product.product_id}</span>
-                          <span className={`shrink-0 ${inStock ? "text-neutral-600 font-medium" : "text-[#b38e46] font-semibold"}`}>
-                            {inStock
-                              ? lang === "ar"
-                                ? "متوفر"
-                                : "In Stock"
-                              : lang === "ar"
-                              ? "طلب مسبق"
-                              : "Backorder"}
-                          </span>
-                        </div>
+                        {/* Model SKU */}
+                        <p className="text-[10px] sm:text-xs font-mono text-neutral-400 mb-1 truncate">
+                          {product.product_id}
+                        </p>
 
                         {/* Product Title */}
                         <Link href={`/products/${product.slug}`}>
-                          <h3 className="font-semibold text-xs sm:text-base text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 transition-colors">
+                          <h3 className="font-medium text-xs sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-[#c5a059] transition-colors">
                             {lang === "ar" ? product.name_ar : product.name}
                           </h3>
                         </Link>
                       </div>
 
                       {/* Pricing & Add to Bag */}
-                      <div className="pt-2.5 sm:pt-4 border-t border-neutral-100 mt-2 sm:mt-3 flex items-center justify-between gap-1.5">
-                        <div className="min-w-0">
-                          <span className="text-sm sm:text-lg font-bold text-neutral-900 block truncate">
-                            {product.price}{" "}
-                            <span className="text-xs font-semibold text-[#c5a059]">{currency}</span>
+                      <div className="pt-2 flex items-center justify-between gap-2 mt-auto">
+                        <div className="shrink-0 whitespace-nowrap">
+                          <span className="text-sm sm:text-base font-bold text-neutral-950 font-mono">
+                            {product.price}
+                          </span>
+                          <span className="text-[11px] sm:text-xs font-semibold text-[#c5a059] ms-1">
+                            {currency}
                           </span>
                         </div>
 
@@ -410,20 +457,20 @@ function SearchCatalogContent() {
                           <button
                             type="button"
                             onClick={() => handleAddClick(product)}
-                            className={`flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-4 rounded-xl transition-all duration-200 cursor-pointer shrink-0 active-press ${
+                            className={`flex items-center justify-center gap-1 text-[11px] sm:text-xs font-semibold py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl transition-all duration-200 cursor-pointer shrink-0 active-press shadow-2xs ${
                               isAdded
                                 ? "bg-[#25D366] text-white"
-                                : "bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950"
+                                : "bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950"
                             }`}
                           >
                             {isAdded ? (
                               <>
-                                <Check size={13} className="stroke-[2.5]" />
+                                <Check size={12} className="stroke-[2.5]" />
                                 <span>{lang === "ar" ? "تم" : "Added"}</span>
                               </>
                             ) : (
                               <>
-                                <Plus size={13} />
+                                <Plus size={12} />
                                 <span>{lang === "ar" ? "أضف" : "Add"}</span>
                               </>
                             )}
@@ -431,9 +478,9 @@ function SearchCatalogContent() {
                         ) : (
                           <Link
                             href={`/products/${product.slug}`}
-                            className="text-xs sm:text-sm font-semibold py-2 px-3 rounded-xl border border-neutral-200 text-neutral-700 hover:border-neutral-900 transition shrink-0"
+                            className="flex items-center justify-center text-[11px] sm:text-xs font-medium py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl bg-neutral-100 hover:bg-[#faf6ed] text-neutral-700 hover:text-[#c5a059] transition-colors shrink-0"
                           >
-                            {lang === "ar" ? "تفاصيل" : "Details"}
+                            <span>{lang === "ar" ? "حجز" : "Reserve"}</span>
                           </Link>
                         )}
                       </div>

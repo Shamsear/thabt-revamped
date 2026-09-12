@@ -29,13 +29,41 @@ export default function ProfilePage() {
   const [reorderingOrderId, setReorderingOrderId] = useState<string | null>(null);
 
   // Auto-center selected pill inside horizontal scroll container
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const pillRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
 
-  React.useEffect(() => {
+  const centerActivePill = (behavior: ScrollBehavior = "smooth") => {
+    const container = containerRef.current;
     const activeEl = pillRefs.current[activeTab];
-    if (activeEl) {
-      activeEl.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    if (!container || !activeEl) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const pillRect = activeEl.getBoundingClientRect();
+    if (containerRect.width === 0 || pillRect.width === 0) return;
+
+    const offsetDiff = (pillRect.left - containerRect.left) + (pillRect.width / 2) - (containerRect.width / 2);
+
+    if (Math.abs(offsetDiff) > 3) {
+      const targetScroll = container.scrollLeft + offsetDiff;
+      if (behavior === "auto") {
+        container.scrollLeft = targetScroll;
+      } else {
+        container.scrollTo({
+          left: targetScroll,
+          behavior: "smooth",
+        });
+      }
     }
+  };
+
+  React.useEffect(() => {
+    centerActivePill("auto");
+    const raf = requestAnimationFrame(() => centerActivePill("auto"));
+    const timer = setTimeout(() => centerActivePill("smooth"), 100);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(timer);
+    };
   }, [activeTab]);
 
   const handleReorder = (order: typeof MOCK_ORDERS[0]) => {
@@ -123,21 +151,31 @@ export default function ProfilePage() {
           </div>
 
           {/* Tabs Bar: Animated Sliding Pill Switcher */}
-          <div className="mb-6 sm:mb-8 overflow-x-auto scrollbar-none -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
+          <div ref={containerRef} className="mb-6 sm:mb-8 overflow-x-auto scrollbar-none -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
             <LayoutGroup id="profileTabsGroup">
               <div className="inline-flex p-1 sm:p-1.5 bg-neutral-100/90 rounded-2xl border border-neutral-200/70 gap-1 sm:gap-1.5 min-w-max shadow-2xs">
                 {/* Orders Tab */}
                 <button
                   type="button"
                   ref={(el) => { pillRefs.current["orders"] = el; }}
-                  onClick={() => setActiveTab("orders")}
+                  onClick={() => {
+                    setActiveTab("orders");
+                    const container = containerRef.current;
+                    const el = pillRefs.current["orders"];
+                    if (container && el) {
+                      const cRect = container.getBoundingClientRect();
+                      const pRect = el.getBoundingClientRect();
+                      const diff = (pRect.left - cRect.left) + (pRect.width / 2) - (cRect.width / 2);
+                      container.scrollTo({ left: container.scrollLeft + diff, behavior: "smooth" });
+                    }
+                  }}
                   className="relative py-2 sm:py-2.5 px-3.5 sm:px-5 rounded-xl cursor-pointer flex items-center gap-2 text-xs sm:text-sm whitespace-nowrap outline-none focus:outline-none select-none transition-colors"
                 >
                   {activeTab === "orders" && (
                     <motion.span
                       layoutId="profileActivePill"
                       className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs"
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                      transition={{ type: "spring", stiffness: 380, damping: 30, mass: 0.8 }}
                     />
                   )}
                   <span className="relative z-10 flex items-center gap-2">
@@ -161,14 +199,24 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   ref={(el) => { pillRefs.current["addresses"] = el; }}
-                  onClick={() => setActiveTab("addresses")}
+                  onClick={() => {
+                    setActiveTab("addresses");
+                    const container = containerRef.current;
+                    const el = pillRefs.current["addresses"];
+                    if (container && el) {
+                      const cRect = container.getBoundingClientRect();
+                      const pRect = el.getBoundingClientRect();
+                      const diff = (pRect.left - cRect.left) + (pRect.width / 2) - (cRect.width / 2);
+                      container.scrollTo({ left: container.scrollLeft + diff, behavior: "smooth" });
+                    }
+                  }}
                   className="relative py-2 sm:py-2.5 px-3.5 sm:px-5 rounded-xl cursor-pointer flex items-center gap-2 text-xs sm:text-sm whitespace-nowrap outline-none focus:outline-none select-none transition-colors"
                 >
                   {activeTab === "addresses" && (
                     <motion.span
                       layoutId="profileActivePill"
                       className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs"
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                      transition={{ type: "spring", stiffness: 380, damping: 30, mass: 0.8 }}
                     />
                   )}
                   <span className="relative z-10 flex items-center gap-2">
@@ -183,14 +231,24 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   ref={(el) => { pillRefs.current["garage"] = el; }}
-                  onClick={() => setActiveTab("garage")}
+                  onClick={() => {
+                    setActiveTab("garage");
+                    const container = containerRef.current;
+                    const el = pillRefs.current["garage"];
+                    if (container && el) {
+                      const cRect = container.getBoundingClientRect();
+                      const pRect = el.getBoundingClientRect();
+                      const diff = (pRect.left - cRect.left) + (pRect.width / 2) - (cRect.width / 2);
+                      container.scrollTo({ left: container.scrollLeft + diff, behavior: "smooth" });
+                    }
+                  }}
                   className="relative py-2 sm:py-2.5 px-3.5 sm:px-5 rounded-xl cursor-pointer flex items-center gap-2 text-xs sm:text-sm whitespace-nowrap outline-none focus:outline-none select-none transition-colors"
                 >
                   {activeTab === "garage" && (
                     <motion.span
                       layoutId="profileActivePill"
                       className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs"
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                      transition={{ type: "spring", stiffness: 380, damping: 30, mass: 0.8 }}
                     />
                   )}
                   <span className="relative z-10 flex items-center gap-2">

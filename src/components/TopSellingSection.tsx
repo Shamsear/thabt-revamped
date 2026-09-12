@@ -127,10 +127,10 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
             resistanceRatio={0.85}
             speed={500}
             breakpoints={{
-              0: { slidesPerView: 1.15, spaceBetween: 16 },
-              640: { slidesPerView: 2.2, spaceBetween: 20 },
-              1024: { slidesPerView: 3.2, spaceBetween: 24 },
-              1280: { slidesPerView: 4, spaceBetween: 24 },
+              0: { slidesPerView: 1.2, spaceBetween: 24 },
+              640: { slidesPerView: 2.2, spaceBetween: 28 },
+              1024: { slidesPerView: 3.2, spaceBetween: 32 },
+              1280: { slidesPerView: 4, spaceBetween: 36 },
             }}
             className="!pt-4 !pb-6 !px-1 -mt-3 -mb-4"
           >
@@ -142,69 +142,72 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                 <SwiperSlide key={product.id} className="h-auto">
                   <div
                     onClick={() => handleProductNavigate(product.slug)}
-                    className="h-full flex flex-col justify-between bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/80 hover:border-neutral-900 active:border-[#c5a059] hover:shadow-xl active:shadow-md hover:-translate-y-1.5 active:scale-[0.99] transition-all duration-300 ease-out group select-none cursor-pointer"
+                    className="h-full flex flex-col justify-between group select-none cursor-pointer p-1"
                   >
                     <Link
                       href={`/products/${product.slug}`}
                       onClick={(e) => e.stopPropagation()}
                       className="block focus:outline-none"
                     >
-                      {/* Product Photo Showcase */}
-                      <div className="h-48 sm:h-52 w-full rounded-xl mb-4 sm:mb-5 bg-neutral-100 relative overflow-hidden">
+                      {/* Pure Container-less Product Photo Showcase */}
+                      <div className="relative w-full h-48 sm:h-56 flex items-center justify-center mb-3 sm:mb-4 overflow-hidden">
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-full h-full object-cover object-center rounded-xl group-hover:scale-105 group-active:scale-105 transition-transform duration-500 ease-out"
+                          className="w-full h-full object-contain object-center group-hover:scale-105 group-active:scale-95 transition-transform duration-500 ease-out"
                           onError={(e) => {
                             e.currentTarget.src = "/admin/banners/accessories.jpg";
                           }}
                         />
+                        {/* Minimal In-Stock / Backorder Pill Badge */}
+                        <div className="absolute top-1 start-1 px-2 py-0.5 rounded-full bg-neutral-100/90 text-[10px] sm:text-[11px] font-medium shadow-2xs">
+                          <span className={inStock ? "text-neutral-700" : "text-[#b38e46]"}>
+                            {inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Backorder")}
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Model SKU & Fitment */}
-                      <div className="flex items-center justify-between text-xs font-mono text-neutral-500 mb-1.5">
-                        <span>{product.product_id}</span>
-                        <span className={inStock ? "text-neutral-600" : "text-[#b38e46] font-medium"}>
-                          {inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Backorder")}
-                        </span>
-                      </div>
+                      {/* Model SKU */}
+                      <p className="text-[10px] sm:text-xs font-mono text-neutral-400 mb-1 truncate">
+                        {product.product_id}
+                      </p>
 
                       {/* Product Title */}
-                      <h3 className="font-medium text-sm sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-[#c5a059] transition-colors">
+                      <h3 className="font-medium text-xs sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-[#c5a059] transition-colors">
                         {lang === "ar" ? product.name_ar : product.name}
                       </h3>
                     </Link>
 
                     {/* Pricing & Add to Bag */}
                     <div
-                      className="pt-4 border-t border-neutral-100 mt-3 flex items-center justify-between"
+                      className="pt-2 flex items-center justify-between gap-2 mt-auto"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <Link href={`/products/${product.slug}`}>
-                        <span className="text-base font-semibold text-neutral-900 hover:text-[#c5a059] transition-colors">
-                          {product.price}{" "}
-                          <span className="text-xs font-medium text-[#c5a059]">{currency}</span>
+                      <Link href={`/products/${product.slug}`} className="shrink-0 whitespace-nowrap">
+                        <span className="text-sm sm:text-base font-bold text-neutral-950 hover:text-[#c5a059] transition-colors font-mono">
+                          {product.price}
                         </span>
+                        <span className="text-[11px] sm:text-xs font-semibold text-[#c5a059] ms-1">{currency}</span>
                       </Link>
 
                       {inStock ? (
                         <button
                           type="button"
                           onClick={() => handleAddClick(product)}
-                          className={`flex items-center gap-1.5 text-sm sm:text-xs font-semibold py-2.5 sm:py-2 px-3.5 rounded-lg transition-all duration-200 cursor-pointer active-press ${
+                          className={`flex items-center gap-1 text-xs sm:text-xs font-semibold py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl transition-all duration-200 cursor-pointer active-press shadow-2xs shrink-0 ${
                             isAdded
                               ? "bg-[#25D366] text-white"
-                              : "bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 hover:shadow-sm"
+                              : "bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950"
                           }`}
                         >
                           {isAdded ? (
                             <>
-                              <Check size={14} className="stroke-[2.5]" />
+                              <Check size={13} className="stroke-[2.5]" />
                               <span>{lang === "ar" ? "تمت الإضافة" : "Added!"}</span>
                             </>
                           ) : (
                             <>
-                              <Plus size={14} />
+                              <Plus size={13} />
                               <span>{lang === "ar" ? "إضافة" : "Add to Bag"}</span>
                             </>
                           )}
@@ -213,7 +216,7 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                         <button
                           type="button"
                           onClick={() => onOpenPreOrder(product)}
-                          className="flex items-center gap-1.5 text-sm sm:text-xs font-medium py-2.5 sm:py-2 px-3.5 rounded-lg bg-neutral-100 hover:bg-[#faf6ed] text-neutral-800 hover:text-[#c5a059] transition-colors cursor-pointer active-press"
+                          className="flex items-center gap-1 text-xs sm:text-xs font-medium py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl bg-neutral-100 hover:bg-[#faf6ed] text-neutral-800 hover:text-[#c5a059] transition-colors cursor-pointer active-press shrink-0"
                         >
                           <span>{lang === "ar" ? "طلب مسبق" : "Pre-Order"}</span>
                         </button>

@@ -25,13 +25,41 @@ export default function GalleryPage() {
   const brands = ["Toyota", "Nissan", "Land Rover", "GMC"];
 
   // Auto-center selected pill inside horizontal scroll container
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const pillRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
 
-  React.useEffect(() => {
+  const centerActivePill = (behavior: ScrollBehavior = "smooth") => {
+    const container = containerRef.current;
     const activeEl = pillRefs.current[selectedBrand];
-    if (activeEl) {
-      activeEl.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    if (!container || !activeEl) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const pillRect = activeEl.getBoundingClientRect();
+    if (containerRect.width === 0 || pillRect.width === 0) return;
+
+    const offsetDiff = (pillRect.left - containerRect.left) + (pillRect.width / 2) - (containerRect.width / 2);
+
+    if (Math.abs(offsetDiff) > 3) {
+      const targetScroll = container.scrollLeft + offsetDiff;
+      if (behavior === "auto") {
+        container.scrollLeft = targetScroll;
+      } else {
+        container.scrollTo({
+          left: targetScroll,
+          behavior: "smooth",
+        });
+      }
     }
+  };
+
+  React.useEffect(() => {
+    centerActivePill("auto");
+    const raf = requestAnimationFrame(() => centerActivePill("auto"));
+    const timer = setTimeout(() => centerActivePill("smooth"), 100);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(timer);
+    };
   }, [selectedBrand]);
 
   const filteredItems =
@@ -74,14 +102,24 @@ export default function GalleryPage() {
           </div>
 
           {/* Horizontal Animated Sliding Pill Filter Bar */}
-          <div className="mb-4 sm:mb-10 overflow-x-auto scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0 flex sm:justify-center">
+          <div ref={containerRef} className="mb-4 sm:mb-10 overflow-x-auto scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0 flex sm:justify-center">
             <LayoutGroup id="galleryBrandPillsGroup">
               <div className="inline-flex p-1 sm:p-1.5 bg-neutral-100/90 rounded-2xl border border-neutral-200/70 gap-1 sm:gap-1.5 min-w-max shadow-2xs">
                 {/* All Vehicles */}
                 <button
                   type="button"
                   ref={(el) => { pillRefs.current["all"] = el; }}
-                  onClick={() => setSelectedBrand("all")}
+                  onClick={() => {
+                    setSelectedBrand("all");
+                    const container = containerRef.current;
+                    const el = pillRefs.current["all"];
+                    if (container && el) {
+                      const cRect = container.getBoundingClientRect();
+                      const pRect = el.getBoundingClientRect();
+                      const diff = (pRect.left - cRect.left) + (pRect.width / 2) - (cRect.width / 2);
+                      container.scrollTo({ left: container.scrollLeft + diff, behavior: "smooth" });
+                    }
+                  }}
                   className={`relative px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-xl font-semibold whitespace-nowrap text-xs transition-colors duration-200 cursor-pointer flex items-center justify-center outline-none focus:outline-none select-none active:scale-[0.98] ${
                     selectedBrand === "all"
                       ? "text-white"
@@ -92,7 +130,7 @@ export default function GalleryPage() {
                     <motion.span
                       layoutId="galleryActiveBrandPill"
                       className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs -z-0"
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                      transition={{ type: "spring", stiffness: 380, damping: 30, mass: 0.8 }}
                     />
                   )}
                   <span className="relative z-10 flex items-center gap-1.5">
@@ -108,7 +146,17 @@ export default function GalleryPage() {
                       key={b}
                       type="button"
                       ref={(el) => { pillRefs.current[b] = el; }}
-                      onClick={() => setSelectedBrand(b)}
+                      onClick={() => {
+                        setSelectedBrand(b);
+                        const container = containerRef.current;
+                        const el = pillRefs.current[b];
+                        if (container && el) {
+                          const cRect = container.getBoundingClientRect();
+                          const pRect = el.getBoundingClientRect();
+                          const diff = (pRect.left - cRect.left) + (pRect.width / 2) - (cRect.width / 2);
+                          container.scrollTo({ left: container.scrollLeft + diff, behavior: "smooth" });
+                        }
+                      }}
                       className={`relative px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-xl font-semibold whitespace-nowrap text-xs transition-colors duration-200 cursor-pointer flex items-center justify-center outline-none focus:outline-none select-none active:scale-[0.98] ${
                         isSelected
                           ? "text-white"
@@ -119,7 +167,7 @@ export default function GalleryPage() {
                         <motion.span
                           layoutId="galleryActiveBrandPill"
                           className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs -z-0"
-                          transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                          transition={{ type: "spring", stiffness: 380, damping: 30, mass: 0.8 }}
                         />
                       )}
                       <span className="relative z-10 flex items-center gap-1.5">
