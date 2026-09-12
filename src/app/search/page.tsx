@@ -402,31 +402,75 @@ function SearchCatalogContent() {
               })}
             </div>
           ) : (
-            /* Empty Filter Result */
-            <div className="text-center py-16 max-w-sm mx-auto mb-16">
-              <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center mx-auto mb-3 text-neutral-400">
-                <Car size={20} />
+            /* Smart Fallback Zero-Result State */
+            <div className="text-center py-12 px-4 max-w-lg mx-auto mb-16 bg-neutral-50/80 border border-neutral-200/80 rounded-2xl p-6 sm:p-8">
+              <div className="w-14 h-14 rounded-2xl bg-white shadow-xs border border-neutral-200 flex items-center justify-center mx-auto mb-4 text-[#c5a059]">
+                <Car size={26} />
               </div>
-              <h3 className="text-sm font-semibold text-neutral-900 mb-1">
-                {lang === "ar" ? "لا توجد منتجات مطابقة للبحث" : "No products found"}
+              
+              <h3 className="text-base font-bold text-neutral-900 mb-1.5">
+                {lang === "ar" ? "لا توجد نتائج مطابقة لبحثك" : "No matching mounts found"}
               </h3>
-              <p className="text-xs text-neutral-500 mb-4">
+              
+              <p className="text-xs text-neutral-600 mb-6 leading-relaxed max-w-sm mx-auto">
                 {lang === "ar"
-                  ? "جرب كتابة كلمات مختلفة أو إزالة الفلاتر المحددة."
-                  : "Try searching for a different car model or reset filters."}
+                  ? "جرب إزالة بعض الفلاتر، أو تواصل معنا مباشرة عبر الواتساب لتوفير القاعدة المناسبة لسيارتك وموديلها."
+                  : "Try resetting filters or chat directly with our fitment team on WhatsApp for custom car matching."}
               </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCategory("all");
-                  setSelectedBrand("all");
-                  setOnlyInStock(false);
-                }}
-                className="px-4 py-2 bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 rounded-lg text-xs font-semibold transition cursor-pointer"
-              >
-                {lang === "ar" ? "عرض جميع المنتجات" : "Show All Products"}
-              </button>
+
+              {/* Popular Vehicle Quick Picks */}
+              <div className="mb-6">
+                <span className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-2.5">
+                  {lang === "ar" ? "سيارات شائعة:" : "Popular Vehicles:"}
+                </span>
+                <div className="flex flex-wrap items-center justify-center gap-1.5">
+                  {vehicleBrands.map((brand) => (
+                    <button
+                      key={brand}
+                      type="button"
+                      onClick={() => {
+                        setSelectedBrand(brand);
+                        setSearchQuery("");
+                        setSelectedCategory("all");
+                      }}
+                      className="px-2.5 py-1 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-xs font-medium text-neutral-700 hover:text-neutral-950 transition cursor-pointer"
+                    >
+                      {brand}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("all");
+                    setSelectedBrand("all");
+                    setOnlyInStock(false);
+                  }}
+                  className="w-full sm:w-auto px-5 py-2.5 bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <RotateCcw size={13} />
+                  <span>{lang === "ar" ? "إعادة تعيين الفلاتر" : "Reset All Filters"}</span>
+                </button>
+
+                <a
+                  href={`https://wa.me/966547631526?text=${encodeURIComponent(
+                    lang === "ar"
+                      ? `مرحباً ثقة، لم أجد قاعدة مناسبة لسيارتي في المتجر (بحث: ${searchQuery || selectedBrand}). هل تتوفر لديكم؟`
+                      : `Hello Thabt, I'm searching for a mount (Query: ${searchQuery || selectedBrand}). Do you have fitment for my car?`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-5 py-2.5 bg-[#25D366] hover:bg-[#20b858] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <MessageCircle size={14} />
+                  <span>{lang === "ar" ? "استفسر عبر الواتساب" : "Ask on WhatsApp"}</span>
+                </a>
+              </div>
             </div>
           )}
         </div>
