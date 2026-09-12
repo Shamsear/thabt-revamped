@@ -238,9 +238,9 @@ function SearchCatalogContent() {
             {/* Sub-Filters: Search input, Vehicle Brand selector, Sort, In-stock toggle */}
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 pt-1">
               {/* Search Bar Input */}
-              <div className="relative flex-1 min-w-[200px] max-w-md">
+              <div className="relative flex-1 min-w-[220px] max-w-lg">
                 <Search
-                  size={15}
+                  size={16}
                   className="absolute left-3.5 rtl:left-auto rtl:right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none"
                 />
                 <input
@@ -252,7 +252,7 @@ function SearchCatalogContent() {
                       ? "ابحث بالاسم، السيارة (لاندكروزر، باترول...) أو SKU..."
                       : "Search by vehicle (LC300, Patrol...), name or SKU..."
                   }
-                  className="w-full h-10 bg-neutral-50 hover:bg-neutral-100/60 focus:bg-white text-xs text-neutral-900 rounded-xl pl-9.5 pr-8 rtl:pl-8 rtl:pr-9.5 border border-neutral-200 focus:outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059]/20 transition-all placeholder:text-neutral-400"
+                  className="w-full h-10 md:h-11 bg-neutral-50 hover:bg-neutral-100/60 focus:bg-white text-xs md:text-sm text-neutral-900 rounded-xl pl-10 pr-8 rtl:pl-8 rtl:pr-10 border border-neutral-200 focus:outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059]/20 transition-all placeholder:text-neutral-400"
                 />
                 {searchQuery && (
                   <button
@@ -266,9 +266,9 @@ function SearchCatalogContent() {
               </div>
 
               {/* Dropdown Filters & In-Stock Switch */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+              <div className="flex items-center gap-2 md:gap-3 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
                 {/* Vehicle Brand Dropdown */}
-                <div className="w-36 sm:w-40 shrink-0">
+                <div className="w-36 md:w-44 shrink-0">
                   <CustomSelect
                     value={selectedBrand}
                     onChange={(val) => setSelectedBrand(val)}
@@ -282,7 +282,7 @@ function SearchCatalogContent() {
                 </div>
 
                 {/* Sort Dropdown */}
-                <div className="w-36 sm:w-40 shrink-0">
+                <div className="w-36 md:w-48 shrink-0">
                   <CustomSelect
                     value={sortBy}
                     onChange={(val) => setSortBy(val as any)}
@@ -300,7 +300,7 @@ function SearchCatalogContent() {
                 <button
                   type="button"
                   onClick={() => setOnlyInStock(!onlyInStock)}
-                  className={`h-10 px-3 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 cursor-pointer shrink-0 select-none active:scale-95 ${
+                  className={`h-10 md:h-11 px-3 md:px-4 rounded-xl border text-xs md:text-sm font-semibold whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 md:gap-2 cursor-pointer shrink-0 select-none active:scale-95 ${
                     onlyInStock
                       ? "bg-[#faf6ed] border-[#c5a059] text-[#9b7832] ring-1 ring-[#c5a059]/30"
                       : "bg-neutral-50 hover:bg-neutral-100 border-neutral-200 text-neutral-700"

@@ -377,11 +377,11 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         aria-activedescendant={
           isOpen && highlightedIndex >= 0 ? `${selectId}-option-${highlightedIndex}` : undefined
         }
-        className={`w-full h-11 sm:h-10 flex items-center justify-between text-sm sm:text-xs rounded-xl px-3.5 border transition-all duration-150 cursor-pointer select-none text-left rtl:text-right focus:outline-none focus:ring-2 focus:ring-[#c5a059]/40 ${
+        className={`w-full h-10 md:h-11 flex items-center justify-between text-xs md:text-sm rounded-xl px-3.5 border transition-all duration-150 cursor-pointer select-none text-left rtl:text-right focus:outline-none focus:ring-2 focus:ring-[#c5a059]/30 ${
           disabled
             ? "bg-neutral-100/80 border-neutral-200/60 text-neutral-400 cursor-not-allowed"
             : isOpen
-            ? "bg-white border-[#c5a059] ring-2 ring-[#c5a059]/15 text-neutral-900 shadow-xs"
+            ? "bg-[#faf6ed] border-[#c5a059] ring-2 ring-[#c5a059]/20 text-[#9b7832] shadow-xs"
             : "bg-neutral-50 hover:bg-neutral-100/70 border-neutral-200 text-neutral-900"
         } ${triggerClassName}`}
       >
@@ -426,7 +426,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   exit={{ opacity: 0, y: placement === "bottom" ? -6 : 6, scale: 0.98 }}
                   transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
                   style={{ maxHeight: `${maxMenuHeight}px` }}
-                  className="bg-white border border-neutral-200/90 rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.16),0_0_1px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col"
+                  className="bg-white border border-neutral-200/90 rounded-xl shadow-[0_16px_40px_rgba(0,0,0,0.16),0_0_1px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col"
                   role="listbox"
                   id={`${selectId}-listbox`}
                 >
@@ -499,9 +499,9 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                             onClick={() => handleSelect(opt)}
                             className={`w-full flex items-center justify-between px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-left rtl:text-right transition-colors duration-100 cursor-pointer outline-none ${
                               isSelected && isHighlighted
-                                ? "bg-[#f5ecdc] text-[#9b7832] font-semibold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#c5a059]"
+                                ? "bg-[#f5ecdc] text-[#9b7832] font-semibold"
                                 : isSelected
-                                ? "bg-[#faf6ed] text-[#b38e46] font-semibold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#c5a059]"
+                                ? "bg-[#faf6ed] text-[#b38e46] font-semibold"
                                 : isHighlighted
                                 ? "bg-neutral-100 text-neutral-950 font-medium"
                                 : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950"
