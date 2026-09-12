@@ -43,7 +43,7 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
                 <img
                   src="/user/images/logo.png"
                   alt="Thabt"
-                  className="h-8 w-auto object-contain brightness-110 mb-3"
+                  className="h-9 sm:h-10 w-auto object-contain brightness-110 mb-3"
                 />
               </Link>
               <p className="text-[11px] leading-relaxed text-neutral-400 max-w-sm">

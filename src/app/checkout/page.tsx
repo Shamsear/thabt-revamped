@@ -67,10 +67,10 @@ export default function CheckoutPage() {
     Number.isFinite(cartSubtotalQar) && cartSubtotalQar >= 0
       ? cartSubtotalQar
       : cartItems.reduce(
-          (acc, item) =>
-            acc + (Number(item?.product?.price) || 0) * (Number(item?.quantity) || 1),
-          0
-        );
+        (acc, item) =>
+          acc + (Number(item?.product?.price) || 0) * (Number(item?.quantity) || 1),
+        0
+      );
   const shippingCostQar = formData.country === "Qatar" ? (subtotalQar > 200 ? 0 : 15) : 35;
   const orderTotalQar = subtotalQar + shippingCostQar;
 
@@ -90,8 +90,8 @@ export default function CheckoutPage() {
       {/* Focused Checkout Minimal Header */}
       <header className="bg-white border-b border-neutral-200/80 py-4 px-4 sm:px-8 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link href="/">
-            <img src="/user/images/black_logo.png" alt="Thabt" className="h-7 sm:h-8 w-auto object-contain" />
+          <Link href="/" className="flex items-center">
+            <img src="/user/images/black_logo.png" alt="Thabt" className="h-8 sm:h-9.5 md:h-10 w-auto object-contain" />
           </Link>
           <div className="flex items-center gap-2 text-xs font-semibold text-neutral-700 bg-[#faf6ed] border border-[#c5a059]/30 px-3.5 py-1.5 rounded-full">
             <Lock size={13} className="text-[#c5a059]" />
@@ -132,7 +132,7 @@ export default function CheckoutPage() {
                 {cartItems.map((item) => (
                   <div key={item.product.id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-lg bg-neutral-100 border border-neutral-200/60 p-1 shrink-0 flex items-center justify-center">
+                      <div className="w-11 h-11 p-0.5 shrink-0 flex items-center justify-center">
                         <img src={item.product.image} alt={item.product.name} className="max-h-full max-w-full object-contain" />
                       </div>
                       <div className="min-w-0">
@@ -431,7 +431,7 @@ export default function CheckoutPage() {
                 {cartItems.map((item) => (
                   <div key={item.product.id} className="py-3 flex items-center justify-between gap-3 text-xs">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-neutral-100 border border-neutral-200/60 p-1 shrink-0 flex items-center justify-center">
+                      <div className="w-12 h-12 p-0.5 shrink-0 flex items-center justify-center">
                         <img
                           src={item.product.image}
                           alt={item.product.name}

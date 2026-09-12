@@ -7,6 +7,7 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CustomSelect } from "@/components/CustomSelect";
+import { Pagination } from "@/components/Pagination";
 import { useAppContext } from "@/context/AppContext";
 import {
   MOCK_CATEGORIES,
@@ -25,6 +26,8 @@ import {
   Sparkles,
 } from "lucide-react";
 
+const PAGE_SIZE = 12;
+
 export default function CategoryPage({
   params,
 }: {
@@ -40,6 +43,7 @@ export default function CategoryPage({
   const [selectedVehicle, setSelectedVehicle] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc">("featured");
   const [onlyInStock, setOnlyInStock] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
 
   const normalizedSlug =
@@ -148,6 +152,27 @@ export default function CategoryPage({
 
     return list;
   }, [activeSlug, searchQuery, selectedVehicle, onlyInStock, sortBy]);
+
+  // Reset page when any filter criteria change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeSlug, searchQuery, selectedVehicle, onlyInStock, sortBy]);
+
+  const productGridRef = React.useRef<HTMLDivElement>(null);
+
+  const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredProducts.slice(start, start + PAGE_SIZE);
+  }, [filteredProducts, currentPage]);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    if (productGridRef.current) {
+      const topOffset = productGridRef.current.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: Math.max(0, topOffset), behavior: "smooth" });
+    }
+  };
 
   const handleAddClick = (product: any) => {
     addToCart(product, 1);

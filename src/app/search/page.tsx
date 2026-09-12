@@ -7,6 +7,7 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CustomSelect } from "@/components/CustomSelect";
+import { Pagination } from "@/components/Pagination";
 import { useAppContext } from "@/context/AppContext";
 import { MOCK_ALL_PRODUCTS, MOCK_CATEGORIES, Product } from "@/data/mockData";
 import {
@@ -21,6 +22,8 @@ import {
   Sparkles,
 } from "lucide-react";
 
+const PAGE_SIZE = 12;
+
 function SearchCatalogContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
@@ -34,12 +37,14 @@ function SearchCatalogContent() {
   const [selectedBrand, setSelectedBrand] = useState<string>(initialBrand);
   const [onlyInStock, setOnlyInStock] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc">("featured");
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
 
   const vehicleBrands = ["Toyota", "Nissan", "Lexus", "Land Rover", "GMC", "Ford", "Chevrolet", "Jeep"];
 
   // Auto-center selected pill inside horizontal scroll container
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const productGridRef = React.useRef<HTMLDivElement>(null);
   const pillRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
 
   const centerActivePill = (behavior: ScrollBehavior = "smooth") => {
@@ -116,6 +121,25 @@ function SearchCatalogContent() {
     return list;
   }, [searchQuery, selectedCategory, selectedBrand, onlyInStock, sortBy]);
 
+  // Reset page when any filter criteria change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory, selectedBrand, onlyInStock, sortBy]);
+
+  const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredProducts.slice(start, start + PAGE_SIZE);
+  }, [filteredProducts, currentPage]);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    if (productGridRef.current) {
+      const topOffset = productGridRef.current.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: Math.max(0, topOffset), behavior: "smooth" });
+    }
+  };
+
   const handleAddClick = (product: Product) => {
     addToCart(product, 1);
     setJustAddedId(product.id);
@@ -159,162 +183,138 @@ function SearchCatalogContent() {
             </h1>
             <p className="text-xs sm:text-base text-neutral-600 max-w-xl leading-relaxed">
               {lang === "ar"
-                ? "تصفح جميع قواعد التثبيت المخصصة وحوامل الأجهزة المتوافقة مع أحدث سيارات الشرق الأوسط والخليج."
-                : "Browse custom dashboard mounts, MagSafe charging holders, and heavy-duty off-road systems engineered for the GCC."}
+                ? "تصفح أحدث قواعد التثبيت المخصصة وحوامل الهواتف المتوافقة مع أجهزة آبل وسامسونج وغيرها."
+                : "Explore factory-fit custom mounts and MagSafe wireless charging holders engineered for GCC conditions."}
             </p>
           </div>
 
-          {/* Category Tabs: Animated Sliding Pill Switcher */}
-          <div ref={containerRef} className="mb-4 sm:mb-6 overflow-x-auto scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0">
-            <LayoutGroup id="searchCategoryPillsGroup">
-              <div className="inline-flex p-1 sm:p-1.5 bg-neutral-100/90 rounded-2xl border border-neutral-200/70 gap-1 sm:gap-1.5 min-w-max shadow-2xs">
-                {/* All Categories */}
+          {/* Unified Horizontal Filtering System (Brand, Category, Search, Sort) */}
+          <div ref={productGridRef} className="space-y-4 mb-8">
+            {/* Category Tabs Pill Carousel */}
+            <div className="relative">
+              <div
+                ref={containerRef}
+                className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none no-scrollbar"
+              >
                 <button
                   type="button"
-                  ref={(el) => { pillRefs.current["all"] = el; }}
-                  onClick={() => {
-                    setSelectedCategory("all");
-                    const container = containerRef.current;
-                    const el = pillRefs.current["all"];
-                    if (container && el) {
-                      const cRect = container.getBoundingClientRect();
-                      const pRect = el.getBoundingClientRect();
-                      const diff = (pRect.left - cRect.left) + (pRect.width / 2) - (cRect.width / 2);
-                      container.scrollTo({ left: container.scrollLeft + diff, behavior: "smooth" });
-                    }
+                  ref={(el) => {
+                    pillRefs.current["all"] = el;
                   }}
-                  className={`relative px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-semibold whitespace-nowrap text-xs transition-colors duration-200 cursor-pointer flex items-center justify-center outline-none focus:outline-none select-none active:scale-[0.98] ${
+                  onClick={() => setSelectedCategory("all")}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer select-none active:scale-95 ${
                     selectedCategory === "all"
-                      ? "text-white"
-                      : "text-neutral-600 hover:text-neutral-950 hover:bg-white/60"
+                      ? "bg-neutral-950 text-white shadow-xs"
+                      : "bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 hover:text-neutral-950"
                   }`}
                 >
-                  {selectedCategory === "all" && (
-                    <motion.span
-                      layoutId="searchActiveCategoryPill"
-                      className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs -z-0"
-                      transition={{ type: "spring", stiffness: 380, damping: 30, mass: 0.8 }}
-                    />
-                  )}
-                  <span className="relative z-10">{lang === "ar" ? "جميع الفئات" : "All Categories"}</span>
+                  <span>{lang === "ar" ? "جميع القطع" : "All Hardware"}</span>
                 </button>
 
                 {MOCK_CATEGORIES.map((cat) => {
                   const isSelected = selectedCategory === cat.slug;
                   return (
                     <button
-                      key={cat.slug}
+                      key={cat.id}
                       type="button"
-                      ref={(el) => { pillRefs.current[cat.slug] = el; }}
-                      onClick={() => {
-                        setSelectedCategory(cat.slug);
-                        const container = containerRef.current;
-                        const el = pillRefs.current[cat.slug];
-                        if (container && el) {
-                          const cRect = container.getBoundingClientRect();
-                          const pRect = el.getBoundingClientRect();
-                          const diff = (pRect.left - cRect.left) + (pRect.width / 2) - (cRect.width / 2);
-                          container.scrollTo({ left: container.scrollLeft + diff, behavior: "smooth" });
-                        }
+                      ref={(el) => {
+                        pillRefs.current[cat.slug] = el;
                       }}
-                      className={`relative px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-semibold whitespace-nowrap text-xs transition-colors duration-200 cursor-pointer flex items-center justify-center outline-none focus:outline-none select-none active:scale-[0.98] ${
+                      onClick={() => setSelectedCategory(cat.slug)}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer select-none active:scale-95 ${
                         isSelected
-                          ? "text-white"
-                          : "text-neutral-600 hover:text-neutral-950 hover:bg-white/60"
+                          ? "bg-neutral-950 text-white shadow-xs"
+                          : "bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 hover:text-neutral-950"
                       }`}
                     >
-                      {isSelected && (
-                        <motion.span
-                          layoutId="searchActiveCategoryPill"
-                          className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs -z-0"
-                          transition={{ type: "spring", stiffness: 380, damping: 30, mass: 0.8 }}
-                        />
-                      )}
-                      <span className="relative z-10">{lang === "ar" ? cat.category_ar : cat.category}</span>
+                      <span>{lang === "ar" ? cat.category_ar : cat.category}</span>
                     </button>
                   );
                 })}
               </div>
-            </LayoutGroup>
-          </div>
+            </div>
 
-          {/* Minimalist Filter Toolbar (Compact on mobile: 2 neat rows) */}
-          <div className="grid grid-cols-12 gap-2 sm:gap-3 items-center mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-neutral-100">
-            {/* Search Input */}
-            <div className="col-span-12 md:col-span-5 relative flex items-center">
-              <Search
-                size={15}
-                className="absolute left-3.5 rtl:left-auto rtl:right-3.5 text-neutral-400 pointer-events-none"
-              />
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={
-                  lang === "ar"
-                    ? "ابحث باسم السيارة، الموديل، أو المنتج..."
-                    : "Search by vehicle, model, or product..."
-                }
-                className="w-full h-11 sm:h-10 bg-neutral-50 hover:bg-neutral-100/70 focus:bg-white border border-neutral-200 rounded-xl pl-9 pr-8 rtl:pl-8 rtl:pr-9 text-sm sm:text-xs text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#c5a059] transition-colors"
-              />
-              {searchQuery && (
+            {/* Sub-Filters: Search input, Vehicle Brand selector, Sort, In-stock toggle */}
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 pt-1">
+              {/* Search Bar Input */}
+              <div className="relative flex-1 min-w-[200px] max-w-md">
+                <Search
+                  size={15}
+                  className="absolute left-3.5 rtl:left-auto rtl:right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none"
+                />
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={
+                    lang === "ar"
+                      ? "ابحث بالاسم، السيارة (لاندكروزر، باترول...) أو SKU..."
+                      : "Search by vehicle (LC300, Patrol...), name or SKU..."
+                  }
+                  className="w-full h-10 bg-neutral-50 hover:bg-neutral-100/60 focus:bg-white text-xs text-neutral-900 rounded-xl pl-9.5 pr-8 rtl:pl-8 rtl:pr-9.5 border border-neutral-200 focus:outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059]/20 transition-all placeholder:text-neutral-400"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2.5 rtl:right-auto rtl:left-2.5 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-neutral-700 rounded-full cursor-pointer"
+                  >
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+
+              {/* Dropdown Filters & In-Stock Switch */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+                {/* Vehicle Brand Dropdown */}
+                <div className="w-36 sm:w-40 shrink-0">
+                  <CustomSelect
+                    value={selectedBrand}
+                    onChange={(val) => setSelectedBrand(val)}
+                    options={[
+                      { label: lang === "ar" ? "كل الماركات" : "All Brands", value: "all" },
+                      ...vehicleBrands.map((b) => ({ label: b, value: b })),
+                    ]}
+                    placeholder={lang === "ar" ? "الماركة" : "Brand"}
+                    lang={lang}
+                  />
+                </div>
+
+                {/* Sort Dropdown */}
+                <div className="w-36 sm:w-40 shrink-0">
+                  <CustomSelect
+                    value={sortBy}
+                    onChange={(val) => setSortBy(val as any)}
+                    options={[
+                      { label: lang === "ar" ? "الأكثر تميزاً" : "Featured", value: "featured" },
+                      { label: lang === "ar" ? "السعر: الأقل أولاً" : "Price: Low to High", value: "price-asc" },
+                      { label: lang === "ar" ? "السعر: الأعلى أولاً" : "Price: High to Low", value: "price-desc" },
+                    ]}
+                    placeholder={lang === "ar" ? "الترتيب" : "Sort"}
+                    lang={lang}
+                  />
+                </div>
+
+                {/* In Stock Only Checkbox Button */}
                 <button
                   type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2.5 rtl:right-auto rtl:left-2.5 text-neutral-400 hover:text-neutral-700 p-1 rounded-full cursor-pointer"
-                >
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-
-            {/* Vehicle Filter */}
-            <div className="col-span-6 md:col-span-3">
-              <CustomSelect
-                value={selectedBrand}
-                onChange={(val) => setSelectedBrand(val)}
-                options={[
-                  { label: lang === "ar" ? "كل السيارات" : "All Vehicles", value: "all" },
-                  ...vehicleBrands.map((b) => ({ label: b, value: b })),
-                ]}
-                placeholder={lang === "ar" ? "نوع السيارة" : "Vehicle Make"}
-                lang={lang}
-              />
-            </div>
-
-            {/* Sort Order */}
-            <div className="col-span-6 md:col-span-2">
-              <CustomSelect
-                value={sortBy}
-                onChange={(val) => setSortBy(val as any)}
-                options={[
-                  { label: lang === "ar" ? "الأكثر تميزاً" : "Featured", value: "featured" },
-                  { label: lang === "ar" ? "السعر: الأقل" : "Price: Low", value: "price-asc" },
-                  { label: lang === "ar" ? "السعر: الأعلى" : "Price: High", value: "price-desc" },
-                ]}
-                placeholder={lang === "ar" ? "الترتيب" : "Sort By"}
-                lang={lang}
-              />
-            </div>
-
-            {/* In-Stock Filter Toggle */}
-            <div className="col-span-12 md:col-span-2">
-              <button
-                type="button"
-                onClick={() => setOnlyInStock((prev) => !prev)}
-                className={`w-full h-9 sm:h-10 px-3 rounded-xl border text-xs font-normal flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                  onlyInStock
-                    ? "bg-[#faf6ed] border-[#c5a059] text-[#9b7832] font-semibold"
-                    : "bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-neutral-100/70 hover:text-neutral-900"
-                }`}
-              >
-                <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    onlyInStock ? "bg-[#c5a059]" : "bg-neutral-300"
+                  onClick={() => setOnlyInStock(!onlyInStock)}
+                  className={`h-10 px-3 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 cursor-pointer shrink-0 select-none active:scale-95 ${
+                    onlyInStock
+                      ? "bg-[#faf6ed] border-[#c5a059] text-[#9b7832] ring-1 ring-[#c5a059]/30"
+                      : "bg-neutral-50 hover:bg-neutral-100 border-neutral-200 text-neutral-700"
                   }`}
-                />
-                <span className="whitespace-nowrap">{lang === "ar" ? "المتوفر فقط" : "In Stock Only"}</span>
-              </button>
+                >
+                  <span
+                    className={`w-3.5 h-3.5 rounded-full flex items-center justify-center border transition-colors ${
+                      onlyInStock ? "bg-[#c5a059] border-[#c5a059] text-white" : "border-neutral-300 bg-white"
+                    }`}
+                  >
+                    {onlyInStock && <Check size={10} className="stroke-[3]" />}
+                  </span>
+                  <span>{lang === "ar" ? "المتوفر فقط" : "In Stock"}</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -389,105 +389,117 @@ function SearchCatalogContent() {
 
           {/* Animated Product Cards Grid or Fallback State */}
           <AnimatePresence mode="popLayout">
-            {filteredProducts.length > 0 ? (
-              <motion.div
-                key={`grid-${selectedCategory}-${selectedBrand}-${searchQuery}-${onlyInStock}-${sortBy}`}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.18, ease: "easeOut" }}
-                className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:gap-x-10 lg:gap-y-14 mb-12 sm:mb-16"
-              >
-                {filteredProducts.map((product) => {
-                  const inStock = product.stock > 0;
-                  const isAdded = justAddedId === product.id;
+            {paginatedProducts.length > 0 ? (
+              <div>
+                <motion.div
+                  key={`grid-${selectedCategory}-${selectedBrand}-${searchQuery}-${onlyInStock}-${sortBy}-${currentPage}`}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:gap-x-10 lg:gap-y-14 mb-8"
+                >
+                  {paginatedProducts.map((product) => {
+                    const inStock = product.stock > 0;
+                    const isAdded = justAddedId === product.id;
 
-                  return (
-                    <div
-                      key={product.id}
-                      className="h-full flex flex-col justify-between group select-none"
-                    >
-                      <div>
-                        {/* Pure Container-less Product Photo Showcase */}
-                        <Link
-                          href={`/products/${product.slug}`}
-                          className="block relative w-full h-44 sm:h-60 flex items-center justify-center mb-3 sm:mb-4 overflow-hidden"
-                        >
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 ease-out"
-                            onError={(e) => {
-                              e.currentTarget.src = "/admin/banners/accessories.jpg";
-                            }}
-                          />
-                          {/* Minimal In-Stock / Backorder Pill Badge */}
-                          <div className="absolute top-1 start-1 px-2 py-0.5 rounded-full bg-neutral-100/90 text-[10px] sm:text-[11px] font-medium shadow-2xs">
-                            <span className={inStock ? "text-neutral-700" : "text-[#b38e46]"}>
-                              {inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Backorder")}
-                            </span>
-                          </div>
-                        </Link>
-
-                        {/* Model SKU */}
-                        <p className="text-[10px] sm:text-xs font-mono text-neutral-400 mb-1 truncate">
-                          {product.product_id}
-                        </p>
-
-                        {/* Product Title */}
-                        <Link href={`/products/${product.slug}`}>
-                          <h3 className="font-medium text-xs sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-[#c5a059] transition-colors">
-                            {lang === "ar" ? product.name_ar : product.name}
-                          </h3>
-                        </Link>
-                      </div>
-
-                      {/* Pricing & Add to Bag */}
-                      <div className="pt-2 flex items-center justify-between gap-2 mt-auto">
-                        <div className="shrink-0 whitespace-nowrap">
-                          <span className="text-sm sm:text-base font-bold text-neutral-950 font-mono">
-                            {product.price}
-                          </span>
-                          <span className="text-[11px] sm:text-xs font-semibold text-[#c5a059] ms-1">
-                            {currency}
-                          </span>
-                        </div>
-
-                        {inStock ? (
-                          <button
-                            type="button"
-                            onClick={() => handleAddClick(product)}
-                            className={`flex items-center justify-center gap-1 text-[11px] sm:text-xs font-semibold py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl transition-all duration-200 cursor-pointer shrink-0 active-press shadow-2xs ${
-                              isAdded
-                                ? "bg-[#25D366] text-white"
-                                : "bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950"
-                            }`}
-                          >
-                            {isAdded ? (
-                              <>
-                                <Check size={12} className="stroke-[2.5]" />
-                                <span>{lang === "ar" ? "تم" : "Added"}</span>
-                              </>
-                            ) : (
-                              <>
-                                <Plus size={12} />
-                                <span>{lang === "ar" ? "أضف" : "Add"}</span>
-                              </>
-                            )}
-                          </button>
-                        ) : (
+                    return (
+                      <div
+                        key={product.id}
+                        className="h-full flex flex-col justify-between group select-none"
+                      >
+                        <div>
+                          {/* Pure Container-less Product Photo Showcase */}
                           <Link
                             href={`/products/${product.slug}`}
-                            className="flex items-center justify-center text-[11px] sm:text-xs font-medium py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl bg-neutral-100 hover:bg-[#faf6ed] text-neutral-700 hover:text-[#c5a059] transition-colors shrink-0"
+                            className="block relative w-full h-44 sm:h-60 flex items-center justify-center mb-3 sm:mb-4 overflow-hidden"
                           >
-                            <span>{lang === "ar" ? "حجز" : "Reserve"}</span>
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+                              onError={(e) => {
+                                e.currentTarget.src = "/admin/banners/accessories.jpg";
+                              }}
+                            />
+                            {/* Minimal In-Stock / Backorder Pill Badge */}
+                            <div className="absolute top-1 start-1 px-2 py-0.5 rounded-full bg-neutral-100/90 text-[10px] sm:text-[11px] font-medium shadow-2xs">
+                              <span className={inStock ? "text-neutral-700" : "text-[#b38e46]"}>
+                                {inStock ? (lang === "ar" ? "متوفر" : "In Stock") : (lang === "ar" ? "طلب مسبق" : "Backorder")}
+                              </span>
+                            </div>
                           </Link>
-                        )}
+
+                          {/* Model SKU */}
+                          <p className="text-[10px] sm:text-xs font-mono text-neutral-400 mb-1 truncate">
+                            {product.product_id}
+                          </p>
+
+                          {/* Product Title */}
+                          <Link href={`/products/${product.slug}`}>
+                            <h3 className="font-medium text-xs sm:text-sm text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-[#c5a059] transition-colors">
+                              {lang === "ar" ? product.name_ar : product.name}
+                            </h3>
+                          </Link>
+                        </div>
+
+                        {/* Pricing & Add to Bag */}
+                        <div className="pt-2 flex items-center justify-between gap-2 mt-auto">
+                          <div className="shrink-0 whitespace-nowrap">
+                            <span className="text-sm sm:text-base font-bold text-neutral-950 font-mono">
+                              {product.price}
+                            </span>
+                            <span className="text-[11px] sm:text-xs font-semibold text-[#c5a059] ms-1">
+                              {currency}
+                            </span>
+                          </div>
+
+                          {inStock ? (
+                            <button
+                              type="button"
+                              onClick={() => handleAddClick(product)}
+                              className={`flex items-center justify-center gap-1 text-[11px] sm:text-xs font-semibold py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl transition-all duration-200 cursor-pointer shrink-0 active-press shadow-2xs ${
+                                isAdded
+                                  ? "bg-[#25D366] text-white"
+                                  : "bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950"
+                              }`}
+                            >
+                              {isAdded ? (
+                                <>
+                                  <Check size={12} className="stroke-[2.5]" />
+                                  <span>{lang === "ar" ? "تم" : "Added"}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Plus size={12} />
+                                  <span>{lang === "ar" ? "أضف" : "Add"}</span>
+                                </>
+                              )}
+                            </button>
+                          ) : (
+                            <Link
+                              href={`/products/${product.slug}`}
+                              className="flex items-center justify-center text-[11px] sm:text-xs font-medium py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl bg-neutral-100 hover:bg-[#faf6ed] text-neutral-700 hover:text-[#c5a059] transition-colors shrink-0"
+                            >
+                              <span>{lang === "ar" ? "حجز" : "Reserve"}</span>
+                            </Link>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </motion.div>
+                    );
+                  })}
+                </motion.div>
+
+                {/* Numbered Pagination Controls */}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={filteredProducts.length}
+                  pageSize={PAGE_SIZE}
+                  onPageChange={handlePageChange}
+                  lang={lang}
+                />
+              </div>
             ) : (
               /* Smart Fallback Zero-Result State */
               <motion.div

@@ -61,6 +61,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [clickedHref, setClickedHref] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const currencyRef = useRef<HTMLDivElement>(null);
   const moreCloseTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -83,10 +84,13 @@ export const Header: React.FC<HeaderProps> = ({
     }, 120);
   };
 
-  // Close dropdowns on outside click
+  // Close dropdowns and search on outside click or Escape key
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
+      if (searchContainerRef.current && !searchContainerRef.current.contains(target)) {
+        setSearchOpen(false);
+      }
       if (moreRef.current && !moreRef.current.contains(target)) {
         setMoreOpen(false);
       }
@@ -94,9 +98,20 @@ export const Header: React.FC<HeaderProps> = ({
         setCurrencyOpen(false);
       }
     };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSearchOpen(false);
+        setMoreOpen(false);
+        setCurrencyOpen(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
       if (moreCloseTimeout.current) clearTimeout(moreCloseTimeout.current);
     };
   }, []);
@@ -141,21 +156,33 @@ export const Header: React.FC<HeaderProps> = ({
     { code: "USD", name: "USD" },
   ];
 
-  // Clean, focused navigation for desktop header (5 essential items)
-  const navLinks = [
+  // Navigation Links: when search is open, MountX and Catalog collapse into More
+  const allNavLinks = [
     { name: lang === "ar" ? "مطابق التثبيت" : "Vehicle Matcher", href: "/find", highlight: true },
     { name: lang === "ar" ? "قواعد برو كليبس" : "ProClips Bases", href: "/categories/pro-clips" },
     { name: lang === "ar" ? "حوامل الأجهزة" : "Device Holders", href: "/categories/device-holders" },
-    { name: lang === "ar" ? "ماونت إكس" : "MountX", href: "/mountx" },
-    { name: lang === "ar" ? "الكتالوج" : "Catalog", href: "/search" },
+    { name: lang === "ar" ? "ماونت إكس" : "MountX", href: "/mountx", icon: Shield, collapseOnSearch: true },
+    { name: lang === "ar" ? "الكتالوج" : "Catalog", href: "/search", icon: SlidersHorizontal, collapseOnSearch: true },
   ];
 
-  const moreLinks = [
+  const visibleNavLinks = searchOpen
+    ? allNavLinks.filter((l) => !l.collapseOnSearch)
+    : allNavLinks;
+
+  const baseMoreLinks = [
     { name: lang === "ar" ? "معرض التركيبات" : "Builds Gallery", href: "/gallery", icon: Camera },
     { name: lang === "ar" ? "معارض الدوحة" : "Doha Showrooms", href: "/contact-us", icon: MapPin },
     { name: lang === "ar" ? "الأسئلة والضمان" : "FAQs & Support", href: "/faqs", icon: HelpCircle },
     { name: lang === "ar" ? "الوظائف وبيئة العمل" : "Careers", href: "/careers", icon: Briefcase },
   ];
+
+  const moreLinks = searchOpen
+    ? [
+        { name: lang === "ar" ? "ماونت إكس ألمنيوم" : "MountX All-Terrain", href: "/mountx", icon: Shield },
+        { name: lang === "ar" ? "كتالوج المنتجات" : "Product Catalog", href: "/search", icon: SlidersHorizontal },
+        ...baseMoreLinks,
+      ]
+    : baseMoreLinks;
 
   const isRouteActive = (href: string) => {
     if (!pathname) return false;
@@ -198,52 +225,62 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-neutral-200/80 shadow-[0_1px_8px_rgba(0,0,0,0.03)] transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4 flex-nowrap overflow-x-clip">
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center shrink-0">
+          <Link href="/" className="flex items-center shrink-0 group">
             <img
               src="/user/images/black_logo.png"
               alt="Thabt"
-              className="h-8 sm:h-8.5 w-auto object-contain"
+              className="h-9 sm:h-10 md:h-11 w-auto object-contain transition-all duration-200 group-hover:opacity-90 shrink-0"
             />
           </Link>
 
           {/* Minimal, Luxury Active-Aware Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 h-16 text-xs">
-            {navLinks.map((link) => {
-              const active = isRouteActive(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative h-16 flex items-center px-3.5 tracking-tight transition-colors ${
-                    active
-                      ? "text-neutral-950 font-bold"
-                      : "text-neutral-600 hover:text-neutral-950 font-medium"
-                  }`}
-                >
-                  <span className="relative inline-flex items-center gap-1.5 py-0.5">
-                    {link.href === "/find" && (
-                      <Compass
-                        size={13}
-                        className={`transition-colors ${
-                          active ? "text-[#c5a059]" : "text-neutral-400"
-                        }`}
-                      />
-                    )}
-                    <span>{link.name}</span>
-                    {active && (
-                      <span className="absolute -bottom-1 inset-x-0 h-[2.5px] bg-[#c5a059] rounded-full shadow-[0_1px_4px_rgba(197,160,89,0.35)]" />
-                    )}
-                  </span>
-                </Link>
-              );
-            })}
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 h-16 text-xs flex-nowrap whitespace-nowrap shrink-0">
+            <AnimatePresence initial={false}>
+              {visibleNavLinks.map((link) => {
+                const active = isRouteActive(link.href);
+                return (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, scale: 0.9, width: 0 }}
+                    animate={{ opacity: 1, scale: 1, width: "auto" }}
+                    exit={{ opacity: 0, scale: 0.9, width: 0 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="overflow-hidden flex items-center h-16 shrink-0"
+                  >
+                    <Link
+                      href={link.href}
+                      className={`relative h-16 flex items-center px-3 xl:px-3.5 tracking-tight transition-colors whitespace-nowrap ${
+                        active
+                          ? "text-neutral-950 font-bold"
+                          : "text-neutral-600 hover:text-neutral-950 font-medium"
+                      }`}
+                    >
+                      <span className="relative inline-flex items-center gap-1.5 py-0.5">
+                        {link.href === "/find" && (
+                          <Compass
+                            size={13}
+                            className={`transition-colors ${
+                              active ? "text-[#c5a059]" : "text-neutral-400"
+                            }`}
+                          />
+                        )}
+                        <span>{link.name}</span>
+                        {active && (
+                          <span className="absolute -bottom-1 inset-x-0 h-[2.5px] bg-[#c5a059] rounded-full shadow-[0_1px_4px_rgba(197,160,89,0.35)]" />
+                        )}
+                      </span>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
 
-            {/* More Dropdown (Gallery, Showrooms, FAQs, Careers) */}
+            {/* More Dropdown (Gallery, Showrooms, FAQs, Careers, + Dynamic Overflow Links) */}
             <div
               ref={moreRef}
-              className="relative h-16 flex items-center"
+              className="relative h-16 flex items-center shrink-0"
               onMouseEnter={handleMoreMouseEnter}
               onMouseLeave={handleMoreMouseLeave}
             >
@@ -253,7 +290,18 @@ export const Header: React.FC<HeaderProps> = ({
                   if (moreCloseTimeout.current) clearTimeout(moreCloseTimeout.current);
                   setMoreOpen((prev) => !prev);
                 }}
-                className={`relative h-16 flex items-center px-3 tracking-tight transition-colors cursor-pointer ${
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setMoreOpen(true);
+                  } else if (e.key === "Escape") {
+                    e.preventDefault();
+                    setMoreOpen(false);
+                  }
+                }}
+                aria-haspopup="true"
+                aria-expanded={moreOpen}
+                className={`relative h-16 flex items-center px-3 tracking-tight transition-colors cursor-pointer whitespace-nowrap ${
                   isMoreActive
                     ? "text-neutral-950 font-bold"
                     : "text-neutral-600 hover:text-neutral-950 font-medium"
@@ -261,6 +309,9 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <span className="relative inline-flex items-center gap-1 py-0.5">
                   <span>{lang === "ar" ? "المزيد" : "More"}</span>
+                  {searchOpen && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] animate-pulse" />
+                  )}
                   <ChevronDown
                     size={12}
                     className={`transition-transform duration-200 ${
@@ -275,14 +326,21 @@ export const Header: React.FC<HeaderProps> = ({
 
               {moreOpen && (
                 <div
-                  className="absolute top-full pt-1 right-0 rtl:right-auto rtl:left-0 w-52 z-50 animate-in fade-in zoom-in-95 duration-150"
+                  className="absolute top-full pt-1 right-0 rtl:right-auto rtl:left-0 w-56 z-50 animate-in fade-in zoom-in-95 duration-150"
                   onMouseEnter={handleMoreMouseEnter}
                   onMouseLeave={handleMoreMouseLeave}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") {
+                      e.preventDefault();
+                      setMoreOpen(false);
+                    }
+                  }}
                 >
                   <div className="bg-white border border-neutral-200/90 rounded-2xl shadow-xl py-1.5 overflow-hidden">
-                    {moreLinks.map((sub) => {
+                    {moreLinks.map((sub, idx) => {
                       const isSubActive = pathname === sub.href;
                       const SubIcon = sub.icon;
+                      const isOverflowItem = searchOpen && idx < 2;
                       return (
                         <Link
                           key={sub.href}
@@ -291,13 +349,15 @@ export const Header: React.FC<HeaderProps> = ({
                           className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors ${
                             isSubActive
                               ? "bg-neutral-50 text-neutral-950 font-bold"
+                              : isOverflowItem
+                              ? "text-neutral-900 bg-neutral-50/50 hover:bg-neutral-100 hover:text-neutral-950 font-medium"
                               : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950 font-medium"
                           }`}
                         >
                           <span className="flex items-center gap-2">
                             <SubIcon
                               size={14}
-                              className={isSubActive ? "text-[#c5a059]" : "text-neutral-400"}
+                              className={isSubActive ? "text-[#c5a059]" : isOverflowItem ? "text-[#9b7832]" : "text-neutral-400"}
                             />
                             <span>{sub.name}</span>
                           </span>
@@ -314,42 +374,74 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Clean Right Actions */}
-          <div className="flex items-center gap-2.5 sm:gap-4 shrink-0">
-            {/* Search Icon Toggle (Opens compact inline search or modal) */}
-            <div className="relative">
-              {!searchOpen ? (
+          <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0 flex-nowrap">
+            {/* Search Icon Toggle with Smooth Animated Inline Expansion */}
+            <div ref={searchContainerRef} className="relative flex items-center shrink-0">
+              <motion.div
+                layout
+                initial={false}
+                animate={{
+                  width: searchOpen ? (typeof window !== "undefined" && window.innerWidth >= 1280 ? 270 : 220) : 38,
+                }}
+                transition={{ type: "spring", stiffness: 460, damping: 34 }}
+                className={`flex items-center h-9 sm:h-9.5 rounded-full overflow-hidden transition-colors duration-200 ${
+                  searchOpen
+                    ? "bg-neutral-50/95 hover:bg-neutral-100/70 focus-within:bg-white border border-neutral-300 focus-within:border-[#c5a059] shadow-2xs px-2"
+                    : "bg-transparent border border-transparent"
+                }`}
+              >
                 <button
                   type="button"
-                  onClick={() => setSearchOpen(true)}
-                  className="p-2 text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 rounded-full transition-colors cursor-pointer"
+                  onClick={() => {
+                    if (!searchOpen) {
+                      setSearchOpen(true);
+                    }
+                  }}
+                  className={`p-1.5 rounded-full transition-colors cursor-pointer shrink-0 ${
+                    searchOpen
+                      ? "text-[#c5a059]"
+                      : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100"
+                  }`}
                   aria-label="Search"
                   title={lang === "ar" ? "بحث" : "Search"}
                 >
                   <Search size={18} />
                 </button>
-              ) : (
-                <form
-                  onSubmit={handleSearchSubmit}
-                  className="flex items-center h-9 bg-neutral-100/90 rounded-full pl-3 pr-2 border border-neutral-300 shadow-sm animate-in fade-in zoom-in-95 duration-150"
-                >
-                  <Search size={14} className="text-neutral-400 shrink-0 mr-2 rtl:mr-0 rtl:ml-2" />
-                  <input
-                    ref={searchInputRef}
-                    type="search"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={lang === "ar" ? "ابحث هنا..." : "Search..."}
-                    className="bg-transparent text-xs text-neutral-900 w-32 sm:w-48 focus:outline-none placeholder-neutral-400 py-1"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setSearchOpen(false)}
-                    className="p-1 text-neutral-400 hover:text-neutral-700 rounded-full cursor-pointer ml-1 rtl:ml-0 rtl:mr-1"
-                  >
-                    <X size={13} />
-                  </button>
-                </form>
-              )}
+
+                <AnimatePresence>
+                  {searchOpen && (
+                    <motion.form
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                      onSubmit={handleSearchSubmit}
+                      className="flex items-center flex-1 min-w-0 pl-1.5 rtl:pl-0 rtl:pr-1.5"
+                    >
+                      <input
+                        ref={searchInputRef}
+                        type="search"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder={lang === "ar" ? "ابحث عن سيارة أو قطعة..." : "Search model or mount..."}
+                        className="bg-transparent text-xs text-neutral-900 w-full focus:outline-none placeholder-neutral-400 py-1"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSearchOpen(false);
+                          setSearchQuery("");
+                        }}
+                        className="p-1 text-neutral-400 hover:text-neutral-800 hover:bg-neutral-200/60 rounded-full cursor-pointer shrink-0 ml-1 rtl:ml-0 rtl:mr-1 transition-colors"
+                        aria-label="Close search"
+                      >
+                        <X size={13} />
+                      </button>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             </div>
 
             {/* Currency Dropdown (Desktop) */}
@@ -357,6 +449,17 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => setCurrencyOpen(!currencyOpen)}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setCurrencyOpen(true);
+                  } else if (e.key === "Escape") {
+                    e.preventDefault();
+                    setCurrencyOpen(false);
+                  }
+                }}
+                aria-haspopup="listbox"
+                aria-expanded={currencyOpen}
                 className="flex items-center gap-1 text-xs font-semibold text-neutral-700 hover:text-[#c5a059] transition cursor-pointer py-1.5 px-2 rounded-lg hover:bg-neutral-100"
               >
                 <span>{currency}</span>
@@ -366,6 +469,12 @@ export const Header: React.FC<HeaderProps> = ({
               {currencyOpen && (
                 <div
                   className="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-36 bg-white border border-neutral-200 rounded-xl shadow-xl py-1 z-50 animate-in fade-in duration-150"
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") {
+                      e.preventDefault();
+                      setCurrencyOpen(false);
+                    }
+                  }}
                 >
                   {currencies.map((c) => (
                     <button
@@ -471,7 +580,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <img
                       src="/user/images/black_logo.png"
                       alt="Thabt"
-                      className="h-6 sm:h-7 w-auto object-contain"
+                      className="h-8 sm:h-9 w-auto object-contain"
                     />
                   </Link>
                   <button

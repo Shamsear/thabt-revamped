@@ -181,7 +181,7 @@ export default function CartPage() {
                       <div className="flex items-center gap-3.5">
                         <Link
                           href={`/products/${item.product.slug}`}
-                          className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl bg-neutral-50 border border-neutral-100 p-2 shrink-0 flex items-center justify-center hover:border-neutral-300 transition"
+                          className="w-16 h-16 sm:w-18 sm:h-18 p-1 shrink-0 flex items-center justify-center transition"
                         >
                           <img
                             src={item.product.image}

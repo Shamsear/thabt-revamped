@@ -171,12 +171,12 @@ export default function FindPage() {
                 </div>
 
                 {/* Matched Base Minimal Preview */}
-                <div className="p-2.5 sm:p-3.5 bg-neutral-50 rounded-lg sm:rounded-xl border border-neutral-100 flex items-center justify-between gap-2 text-xs">
+                <div className="p-2.5 sm:p-3.5 bg-neutral-50/70 rounded-lg sm:rounded-xl border border-neutral-200/60 flex items-center justify-between gap-2 text-xs">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <img
                       src={matchedBase.image}
                       alt={matchedBase.name}
-                      className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded-lg bg-white border border-neutral-200 p-1 shrink-0"
+                      className="w-11 h-11 sm:w-13 sm:h-13 object-contain shrink-0"
                       onError={(e) => {
                         e.currentTarget.src = "/admin/banners/accessories.jpg";
                       }}
@@ -194,7 +194,7 @@ export default function FindPage() {
                     </div>
                   </div>
                   <div className="text-right rtl:text-left shrink-0">
-                    <p className="font-semibold text-xs sm:text-sm text-neutral-950">{matchedBase.price} <span className="text-[10px] text-[#c5a059]">{currency}</span></p>
+                    <p className="font-semibold text-xs sm:text-sm text-neutral-950 font-mono">{matchedBase.price} <span className="text-[10px] text-[#c5a059] font-sans">{currency}</span></p>
                     <span className="text-[10px] text-emerald-700 font-medium flex items-center gap-0.5 justify-end rtl:justify-start">
                       <CheckCircle2 size={11} /> {lang === "ar" ? "متوفر" : "In Stock"}
                     </span>
@@ -315,12 +315,12 @@ export default function FindPage() {
                 </div>
 
                 {/* Matched Holder Minimal Preview */}
-                <div className="p-2.5 sm:p-3.5 bg-neutral-50 rounded-lg sm:rounded-xl border border-neutral-100 flex items-center justify-between gap-2 text-xs">
+                <div className="p-2.5 sm:p-3.5 bg-neutral-50/70 rounded-lg sm:rounded-xl border border-neutral-200/60 flex items-center justify-between gap-2 text-xs">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <img
                       src={matchedHolder.image}
                       alt={matchedHolder.name}
-                      className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded-lg bg-white border border-neutral-200 p-1 shrink-0"
+                      className="w-11 h-11 sm:w-13 sm:h-13 object-contain shrink-0"
                       onError={(e) => {
                         e.currentTarget.src = "/admin/banners/accessories.jpg";
                       }}
@@ -338,7 +338,7 @@ export default function FindPage() {
                     </div>
                   </div>
                   <div className="text-right rtl:text-left shrink-0">
-                    <p className="font-semibold text-xs sm:text-sm text-neutral-950">{matchedHolder.price} <span className="text-[10px] text-[#c5a059]">{currency}</span></p>
+                    <p className="font-semibold text-xs sm:text-sm text-neutral-950 font-mono">{matchedHolder.price} <span className="text-[10px] text-[#c5a059] font-sans">{currency}</span></p>
                     <span className="text-[10px] text-emerald-700 font-medium flex items-center gap-0.5 justify-end rtl:justify-start">
                       <CheckCircle2 size={11} /> {lang === "ar" ? "متوفر" : "In Stock"}
                     </span>

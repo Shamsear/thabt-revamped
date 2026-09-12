@@ -116,12 +116,12 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
           {specs.map((item) => (
             <div
               key={item.num}
-              className="group space-y-0.5 sm:space-y-1 p-2.5 sm:p-3.5 rounded-xl bg-white/70 hover:bg-white active:bg-white border border-neutral-200/60 hover:border-[#c5a059] active:border-[#c5a059] shadow-2xs hover:shadow-md active:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer select-none active-press"
+              className="group space-y-0.5 sm:space-y-1 p-2.5 sm:p-3.5 rounded-xl bg-white/70 hover:bg-white border border-neutral-200/60 hover:border-[#c5a059]/60 shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 ease-out select-none"
             >
-              <span className="text-[10px] sm:text-xs font-mono text-[#c5a059] group-hover:text-[#b38e46] group-active:text-[#b38e46] tracking-wider font-semibold transition-colors duration-200">
+              <span className="text-[10px] sm:text-xs font-mono text-[#c5a059] group-hover:text-[#b38e46] tracking-wider font-semibold transition-colors duration-200">
                 {item.num}
               </span>
-              <h4 className="text-xs sm:text-sm font-semibold text-neutral-900 group-hover:text-[#0b0d11] group-active:text-[#b38e46] leading-snug transition-colors duration-200">
+              <h4 className="text-xs sm:text-sm font-semibold text-neutral-900 group-hover:text-[#0b0d11] leading-snug transition-colors duration-200">
                 {item.title}
               </h4>
               <p className="text-[10px] sm:text-xs text-neutral-500 leading-relaxed">
