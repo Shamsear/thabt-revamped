@@ -91,7 +91,7 @@ export const PreOrderModal: React.FC<PreOrderModalProps> = ({ product, onClose, 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={lang === "ar" ? "أدخل اسمك..." : "Your full name..."}
-                className="w-full bg-white border border-neutral-200 rounded-lg px-3.5 py-2 text-xs focus:outline-none focus:border-[#c5a059] transition"
+                className="w-full bg-white border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/20 transition"
               />
             </div>
 
@@ -103,7 +103,7 @@ export const PreOrderModal: React.FC<PreOrderModalProps> = ({ product, onClose, 
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+974 ..."
-                className="w-full bg-white border border-neutral-200 rounded-lg px-3.5 py-2 text-xs focus:outline-none focus:border-[#c5a059] transition"
+                className="w-full bg-white border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/20 transition"
               />
             </div>
 
@@ -115,13 +115,13 @@ export const PreOrderModal: React.FC<PreOrderModalProps> = ({ product, onClose, 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@domain.com"
-                className="w-full bg-white border border-neutral-200 rounded-lg px-3.5 py-2 text-xs focus:outline-none focus:border-[#c5a059] transition"
+                className="w-full bg-white border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/20 transition"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition cursor-pointer text-xs uppercase tracking-wider mt-4"
+              className="w-full bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer text-xs uppercase tracking-wider mt-4 shadow-2xs active:scale-[0.98]"
             >
               <Send size={14} className="rtl:rotate-180" />
               <span>{lang === "ar" ? "تأكيد الطلب المسبق" : "Notify Me Upon Restock"}</span>

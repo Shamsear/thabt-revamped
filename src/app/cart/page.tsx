@@ -209,21 +209,21 @@ export default function CartPage() {
                       {/* Quantity Stepper & Line Total & Delete */}
                       <div className="flex items-center justify-between w-full sm:w-auto sm:justify-end gap-5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-100">
                         {/* Stepper */}
-                        <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden text-sm">
+                        <div className="flex items-center gap-1 bg-neutral-100/80 rounded-xl p-1">
                           <button
                             type="button"
                             onClick={() => updateQty(item.product.id, -1)}
-                            className="px-2.5 py-1 text-neutral-600 hover:text-neutral-900 font-bold cursor-pointer hover:bg-neutral-50"
+                            className="w-7 h-7 flex items-center justify-center rounded-lg text-neutral-600 hover:text-neutral-900 hover:bg-white font-bold text-base leading-none transition-all cursor-pointer shadow-none hover:shadow-2xs"
                           >
-                            -
+                            −
                           </button>
-                          <span className="px-3 py-1 font-semibold text-neutral-900 bg-white">
+                          <span className="min-w-[1.75rem] text-center font-semibold text-sm text-neutral-900 select-none">
                             {item.quantity}
                           </span>
                           <button
                             type="button"
                             onClick={() => updateQty(item.product.id, 1)}
-                            className="px-2.5 py-1 text-neutral-600 hover:text-neutral-900 font-bold cursor-pointer hover:bg-neutral-50"
+                            className="w-7 h-7 flex items-center justify-center rounded-lg text-neutral-600 hover:text-neutral-900 hover:bg-white font-bold text-base leading-none transition-all cursor-pointer shadow-none hover:shadow-2xs"
                           >
                             +
                           </button>

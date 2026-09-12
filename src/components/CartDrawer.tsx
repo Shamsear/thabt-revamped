@@ -107,18 +107,24 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     </p>
 
                     {/* Quantity Selector */}
-                    <div className="flex items-center gap-2.5 mt-2">
-                      <div className="flex items-center border border-neutral-200 rounded-md bg-white text-xs">
+                    <div className="flex items-center gap-2 mt-2">
+                      <div className="flex items-center gap-1 bg-neutral-100/80 rounded-xl p-1">
                         <button
+                          type="button"
                           onClick={() => onUpdateQty(product.id, -1)}
-                          className="px-2 py-0.5 hover:bg-neutral-100 transition cursor-pointer text-neutral-600 font-bold"
+                          className="w-6 h-6 rounded-lg bg-white/80 hover:bg-white text-neutral-700 hover:text-neutral-950 flex items-center justify-center text-xs font-bold transition shadow-2xs cursor-pointer active:scale-95"
+                          title={lang === "ar" ? "إنقاص" : "Decrease"}
                         >
-                          -
+                          −
                         </button>
-                        <span className="px-2 font-mono text-neutral-900">{quantity}</span>
+                        <span className="w-6 text-center font-mono text-xs font-semibold text-neutral-900 select-none">
+                          {quantity}
+                        </span>
                         <button
+                          type="button"
                           onClick={() => onUpdateQty(product.id, 1)}
-                          className="px-2 py-0.5 hover:bg-neutral-100 transition cursor-pointer text-neutral-600 font-bold"
+                          className="w-6 h-6 rounded-lg bg-white/80 hover:bg-white text-neutral-700 hover:text-neutral-950 flex items-center justify-center text-xs font-bold transition shadow-2xs cursor-pointer active:scale-95"
+                          title={lang === "ar" ? "زيادة" : "Increase"}
                         >
                           +
                         </button>
@@ -126,7 +132,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                       <button
                         onClick={() => onRemoveItem(product.id)}
-                        className="text-neutral-400 hover:text-rose-600 transition p-1 cursor-pointer"
+                        className="text-neutral-400 hover:text-rose-600 transition p-1.5 rounded-lg hover:bg-rose-50 cursor-pointer"
                         title={lang === "ar" ? "حذف" : "Remove"}
                       >
                         <Trash2 size={14} />
@@ -142,8 +148,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           {cartItems.length > 0 && (
             <div className="p-4 sm:p-6 border-t border-neutral-100 bg-white space-y-3">
               <div className="flex justify-between items-center text-xs sm:text-sm">
-                <span className="text-neutral-600">{lang === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
-                <span className="text-base sm:text-lg font-semibold text-neutral-900">
+                <span className="text-neutral-600 font-medium">{lang === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
+                <span className="text-base sm:text-lg font-bold text-neutral-900 font-mono">
                   {totalAmount} <span className="text-xs font-normal text-[#c5a059]">{currency}</span>
                 </span>
               </div>
@@ -152,20 +158,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <Link
                   href="/checkout"
                   onClick={onClose}
-                  className="w-full bg-[#faf6ed] hover:bg-[#f3ead3] text-[#9b7832] border border-[#c5a059]/40 text-xs sm:text-sm font-bold py-2.5 sm:py-3 px-4 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer active-press shadow-2xs"
+                  className="w-full bg-neutral-900 hover:bg-[#c5a059] hover:text-neutral-950 text-white text-xs sm:text-sm font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer shadow-xs active-press"
                 >
                   <span>{lang === "ar" ? "الدفع والشراء المباشر" : "Proceed to Checkout"}</span>
-                  <ArrowRight size={13} className="rtl:rotate-180" />
+                  <ArrowRight size={14} className="rtl:rotate-180" />
                 </Link>
 
                 <Link
                   href="/cart"
                   onClick={onClose}
-                  className="w-full bg-neutral-900 hover:bg-[#c5a059] hover:text-neutral-950 text-white text-xs sm:text-sm font-semibold py-2.5 sm:py-3.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs active-press"
+                  className="w-full bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-xs sm:text-sm font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer active-press"
                 >
                   <ShoppingBag size={14} />
-                  <span>{lang === "ar" ? "الانتقال إلى سلة المشتريات" : "Go to Cart Page"}</span>
-                  <ArrowRight size={13} className="rtl:rotate-180" />
+                  <span>{lang === "ar" ? "الانتقال إلى سلة المشتريات" : "View Full Bag"}</span>
                 </Link>
               </div>
 

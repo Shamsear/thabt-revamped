@@ -321,7 +321,7 @@ export default function CheckoutPage() {
                           placeholder="52"
                           value={formData.zoneNumber}
                           onChange={(e) => setFormData({ ...formData, zoneNumber: e.target.value })}
-                          className="w-full h-11 sm:h-10 bg-white border border-neutral-200 rounded-lg px-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
+                          className="w-full h-11 sm:h-10 bg-white border border-neutral-200 rounded-xl px-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
                         />
                       </div>
                       <div>
@@ -334,7 +334,7 @@ export default function CheckoutPage() {
                           placeholder="990"
                           value={formData.streetNumber}
                           onChange={(e) => setFormData({ ...formData, streetNumber: e.target.value })}
-                          className="w-full h-11 sm:h-10 bg-white border border-neutral-200 rounded-lg px-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
+                          className="w-full h-11 sm:h-10 bg-white border border-neutral-200 rounded-xl px-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
                         />
                       </div>
                       <div>
@@ -347,7 +347,7 @@ export default function CheckoutPage() {
                           placeholder="16"
                           value={formData.buildingNumber}
                           onChange={(e) => setFormData({ ...formData, buildingNumber: e.target.value })}
-                          className="w-full h-11 sm:h-10 bg-white border border-neutral-200 rounded-lg px-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
+                          className="w-full h-11 sm:h-10 bg-white border border-neutral-200 rounded-xl px-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
                         />
                       </div>
                     </div>
