@@ -16,6 +16,7 @@ import {
   Tag,
   CheckCircle2,
   Compass,
+  X,
 } from "lucide-react";
 
 export default function CartPage() {
@@ -57,16 +58,28 @@ export default function CartPage() {
   const shippingCostQar = destination === "QA" ? 0 : 50; // Free in Qatar, 50 QAR for GCC
   const finalTotalQar = Math.max(0, subtotalQar - discountAmountQar + shippingCostQar);
 
+  const handleRemoveCoupon = () => {
+    setCouponApplied(false);
+    setCouponCode("");
+    setDiscountPercent(0);
+    setCouponError("");
+  };
+
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
     setCouponError("");
     const cleaned = couponCode.trim().toUpperCase();
-    if (!cleaned) return;
+    if (!cleaned) {
+      handleRemoveCoupon();
+      return;
+    }
 
     if (cleaned === "THABT10" || cleaned === "QATAR" || cleaned === "GCC10") {
       setDiscountPercent(10);
       setCouponApplied(true);
     } else {
+      setDiscountPercent(0);
+      setCouponApplied(false);
       setCouponError(lang === "ar" ? "كوبون غير صالح. جرب THABT10" : "Invalid coupon. Try THABT10");
     }
   };
@@ -283,33 +296,57 @@ export default function CartPage() {
                   </div>
 
                   {/* Coupon Form */}
-                  <form onSubmit={handleApplyCoupon} className="space-y-1.5">
+                  <form onSubmit={handleApplyCoupon} className="space-y-2">
                     <div className="flex gap-2">
                       <div className="relative flex-1">
-                        <Tag size={13} className="absolute left-3 rtl:left-auto rtl:right-3 top-3 text-neutral-400" />
+                        <Tag size={13} className="absolute left-3 rtl:left-auto rtl:right-3 top-3 text-neutral-400 pointer-events-none" />
                         <input
                           type="text"
                           value={couponCode}
-                          onChange={(e) => setCouponCode(e.target.value)}
-                          placeholder={lang === "ar" ? "كود الخصم (THABT10)" : "Promo code (THABT10)"}
-                          className="w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-8 pr-3 rtl:pl-3 rtl:pr-8 py-2.5 text-sm sm:text-xs uppercase font-medium focus:outline-none focus:border-[#c5a059] focus:bg-white"
+                          onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                          placeholder={lang === "ar" ? "كود الخصم" : "Promo code"}
+                          className="w-full bg-neutral-50 hover:bg-neutral-100/60 focus:bg-white border border-neutral-200 rounded-xl pl-8 pr-3 rtl:pl-3 rtl:pr-8 py-2 text-sm sm:text-xs font-mono tracking-wider focus:outline-none focus:border-[#c5a059] transition-colors"
                         />
                       </div>
                       <button
                         type="submit"
-                        className="px-3.5 py-2.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-sm sm:text-xs font-semibold transition cursor-pointer shrink-0"
+                        className="px-3.5 py-2 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold transition cursor-pointer shrink-0 shadow-2xs"
                       >
                         {lang === "ar" ? "تطبيق" : "Apply"}
                       </button>
                     </div>
 
-                    {couponApplied && (
-                      <p className="text-xs text-emerald-700 font-medium flex items-center gap-1 pt-0.5">
-                        <CheckCircle2 size={12} />
-                        {lang === "ar" ? "تم تطبيق خصم 10%!" : "10% discount applied!"}
-                      </p>
+                    {!couponApplied && (
+                      <div className="flex items-center gap-1.5 text-[11px] text-neutral-500 pt-0.5">
+                        <span>{lang === "ar" ? "كوبون مقترح:" : "Available:"}</span>
+                        <button
+                          type="button"
+                          onClick={() => setCouponCode("THABT10")}
+                          className="font-mono font-bold text-[#9b7832] bg-[#faf6ed] hover:bg-[#f3ead3] border border-[#c5a059]/30 px-1.5 py-0.5 rounded cursor-pointer transition-colors"
+                        >
+                          THABT10
+                        </button>
+                        <span className="text-[10px] text-neutral-400">(-10%)</span>
+                      </div>
                     )}
-                    {couponError && <p className="text-xs text-neutral-500">{couponError}</p>}
+
+                    {couponApplied && (
+                      <div className="flex items-center justify-between text-xs text-emerald-800 bg-emerald-50/80 border border-emerald-200/70 rounded-xl px-2.5 py-1.5 font-medium">
+                        <span className="flex items-center gap-1.5">
+                          <CheckCircle2 size={13} className="text-emerald-600" />
+                          <span>{lang === "ar" ? "تم تفعيل خصم 10% (THABT10)" : "10% discount applied (THABT10)"}</span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleRemoveCoupon}
+                          className="text-neutral-400 hover:text-neutral-700 p-0.5 rounded cursor-pointer"
+                          aria-label="Remove coupon"
+                        >
+                          <X size={13} />
+                        </button>
+                      </div>
+                    )}
+                    {couponError && <p className="text-xs text-rose-600 font-medium">{couponError}</p>}
                   </form>
 
                   {/* Calculations */}

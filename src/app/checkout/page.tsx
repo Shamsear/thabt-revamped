@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context/AppContext";
 import { CustomSelect } from "@/components/CustomSelect";
+import { CheckoutStepper } from "@/components/CheckoutStepper";
 import {
   ShieldCheck,
   Lock,
@@ -12,6 +13,8 @@ import {
   Building,
   MapPin,
   CheckCircle2,
+  ShoppingBag,
+  ChevronDown,
 } from "lucide-react";
 
 export default function CheckoutPage() {
@@ -36,6 +39,7 @@ export default function CheckoutPage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMobileSummary, setShowMobileSummary] = useState(false);
 
   // If empty cart, allow browsing
   if (cartItems.length === 0) {
@@ -96,49 +100,102 @@ export default function CheckoutPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
-        {/* Progress Step Indicator */}
-        <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10 text-xs">
-          <div className="flex items-center gap-2 text-neutral-950 font-semibold">
-            <span className="w-6 h-6 rounded-full bg-neutral-900 text-[#c5a059] flex items-center justify-center text-[11px] font-bold">
-              1
+      <main className="max-w-6xl mx-auto px-3.5 sm:px-8 py-5 sm:py-10">
+        {/* Responsive Checkout Stepper */}
+        <CheckoutStepper currentStep={1} lang={lang} />
+
+        {/* Mobile Compact Order Summary Collapsible (< lg) */}
+        <div className="lg:hidden mb-5 bg-white rounded-2xl border border-neutral-200/80 overflow-hidden shadow-2xs">
+          <button
+            type="button"
+            onClick={() => setShowMobileSummary(!showMobileSummary)}
+            className="w-full px-4 py-3 bg-neutral-50/70 hover:bg-neutral-100/60 flex items-center justify-between text-xs font-semibold text-neutral-900 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-2 text-neutral-800">
+              <ShoppingBag size={15} className="text-[#c5a059]" />
+              <span>
+                {showMobileSummary
+                  ? lang === "ar" ? "إخفاء تفاصيل الطلب" : "Hide order summary"
+                  : lang === "ar" ? `عرض ملخص الطلب (${cartItems.length})` : `Show order summary (${cartItems.length})`}
+              </span>
+              <ChevronDown size={14} className={`text-neutral-500 transition-transform duration-200 ${showMobileSummary ? "rotate-180" : ""}`} />
+            </div>
+            <span className="font-bold text-neutral-950 font-mono">
+              {formatPrice(orderTotalQar)}
             </span>
-            <span>{lang === "ar" ? "العنوان والشحن" : "Shipping & Address"}</span>
-          </div>
-          <div className="w-8 sm:w-16 h-px bg-neutral-300" />
-          <div className="flex items-center gap-2 text-neutral-400">
-            <span className="w-6 h-6 rounded-full border border-neutral-300 text-neutral-400 flex items-center justify-center text-[11px]">
-              2
-            </span>
-            <span>{lang === "ar" ? "الدفع التوضيحي" : "Payment Simulation"}</span>
-          </div>
-          <div className="w-8 sm:w-16 h-px bg-neutral-200" />
-          <div className="flex items-center gap-2 text-neutral-400">
-            <span className="w-6 h-6 rounded-full border border-neutral-300 text-neutral-400 flex items-center justify-center text-[11px]">
-              3
-            </span>
-            <span>{lang === "ar" ? "تأكيد الطلب" : "Confirmation"}</span>
-          </div>
+          </button>
+
+          {showMobileSummary && (
+            <div className="p-4 border-t border-neutral-100 divide-y divide-neutral-100">
+              {/* Cart Items list */}
+              <div className="divide-y divide-neutral-100 max-h-56 overflow-y-auto py-1 scrollbar-none">
+                {cartItems.map((item) => (
+                  <div key={item.product.id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-lg bg-neutral-100 border border-neutral-200/60 p-1 shrink-0 flex items-center justify-center">
+                        <img src={item.product.image} alt={item.product.name} className="max-h-full max-w-full object-contain" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-medium text-neutral-950 truncate max-w-[160px]">
+                          {lang === "ar" ? item.product.name_ar : item.product.name}
+                        </p>
+                        <p className="text-[10px] text-neutral-400">
+                          {lang === "ar" ? "الكمية:" : "Qty:"} {item.quantity}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="font-semibold text-neutral-900 shrink-0">
+                      {formatPrice(item.product.price * item.quantity)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Subtotal breakdown */}
+              <div className="pt-3 space-y-1.5 text-xs text-neutral-600">
+                <div className="flex justify-between">
+                  <span>{lang === "ar" ? "المجموع الفرعي:" : "Subtotal:"}</span>
+                  <span className="font-medium text-neutral-950">{formatPrice(subtotalQar)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>{lang === "ar" ? "الشحن:" : "Shipping:"}</span>
+                  <span className="font-medium text-neutral-950">
+                    {shippingCostQar === 0 ? (
+                      <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[10px]">
+                        {lang === "ar" ? "مجاني" : "Free"}
+                      </span>
+                    ) : (
+                      formatPrice(shippingCostQar)
+                    )}
+                  </span>
+                </div>
+                <div className="pt-2 border-t border-neutral-100 flex justify-between font-semibold text-neutral-950">
+                  <span>{lang === "ar" ? "المجموع المستحق:" : "Total Payable:"}</span>
+                  <span className="text-sm font-bold text-neutral-950">{formatPrice(orderTotalQar)}</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           {/* Left Form: Contact & Address (7 cols) */}
           <div className="lg:col-span-7">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {/* Contact Information */}
-              <div className="bg-white rounded-2xl border border-neutral-200/80 p-6 sm:p-7 space-y-4">
-                <div className="border-b border-neutral-100 pb-3">
-                  <span className="text-[11px] uppercase tracking-[0.2em] text-[#c5a059] font-semibold">
+              <div className="bg-white rounded-2xl border border-neutral-200/80 p-4 sm:p-6 space-y-3.5">
+                <div className="border-b border-neutral-100 pb-2.5">
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-[#c5a059] font-semibold">
                     {lang === "ar" ? "المرحلة الأولى" : "Step 01"}
                   </span>
-                  <h2 className="text-base font-semibold text-neutral-950 mt-0.5">
+                  <h2 className="text-sm sm:text-base font-semibold text-neutral-950 mt-0.5">
                     {lang === "ar" ? "بيانات العميل والتواصل" : "Contact Information"}
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
+                    <label className="block text-xs text-neutral-700 mb-1 font-medium">
                       {lang === "ar" ? "الاسم الأول" : "First Name"}
                     </label>
                     <input
@@ -146,11 +203,11 @@ export default function CheckoutPage() {
                       required
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      className="w-full h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
+                    <label className="block text-xs text-neutral-700 mb-1 font-medium">
                       {lang === "ar" ? "اسم العائلة" : "Last Name"}
                     </label>
                     <input
@@ -158,13 +215,13 @@ export default function CheckoutPage() {
                       required
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      className="w-full h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
+                  <label className="block text-xs text-neutral-700 mb-1 font-medium">
                     {lang === "ar" ? "البريد الإلكتروني للإشعار" : "Email Address"}
                   </label>
                   <input
@@ -172,16 +229,16 @@ export default function CheckoutPage() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                    className="w-full h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs sm:text-xs text-neutral-700 mb-1.5 font-medium">
+                  <label className="block text-xs text-neutral-700 mb-1 font-medium">
                     {lang === "ar" ? "رقم الهاتف للتوصيل" : "Mobile Phone Number"}
                   </label>
-                  <div className="flex gap-2 items-stretch">
-                    <div className="w-32 shrink-0">
+                  <div className="flex gap-2 items-center">
+                    <div className="w-28 sm:w-32 shrink-0">
                       <CustomSelect
                         value={formData.phoneCode}
                         onChange={(val) => setFormData({ ...formData, phoneCode: val })}
@@ -202,25 +259,25 @@ export default function CheckoutPage() {
                       placeholder="5500 0000"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="flex-1 bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-3 sm:py-2.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      className="flex-1 min-w-0 h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Delivery Address (Qatar Blue Plate Format) */}
-              <div className="bg-white rounded-2xl border border-neutral-200/80 p-6 sm:p-7 space-y-4">
-                <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+              <div className="bg-white rounded-2xl border border-neutral-200/80 p-4 sm:p-6 space-y-3.5">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-100 pb-2.5">
                   <div>
-                    <span className="text-[11px] uppercase tracking-[0.2em] text-[#c5a059] font-semibold">
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#c5a059] font-semibold">
                       {lang === "ar" ? "المرحلة الثانية" : "Step 02"}
                     </span>
-                    <h2 className="text-base font-semibold text-neutral-950 mt-0.5 flex items-center gap-2">
-                      <MapPin size={16} className="text-[#c5a059]" />
+                    <h2 className="text-sm sm:text-base font-semibold text-neutral-950 mt-0.5 flex items-center gap-1.5">
+                      <MapPin size={15} className="text-[#c5a059]" />
                       <span>{lang === "ar" ? "عنوان التوصيل" : "Delivery Address"}</span>
                     </h2>
                   </div>
-                  <span className="text-[10px] text-[#9b7832] font-semibold bg-[#faf6ed] px-2.5 py-1 rounded-full border border-[#c5a059]/30">
+                  <span className="text-[10px] text-[#9b7832] font-semibold bg-[#faf6ed] px-2.5 py-0.5 rounded-full border border-[#c5a059]/30">
                     {formData.country === "Qatar"
                       ? lang === "ar"
                         ? "عنوان قطر الوطني الأزرق"
@@ -248,15 +305,15 @@ export default function CheckoutPage() {
 
                 {formData.country === "Qatar" ? (
                   /* Qatar National Blue Plate 3-Box System */
-                  <div className="p-4 rounded-xl bg-neutral-50/80 border border-neutral-200/70 space-y-3">
+                  <div className="p-3 sm:p-4 rounded-xl bg-neutral-50/80 border border-neutral-200/70 space-y-2.5">
                     <p className="text-xs font-semibold text-neutral-800 flex items-center gap-1.5">
                       <Building size={14} className="text-[#c5a059]" />
                       <span>{lang === "ar" ? "أرقام اللوحة الزرقاء لعنوان المبنى في قطر:" : "Qatar Blue Plate Address Numbers:"}</span>
                     </p>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
                       <div>
-                        <label className="block text-xs sm:text-[11px] font-medium text-neutral-600 mb-1">
-                          {lang === "ar" ? "المنطقة (Zone)" : "Zone No."}
+                        <label className="block text-[11px] sm:text-xs font-medium text-neutral-600 mb-1 text-center truncate">
+                          {lang === "ar" ? "المنطقة" : "Zone"}
                         </label>
                         <input
                           type="text"
@@ -264,12 +321,12 @@ export default function CheckoutPage() {
                           placeholder="52"
                           value={formData.zoneNumber}
                           onChange={(e) => setFormData({ ...formData, zoneNumber: e.target.value })}
-                          className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-2.5 sm:py-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
+                          className="w-full h-11 sm:h-10 bg-white border border-neutral-200 rounded-lg px-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs sm:text-[11px] font-medium text-neutral-600 mb-1">
-                          {lang === "ar" ? "الشارع (Street)" : "Street No."}
+                        <label className="block text-[11px] sm:text-xs font-medium text-neutral-600 mb-1 text-center truncate">
+                          {lang === "ar" ? "الشارع" : "Street"}
                         </label>
                         <input
                           type="text"
@@ -277,12 +334,12 @@ export default function CheckoutPage() {
                           placeholder="990"
                           value={formData.streetNumber}
                           onChange={(e) => setFormData({ ...formData, streetNumber: e.target.value })}
-                          className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-2.5 sm:py-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
+                          className="w-full h-11 sm:h-10 bg-white border border-neutral-200 rounded-lg px-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs sm:text-[11px] font-medium text-neutral-600 mb-1">
-                          {lang === "ar" ? "المبنى (Building)" : "Building No."}
+                        <label className="block text-[11px] sm:text-xs font-medium text-neutral-600 mb-1 text-center truncate">
+                          {lang === "ar" ? "المبنى" : "Building"}
                         </label>
                         <input
                           type="text"
@@ -290,16 +347,16 @@ export default function CheckoutPage() {
                           placeholder="16"
                           value={formData.buildingNumber}
                           onChange={(e) => setFormData({ ...formData, buildingNumber: e.target.value })}
-                          className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-2.5 sm:py-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
+                          className="w-full h-11 sm:h-10 bg-white border border-neutral-200 rounded-lg px-2 text-sm sm:text-xs font-mono font-bold text-neutral-900 focus:outline-none focus:border-neutral-950 text-center"
                         />
                       </div>
                     </div>
                   </div>
                 ) : (
                   /* Standard GCC Address Form */
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                      <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                      <label className="block text-xs text-neutral-600 mb-1 font-medium">
                         {lang === "ar" ? "المدينة" : "City"}
                       </label>
                       <input
@@ -307,11 +364,11 @@ export default function CheckoutPage() {
                         required
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                        className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                        className="w-full h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                      <label className="block text-xs text-neutral-600 mb-1 font-medium">
                         {lang === "ar" ? "الحي / المنطقة" : "District / Area"}
                       </label>
                       <input
@@ -319,14 +376,14 @@ export default function CheckoutPage() {
                         required
                         value={formData.additionalNotes}
                         onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
-                        className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                        className="w-full h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                       />
                     </div>
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs text-neutral-600 mb-1.5 font-medium">
+                  <label className="block text-xs text-neutral-600 mb-1 font-medium">
                     {lang === "ar" ? "ملاحظات إضافية لمندوب التوصيل" : "Delivery Notes / Landmark"}
                   </label>
                   <input
@@ -334,7 +391,7 @@ export default function CheckoutPage() {
                     value={formData.additionalNotes}
                     onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
                     placeholder={lang === "ar" ? "فيلا، شقة، علامة مميزة..." : "Villa no, landmark, preferred time..."}
-                    className="w-full bg-neutral-50/60 border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                    className="w-full h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
                   />
                 </div>
               </div>
@@ -343,16 +400,27 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 px-6 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-98 disabled:opacity-70"
+                className="w-full py-3.5 sm:py-4 px-6 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-98 disabled:opacity-70"
               >
-                <span>{lang === "ar" ? "المتابعة إلى بوابة الدفع" : "Proceed to Payment Gateway"}</span>
+                <span>{lang === "ar" ? "المتابعة إلى بوابة الدفع" : "Proceed to Payment"}</span>
+                <span className="text-xs opacity-80 font-mono">({formatPrice(orderTotalQar)})</span>
                 <ArrowRight size={15} className="rtl:rotate-180" />
               </button>
+
+              {/* Mobile Guarantee Bar */}
+              <div className="lg:hidden p-3 rounded-xl bg-[#faf6ed]/60 border border-[#c5a059]/30 text-xs text-neutral-700 flex items-center gap-2.5">
+                <ShieldCheck size={16} className="text-[#c5a059] shrink-0" />
+                <p className="text-[11px] text-neutral-600">
+                  {lang === "ar"
+                    ? "ضمان رسمي من ثقة لمدة عام كامل لجميع قواعد التثبيت."
+                    : "Official 1-year replacement warranty on all vehicle mounts."}
+                </p>
+              </div>
             </form>
           </div>
 
-          {/* Right Summary Sidebar (5 cols, sticky on desktop) */}
-          <div className="lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-4">
+          {/* Right Summary Sidebar (5 cols, desktop only) */}
+          <div className="hidden lg:block lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-4">
             <div className="bg-white rounded-2xl border border-neutral-200/80 p-6">
               <h3 className="text-sm font-semibold text-neutral-950 pb-3 border-b border-neutral-100 flex items-center justify-between">
                 <span>{lang === "ar" ? "طلبك" : "Your Order"} ({cartItems.length})</span>
@@ -396,7 +464,7 @@ export default function CheckoutPage() {
                   <span>{lang === "ar" ? "رسوم الشحن:" : "Shipping:"}</span>
                   <span className="font-semibold text-neutral-950">
                     {shippingCostQar === 0 ? (
-                      <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">{lang === "ar" ? "مجاني" : "Free"}</span>
+                      <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[10px]">{lang === "ar" ? "مجاني" : "Free"}</span>
                     ) : (
                       formatPrice(shippingCostQar)
                     )}

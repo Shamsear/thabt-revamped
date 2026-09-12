@@ -3,6 +3,7 @@
 import React, { useState, useMemo, use } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CustomSelect } from "@/components/CustomSelect";
@@ -45,6 +46,16 @@ export default function CategoryPage({
     slug === "mounting-bases" || slug === "mounting-base" ? "pro-clips" : slug;
 
   const category = MOCK_CATEGORIES.find((c) => c.slug === normalizedSlug);
+
+  // Auto-center selected pill inside horizontal scroll container
+  const pillRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
+
+  React.useEffect(() => {
+    const activeEl = pillRefs.current[normalizedSlug];
+    if (activeEl) {
+      activeEl.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  }, [normalizedSlug]);
 
   if (!category) {
     notFound();
@@ -154,31 +165,44 @@ export default function CategoryPage({
             </p>
           </div>
 
-          {/* Category Tabs: Open, Minimalist Pill Bar (No boxed container) */}
-          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2.5 sm:pb-4 mb-4 sm:mb-6 scrollbar-none text-xs">
-            <Link
-              href="/search"
-              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium whitespace-nowrap transition-colors bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900 shrink-0 text-xs"
-            >
-              {lang === "ar" ? "جميع المنتجات" : "All Products"}
-            </Link>
-
-            {MOCK_CATEGORIES.map((cat) => {
-              const isSelected = cat.slug === normalizedSlug;
-              return (
+          {/* Category Tabs: Animated Sliding Pill Switcher */}
+          <div className="mb-4 sm:mb-6 overflow-x-auto scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0">
+            <LayoutGroup id="categoryPageTabsGroup">
+              <div className="inline-flex p-1 sm:p-1.5 bg-neutral-100/90 rounded-2xl border border-neutral-200/70 gap-1 sm:gap-1.5 min-w-max shadow-2xs">
+                {/* All Products Link */}
                 <Link
-                  key={cat.slug}
-                  href={`/categories/${cat.slug}`}
-                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium whitespace-nowrap transition-colors shrink-0 text-xs ${
-                    isSelected
-                      ? "bg-neutral-900 text-white font-semibold shadow-xs"
-                      : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900"
-                  }`}
+                  href="/search"
+                  className="relative px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-semibold whitespace-nowrap text-xs transition-colors duration-200 cursor-pointer flex items-center justify-center outline-none focus:outline-none select-none text-neutral-600 hover:text-neutral-950 hover:bg-white/60 active:scale-[0.98]"
                 >
-                  {lang === "ar" ? cat.category_ar : cat.category}
+                  <span className="relative z-10">{lang === "ar" ? "جميع المنتجات" : "All Products"}</span>
                 </Link>
-              );
-            })}
+
+                {MOCK_CATEGORIES.map((cat) => {
+                  const isSelected = cat.slug === normalizedSlug;
+                  return (
+                    <Link
+                      key={cat.slug}
+                      ref={(el) => { pillRefs.current[cat.slug] = el; }}
+                      href={`/categories/${cat.slug}`}
+                      className={`relative px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-semibold whitespace-nowrap text-xs transition-colors duration-200 cursor-pointer flex items-center justify-center outline-none focus:outline-none select-none active:scale-[0.98] ${
+                        isSelected
+                          ? "text-white"
+                          : "text-neutral-600 hover:text-neutral-950 hover:bg-white/60"
+                      }`}
+                    >
+                      {isSelected && (
+                        <motion.span
+                          layoutId="categoryPageActivePill"
+                          className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs -z-0"
+                          transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                        />
+                      )}
+                      <span className="relative z-10">{lang === "ar" ? cat.category_ar : cat.category}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </LayoutGroup>
           </div>
 
           {/* Minimalist Filter Toolbar (Compact on mobile: 2 neat rows) */}
@@ -320,167 +344,183 @@ export default function CategoryPage({
             )}
           </div>
 
-          {/* Product Cards Grid: 2 columns on mobile, 3 on tablet, 4 on desktop */}
-          {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6 mb-10 sm:mb-16">
-              {filteredProducts.map((product) => {
-                const inStock = product.stock > 0;
-                const isAdded = justAddedId === product.id;
+          {/* Animated Product Cards Grid or Fallback State */}
+          <AnimatePresence mode="wait">
+            {filteredProducts.length > 0 ? (
+              <motion.div
+                key={`cat-grid-${normalizedSlug}-${selectedVehicle}-${searchQuery}-${onlyInStock}-${sortBy}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6 mb-10 sm:mb-16"
+              >
+                {filteredProducts.map((product) => {
+                  const inStock = product.stock > 0;
+                  const isAdded = justAddedId === product.id;
 
-                return (
-                  <div
-                    key={product.id}
-                    className="h-full flex flex-col justify-between bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-5 border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 group"
-                  >
-                    <div>
-                      {/* Product Photo Showcase */}
-                      <Link
-                        href={`/products/${product.slug}`}
-                        className="block h-32 sm:h-52 w-full rounded-lg sm:rounded-xl mb-2 sm:mb-4 bg-neutral-100 relative overflow-hidden p-2 sm:p-4 group-hover:scale-[1.02] transition-transform duration-300"
-                      >
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-full object-contain object-center"
-                        />
-                      </Link>
-
-                      {/* Model SKU & Stock */}
-                      <div className="flex items-center justify-between text-xs sm:text-xs font-mono text-neutral-500 mb-1">
-                        <span className="truncate max-w-[70px] sm:max-w-none">{product.product_id}</span>
-                        <span className={`shrink-0 ${inStock ? "text-neutral-600 font-medium" : "text-[#b38e46] font-semibold"}`}>
-                          {inStock
-                            ? lang === "ar"
-                              ? "متوفر"
-                              : "In Stock"
-                            : lang === "ar"
-                            ? "طلب مسبق"
-                            : "Backorder"}
-                        </span>
-                      </div>
-
-                      {/* Product Title */}
-                      <Link href={`/products/${product.slug}`}>
-                        <h3 className="font-semibold text-xs sm:text-base text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 transition-colors">
-                          {lang === "ar" ? product.name_ar : product.name}
-                        </h3>
-                      </Link>
-                    </div>
-
-                    {/* Pricing & Add to Bag */}
-                    <div className="pt-2.5 sm:pt-4 border-t border-neutral-100 mt-2 sm:mt-3 flex items-center justify-between gap-1.5">
-                      <div className="min-w-0">
-                        <span className="text-sm sm:text-lg font-bold text-neutral-900 block truncate">
-                          {product.price}{" "}
-                          <span className="text-xs font-semibold text-[#c5a059]">{currency}</span>
-                        </span>
-                      </div>
-
-                      {inStock ? (
-                        <button
-                          type="button"
-                          onClick={() => handleAddClick(product)}
-                          className={`flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-4 rounded-xl transition-all duration-200 cursor-pointer shrink-0 active-press ${
-                            isAdded
-                              ? "bg-[#25D366] text-white"
-                              : "bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950"
-                          }`}
-                        >
-                          {isAdded ? (
-                            <>
-                              <Check size={13} className="stroke-[2.5]" />
-                              <span>{lang === "ar" ? "تم" : "Added"}</span>
-                            </>
-                          ) : (
-                            <>
-                              <Plus size={13} />
-                              <span>{lang === "ar" ? "أضف" : "Add"}</span>
-                            </>
-                          )}
-                        </button>
-                      ) : (
+                  return (
+                    <div
+                      key={product.id}
+                      className="h-full flex flex-col justify-between bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-5 border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 group"
+                    >
+                      <div>
+                        {/* Product Photo Showcase */}
                         <Link
                           href={`/products/${product.slug}`}
-                          className="text-xs sm:text-sm font-semibold py-2 px-3 rounded-xl border border-neutral-200 text-neutral-700 hover:border-neutral-900 transition shrink-0"
+                          className="block h-32 sm:h-52 w-full rounded-lg sm:rounded-xl mb-2 sm:mb-4 bg-neutral-100 relative overflow-hidden p-2 sm:p-4 group-hover:scale-[1.02] transition-transform duration-300"
                         >
-                          {lang === "ar" ? "تفاصيل" : "Details"}
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-full h-full object-contain object-center"
+                          />
                         </Link>
-                      )}
+
+                        {/* Model SKU & Stock */}
+                        <div className="flex items-center justify-between text-xs sm:text-xs font-mono text-neutral-500 mb-1">
+                          <span className="truncate max-w-[70px] sm:max-w-none">{product.product_id}</span>
+                          <span className={`shrink-0 ${inStock ? "text-neutral-600 font-medium" : "text-[#b38e46] font-semibold"}`}>
+                            {inStock
+                              ? lang === "ar"
+                                ? "متوفر"
+                                : "In Stock"
+                              : lang === "ar"
+                              ? "طلب مسبق"
+                              : "Backorder"}
+                          </span>
+                        </div>
+
+                        {/* Product Title */}
+                        <Link href={`/products/${product.slug}`}>
+                          <h3 className="font-semibold text-xs sm:text-base text-neutral-900 leading-snug line-clamp-2 mb-2 group-hover:text-neutral-950 transition-colors">
+                            {lang === "ar" ? product.name_ar : product.name}
+                          </h3>
+                        </Link>
+                      </div>
+
+                      {/* Pricing & Add to Bag */}
+                      <div className="pt-2.5 sm:pt-4 border-t border-neutral-100 mt-2 sm:mt-3 flex items-center justify-between gap-1.5">
+                        <div className="min-w-0">
+                          <span className="text-sm sm:text-lg font-bold text-neutral-900 block truncate">
+                            {product.price}{" "}
+                            <span className="text-xs font-semibold text-[#c5a059]">{currency}</span>
+                          </span>
+                        </div>
+
+                        {inStock ? (
+                          <button
+                            type="button"
+                            onClick={() => handleAddClick(product)}
+                            className={`flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-4 rounded-xl transition-all duration-200 cursor-pointer shrink-0 active-press ${
+                              isAdded
+                                ? "bg-[#25D366] text-white"
+                                : "bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950"
+                            }`}
+                          >
+                            {isAdded ? (
+                              <>
+                                <Check size={13} className="stroke-[2.5]" />
+                                <span>{lang === "ar" ? "تم" : "Added"}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Plus size={13} />
+                                <span>{lang === "ar" ? "أضف" : "Add"}</span>
+                              </>
+                            )}
+                          </button>
+                        ) : (
+                          <Link
+                            href={`/products/${product.slug}`}
+                            className="text-xs sm:text-sm font-semibold py-2 px-3 rounded-xl border border-neutral-200 text-neutral-700 hover:border-neutral-900 transition shrink-0"
+                          >
+                            {lang === "ar" ? "تفاصيل" : "Details"}
+                          </Link>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            /* Smart Fallback Zero-Result State */
-            <div className="text-center py-8 px-4 max-w-md mx-auto mb-10 bg-neutral-50/60 border border-neutral-200/70 rounded-2xl p-5 sm:p-6">
-              <div className="w-10 h-10 rounded-xl bg-white shadow-2xs border border-neutral-200 flex items-center justify-center mx-auto mb-3 text-[#c5a059]">
-                <Car size={20} />
-              </div>
-              
-              <h3 className="text-sm sm:text-base font-bold text-neutral-900 mb-1">
-                {lang === "ar" ? "لم نجد قواعد تطابق بحثك" : "No matching mounts found"}
-              </h3>
-              
-              <p className="text-xs text-neutral-500 mb-4 leading-relaxed max-w-xs mx-auto">
-                {lang === "ar"
-                  ? "جرب إزالة بعض الفلاتر، أو تواصل معنا مباشرة عبر الواتساب لتوفير القاعدة المناسبة لسيارتك وموديلها."
-                  : "Try resetting filters or chat directly with our fitment team on WhatsApp for custom car matching."}
-              </p>
-
-              {/* Popular Vehicle Quick Picks */}
-              <div className="mb-5">
-                <span className="block text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mb-2">
-                  {lang === "ar" ? "سيارات شائعة:" : "Popular Vehicles:"}
-                </span>
-                <div className="flex flex-wrap items-center justify-center gap-1.5">
-                  {["Toyota", "Nissan", "Ford", "GMC", "Lexus", "Jeep"].map((brand) => (
-                    <button
-                      key={brand}
-                      type="button"
-                      onClick={() => {
-                        setSelectedVehicle(brand);
-                        setSearchQuery("");
-                      }}
-                      className="px-2.5 py-1 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-[11px] font-medium text-neutral-700 hover:text-neutral-950 transition cursor-pointer"
-                    >
-                      {brand}
-                    </button>
-                  ))}
+                  );
+                })}
+              </motion.div>
+            ) : (
+              /* Smart Fallback Zero-Result State */
+              <motion.div
+                key="cat-empty-state"
+                initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98, y: -10 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                className="text-center py-8 px-4 max-w-md mx-auto mb-10 bg-neutral-50/60 border border-neutral-200/70 rounded-2xl p-5 sm:p-6"
+              >
+                <div className="w-10 h-10 rounded-xl bg-white shadow-2xs border border-neutral-200 flex items-center justify-center mx-auto mb-3 text-[#c5a059]">
+                  <Car size={20} />
                 </div>
-              </div>
+                
+                <h3 className="text-sm sm:text-base font-bold text-neutral-900 mb-1">
+                  {lang === "ar" ? "لم نجد قواعد تطابق بحثك" : "No matching mounts found"}
+                </h3>
+                
+                <p className="text-xs text-neutral-500 mb-4 leading-relaxed max-w-xs mx-auto">
+                  {lang === "ar"
+                    ? "جرب إزالة بعض الفلاتر، أو تواصل معنا مباشرة عبر الواتساب لتوفير القاعدة المناسبة لسيارتك وموديلها."
+                    : "Try resetting filters or chat directly with our fitment team on WhatsApp for custom car matching."}
+                </p>
 
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setSelectedVehicle("all");
-                    setOnlyInStock(false);
-                  }}
-                  className="w-full sm:w-auto px-4 py-2 bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
-                >
-                  <RotateCcw size={12} />
-                  <span>{lang === "ar" ? "إعادة تعيين الفلاتر" : "Reset All Filters"}</span>
-                </button>
+                {/* Popular Vehicle Quick Picks */}
+                <div className="mb-5">
+                  <span className="block text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mb-2">
+                    {lang === "ar" ? "سيارات شائعة:" : "Popular Vehicles:"}
+                  </span>
+                  <div className="flex flex-wrap items-center justify-center gap-1.5">
+                    {["Toyota", "Nissan", "Ford", "GMC", "Lexus", "Jeep"].map((brand) => (
+                      <button
+                        key={brand}
+                        type="button"
+                        onClick={() => {
+                          setSelectedVehicle(brand);
+                          setSearchQuery("");
+                        }}
+                        className="px-2.5 py-1 rounded-xl bg-white hover:bg-neutral-100 border border-neutral-200 text-[11px] font-medium text-neutral-700 hover:text-neutral-950 transition-all cursor-pointer active:scale-95"
+                      >
+                        {brand}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-                <a
-                  href={`https://wa.me/966547631526?text=${encodeURIComponent(
-                    lang === "ar"
-                      ? `مرحباً ثقة، لم أجد قاعدة مناسبة لسيارتي في قسم ${category.category_ar} (بحث: ${searchQuery || selectedVehicle}). هل تتوفر لديكم؟`
-                      : `Hello Thabt, I'm looking for a mount in ${category.category} (Query: ${searchQuery || selectedVehicle}). Do you have fitment for my car?`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-4 py-2 bg-[#25D366] hover:bg-[#20b858] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
-                >
-                  <MessageCircle size={13} />
-                  <span>{lang === "ar" ? "استفسر عبر الواتساب" : "Ask on WhatsApp"}</span>
-                </a>
-              </div>
-            </div>
-          )}
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedVehicle("all");
+                      setOnlyInStock(false);
+                    }}
+                    className="w-full sm:w-auto px-4 py-2 bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs active:scale-95"
+                  >
+                    <RotateCcw size={12} />
+                    <span>{lang === "ar" ? "إعادة تعيين الفلاتر" : "Reset All Filters"}</span>
+                  </button>
+
+                  <a
+                    href={`https://wa.me/966547631526?text=${encodeURIComponent(
+                      lang === "ar"
+                        ? `مرحباً ثقة، لم أجد قاعدة مناسبة لسيارتي في قسم ${category.category_ar} (بحث: ${searchQuery || selectedVehicle}). هل تتوفر لديكم؟`
+                        : `Hello Thabt, I'm looking for a mount in ${category.category} (Query: ${searchQuery || selectedVehicle}). Do you have fitment for my car?`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto px-4 py-2 bg-[#25D366] hover:bg-[#20b858] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs active:scale-95"
+                  >
+                    <MessageCircle size={13} />
+                    <span>{lang === "ar" ? "استفسر عبر الواتساب" : "Ask on WhatsApp"}</span>
+                  </a>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
 

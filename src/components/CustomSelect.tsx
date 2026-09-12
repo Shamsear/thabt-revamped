@@ -36,6 +36,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [mounted, setMounted] = useState(false);
   const [placement, setPlacement] = useState<"bottom" | "top">("bottom");
+  const [maxMenuHeight, setMaxMenuHeight] = useState<number>(260);
   const [coords, setCoords] = useState<{ top: number; left: number; width: number }>({
     top: 0,
     left: 0,
@@ -56,17 +57,44 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   const getOptLabel = (opt: SelectOption): string =>
     typeof opt === "string" ? opt : opt.label;
 
-  // Compute position relative to viewport
+  // Compute position relative to viewport with downward preference & boundary protection
   const updatePosition = () => {
     if (!triggerRef.current) return;
     const rect = triggerRef.current.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    const spaceAbove = rect.top;
-    const shouldFlip = spaceBelow < 220 && spaceAbove > spaceBelow;
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
 
-    setPlacement(shouldFlip ? "top" : "bottom");
-    const menuWidth = Math.min(Math.max(rect.width, 220), window.innerWidth - 24);
-    const safeLeft = Math.max(12, Math.min(rect.left, window.innerWidth - menuWidth - 12));
+    // Viewport margin protection (12px safe boundary)
+    const margin = 12;
+    const spaceBelow = Math.max(0, viewportHeight - rect.bottom - margin);
+    const spaceAbove = Math.max(0, rect.top - margin);
+
+    // Calculate full content height based on options and search bar
+    const hasSearch = options.length > 7;
+    const searchBarHeight = hasSearch ? 48 : 0;
+    const itemHeight = 42;
+    const contentHeight = searchBarHeight + options.length * itemHeight + 16;
+    const preferredMaxHeight = Math.min(contentHeight, 260);
+
+    // Downward preference logic:
+    // 1. If trigger is in the top-to-middle portion of viewport (top < 58% of viewport) -> open downwards.
+    // 2. If space below can accommodate the menu (>= preferredMaxHeight or >= 140px) -> open downwards.
+    // 3. Only flip upwards if trigger is past the middle/lower screen AND space below is tight AND space above has more room.
+    const isTopToMiddle = rect.top < viewportHeight * 0.58;
+    const fitsBelow = spaceBelow >= preferredMaxHeight || spaceBelow >= 140;
+    const shouldFlip = !isTopToMiddle && !fitsBelow && spaceAbove > spaceBelow + 40;
+
+    const currentPlacement = shouldFlip ? "top" : "bottom";
+    setPlacement(currentPlacement);
+
+    // Constrain menu height strictly to visible viewport space so it never overflows off-screen
+    const availableSpace = currentPlacement === "bottom" ? spaceBelow : spaceAbove;
+    const computedMaxHeight = Math.min(preferredMaxHeight, Math.max(100, availableSpace));
+    setMaxMenuHeight(computedMaxHeight);
+
+    // Horizontal alignment with safe viewport boundary clamping
+    const menuWidth = Math.min(Math.max(rect.width, 220), viewportWidth - 24);
+    const safeLeft = Math.max(12, Math.min(rect.left, viewportWidth - menuWidth - 12));
 
     setCoords({
       top: shouldFlip ? rect.top : rect.bottom,
@@ -81,20 +109,29 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     }
   }, [isOpen]);
 
-  // Handle scroll & resize to update floating position
+  // Handle scroll & resize: close on background page scroll to prevent jumping, isolate menu list scroll
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleUpdate = () => {
+    const handleScroll = (e: Event) => {
+      // If scrolling inside the menu list itself, do not close
+      if (menuRef.current && menuRef.current.contains(e.target as Node)) {
+        return;
+      }
+      // Close cleanly when page is scrolled (prevents jumping or floating detached menus)
+      setIsOpen(false);
+    };
+
+    const handleResize = () => {
       updatePosition();
     };
 
-    window.addEventListener("scroll", handleUpdate, { passive: true });
-    window.addEventListener("resize", handleUpdate, { passive: true });
+    window.addEventListener("scroll", handleScroll, { capture: true, passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
 
     return () => {
-      window.removeEventListener("scroll", handleUpdate);
-      window.removeEventListener("resize", handleUpdate);
+      window.removeEventListener("scroll", handleScroll, { capture: true });
+      window.removeEventListener("resize", handleResize);
     };
   }, [isOpen]);
 
@@ -151,31 +188,30 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     }
   }, [isOpen, options.length]);
 
-  const filteredOptions = searchQuery.trim()
-    ? options.filter((opt) => {
-        const labelStr = getOptLabel(opt).toLowerCase();
-        const valStr = getOptValue(opt).toLowerCase();
-        const q = searchQuery.toLowerCase().trim();
-        return labelStr.includes(q) || valStr.includes(q);
-      })
-    : options;
+  // Filter options
+  const filteredOptions = options.filter((opt) => {
+    const label = getOptLabel(opt);
+    return label.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+  const selectedOption = options.find((opt) => getOptValue(opt) === value);
+  const selectedLabel = selectedOption ? getOptLabel(selectedOption) : "";
+  const displayText =
+    disabled && disabledText
+      ? disabledText
+      : selectedLabel || placeholder;
 
   const handleSelect = (opt: SelectOption) => {
-    onChange(getOptValue(opt));
+    const val = getOptValue(opt);
+    onChange(val);
     setIsOpen(false);
     setSearchQuery("");
   };
 
-  const matchedOpt = options.find((opt) => getOptValue(opt) === value);
-  const displayText =
-    disabled && disabledText
-      ? disabledText
-      : (matchedOpt ? getOptLabel(matchedOpt) : value) || placeholder;
-
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} dir={lang === "ar" ? "rtl" : "ltr"}>
       {label && (
-        <label className="block text-xs sm:text-[11px] text-neutral-600 mb-1 font-medium select-none">
+        <label className="block text-xs sm:text-xs text-neutral-600 mb-1 sm:mb-1.5 font-medium">
           {label}
         </label>
       )}
@@ -223,7 +259,6 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
             {isOpen && !disabled && (
               <div
                 ref={menuRef}
-                dir={lang === "ar" ? "rtl" : "ltr"}
                 style={{
                   position: "fixed",
                   top: placement === "bottom" ? `${coords.top + 6}px` : undefined,
@@ -231,6 +266,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   left: `${coords.left}px`,
                   width: `${Math.max(coords.width, 220)}px`,
                   maxWidth: "calc(100vw - 24px)",
+                  maxHeight: `${maxMenuHeight}px`,
                   zIndex: 99999,
                 }}
                 className="pointer-events-auto"
@@ -240,12 +276,13 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: placement === "bottom" ? -6 : 6, scale: 0.98 }}
                   transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-                  className="bg-white border border-neutral-200/90 rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.16),0_0_1px_rgba(0,0,0,0.1)] overflow-hidden"
+                  style={{ maxHeight: `${maxMenuHeight}px` }}
+                  className="bg-white border border-neutral-200/90 rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.16),0_0_1px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col"
                   role="listbox"
                 >
                   {/* Search Input for Lists with > 7 items */}
                   {options.length > 7 && (
-                    <div className="p-2 border-b border-neutral-100 bg-neutral-50/70">
+                    <div className="p-2 border-b border-neutral-100 bg-neutral-50/70 shrink-0">
                       <div className="relative flex items-center">
                         <Search
                           size={13}
@@ -265,7 +302,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   )}
 
                   {/* Scrollable Option Items */}
-                  <div className="max-h-60 overflow-y-auto py-1">
+                  <div className="overflow-y-auto py-1 flex-1 overscroll-contain">
                     {filteredOptions.length > 0 ? (
                       filteredOptions.map((opt) => {
                         const optVal = getOptValue(opt);

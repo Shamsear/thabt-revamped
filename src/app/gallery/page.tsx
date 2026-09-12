@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
@@ -22,6 +23,16 @@ export default function GalleryPage() {
   const [activeModalItem, setActiveModalItem] = useState<GalleryItem | null>(null);
 
   const brands = ["Toyota", "Nissan", "Land Rover", "GMC"];
+
+  // Auto-center selected pill inside horizontal scroll container
+  const pillRefs = React.useRef<{ [key: string]: HTMLElement | null }>({});
+
+  React.useEffect(() => {
+    const activeEl = pillRefs.current[selectedBrand];
+    if (activeEl) {
+      activeEl.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  }, [selectedBrand]);
 
   const filteredItems =
     selectedBrand === "all"
@@ -62,74 +73,114 @@ export default function GalleryPage() {
             </p>
           </div>
 
-          {/* Horizontal Pill Filter Bar */}
-          <div className="flex items-center justify-start sm:justify-center gap-1.5 sm:gap-2 mb-4 sm:mb-10 overflow-x-auto pb-2 scrollbar-none text-xs">
-            <button
-              type="button"
-              onClick={() => setSelectedBrand("all")}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium transition-all cursor-pointer shrink-0 text-xs ${
-                selectedBrand === "all"
-                  ? "bg-neutral-900 text-[#c5a059]"
-                  : "bg-neutral-100 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200"
-              }`}
-            >
-              {lang === "ar" ? "جميع السيارات" : "All Vehicles"}
-            </button>
-            {brands.map((b) => (
-              <button
-                key={b}
-                type="button"
-                onClick={() => setSelectedBrand(b)}
-                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium transition-all cursor-pointer shrink-0 text-xs ${
-                  selectedBrand === b
-                    ? "bg-neutral-900 text-[#c5a059]"
-                    : "bg-neutral-100 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200"
-                }`}
-              >
-                {b}
-              </button>
-            ))}
+          {/* Horizontal Animated Sliding Pill Filter Bar */}
+          <div className="mb-4 sm:mb-10 overflow-x-auto scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0 flex sm:justify-center">
+            <LayoutGroup id="galleryBrandPillsGroup">
+              <div className="inline-flex p-1 sm:p-1.5 bg-neutral-100/90 rounded-2xl border border-neutral-200/70 gap-1 sm:gap-1.5 min-w-max shadow-2xs">
+                {/* All Vehicles */}
+                <button
+                  type="button"
+                  ref={(el) => { pillRefs.current["all"] = el; }}
+                  onClick={() => setSelectedBrand("all")}
+                  className={`relative px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-xl font-semibold whitespace-nowrap text-xs transition-colors duration-200 cursor-pointer flex items-center justify-center outline-none focus:outline-none select-none active:scale-[0.98] ${
+                    selectedBrand === "all"
+                      ? "text-white"
+                      : "text-neutral-600 hover:text-neutral-950 hover:bg-white/60"
+                  }`}
+                >
+                  {selectedBrand === "all" && (
+                    <motion.span
+                      layoutId="galleryActiveBrandPill"
+                      className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs -z-0"
+                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center gap-1.5">
+                    {selectedBrand === "all" && <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />}
+                    <span>{lang === "ar" ? "جميع السيارات" : "All Vehicles"}</span>
+                  </span>
+                </button>
+
+                {brands.map((b) => {
+                  const isSelected = selectedBrand === b;
+                  return (
+                    <button
+                      key={b}
+                      type="button"
+                      ref={(el) => { pillRefs.current[b] = el; }}
+                      onClick={() => setSelectedBrand(b)}
+                      className={`relative px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-xl font-semibold whitespace-nowrap text-xs transition-colors duration-200 cursor-pointer flex items-center justify-center outline-none focus:outline-none select-none active:scale-[0.98] ${
+                        isSelected
+                          ? "text-white"
+                          : "text-neutral-600 hover:text-neutral-950 hover:bg-white/60"
+                      }`}
+                    >
+                      {isSelected && (
+                        <motion.span
+                          layoutId="galleryActiveBrandPill"
+                          className="absolute inset-0 bg-neutral-950 rounded-xl shadow-xs -z-0"
+                          transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                        />
+                      )}
+                      <span className="relative z-10 flex items-center gap-1.5">
+                        {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />}
+                        <span>{b}</span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </LayoutGroup>
           </div>
 
-          {/* Gallery Grid: 2 columns on mobile */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 mb-8 sm:mb-16">
-            {filteredItems.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => setActiveModalItem(item)}
-                className="bg-white rounded-xl sm:rounded-2xl border border-neutral-200/80 hover:border-neutral-900 overflow-hidden transition-all duration-300 cursor-pointer group flex flex-col justify-between shadow-2xs hover:shadow-md"
-              >
-                {/* Photo */}
-                <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5 sm:p-4">
-                    <span className="text-[#c5a059] text-[10px] sm:text-xs font-semibold flex items-center gap-1 uppercase tracking-wider">
-                      <span>{lang === "ar" ? "عرض التفاصيل" : "View Fitment"}</span>
-                      <ArrowRight size={11} className="rtl:rotate-180" />
+          {/* Animated Gallery Grid: 2 columns on mobile */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`gallery-${selectedBrand}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 mb-8 sm:mb-16"
+            >
+              {filteredItems.map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => setActiveModalItem(item)}
+                  className="bg-white rounded-xl sm:rounded-2xl border border-neutral-200/80 hover:border-neutral-900 overflow-hidden transition-all duration-300 cursor-pointer group flex flex-col justify-between shadow-2xs hover:shadow-md active:scale-[0.99]"
+                >
+                  {/* Photo */}
+                  <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5 sm:p-4">
+                      <span className="text-[#c5a059] text-[10px] sm:text-xs font-semibold flex items-center gap-1 uppercase tracking-wider">
+                        <span>{lang === "ar" ? "عرض التفاصيل" : "View Fitment"}</span>
+                        <ArrowRight size={11} className="rtl:rotate-180" />
+                      </span>
+                    </div>
+                    <span className="absolute top-2 left-2 rtl:left-auto rtl:right-2 bg-neutral-950/80 text-white text-[10px] sm:text-xs font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl">
+                      {item.vehicle}
                     </span>
                   </div>
-                  <span className="absolute top-2 left-2 rtl:left-auto rtl:right-2 bg-neutral-950/80 text-white text-[10px] sm:text-xs font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">
-                    {item.vehicle}
-                  </span>
-                </div>
 
-                {/* Card Footer */}
-                <div className="p-2.5 sm:p-5 space-y-0.5 sm:space-y-1">
-                  <h3 className="text-xs sm:text-sm font-semibold text-neutral-950 group-hover:text-[#9b7832] transition-colors line-clamp-1">
-                    {lang === "ar" ? item.title_ar : item.title}
-                  </h3>
-                  <p className="text-[10px] sm:text-xs text-neutral-500 flex items-center gap-1 truncate">
-                    <span className="w-1 h-1 rounded-full bg-[#c5a059] shrink-0"></span>
-                    <span className="truncate">{item.mounting_base} + {item.device_holder}</span>
-                  </p>
+                  {/* Card Footer */}
+                  <div className="p-2.5 sm:p-5 space-y-0.5 sm:space-y-1">
+                    <h3 className="text-xs sm:text-sm font-semibold text-neutral-950 group-hover:text-[#9b7832] transition-colors line-clamp-1">
+                      {lang === "ar" ? item.title_ar : item.title}
+                    </h3>
+                    <p className="text-[10px] sm:text-xs text-neutral-500 flex items-center gap-1 truncate">
+                      <span className="w-1 h-1 rounded-full bg-[#c5a059] shrink-0"></span>
+                      <span className="truncate">{item.mounting_base} + {item.device_holder}</span>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
 
           {/* Callout */}
           <div className="bg-neutral-50 rounded-xl sm:rounded-2xl border border-neutral-200/80 p-5 sm:p-8 text-center max-w-2xl mx-auto">

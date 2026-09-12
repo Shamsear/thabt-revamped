@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
@@ -145,38 +146,53 @@ export default function FaqsPage() {
           </div>
 
           {/* Accordion FAQ List - Clean minimalist divide-y style like Home Page */}
-          <div className="divide-y divide-neutral-200/70 border-y border-neutral-200/70 mb-12">
-            {filteredFaqs.map((faq) => {
-              const isOpen = openFaqId === faq.id;
-              return (
-                <div key={faq.id} className="py-4 sm:py-5">
-                  <button
-                    type="button"
-                    onClick={() => toggleFaq(faq.id)}
-                    className="w-full flex items-center justify-between text-left rtl:text-right py-1 cursor-pointer group"
-                  >
-                    <span className="text-sm sm:text-base font-medium text-neutral-900 group-hover:text-neutral-600 transition">
-                      {lang === "ar" ? faq.question_ar : faq.question}
-                    </span>
-                    <ChevronDown
-                      size={18}
-                      className={`text-neutral-400 transition-transform duration-200 shrink-0 ml-4 rtl:ml-0 rtl:mr-4 ${
-                        isOpen ? "rotate-180 text-neutral-900" : ""
-                      }`}
-                    />
-                  </button>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`faqs-${selectedCategory}-${searchQuery}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="divide-y divide-neutral-200/70 border-y border-neutral-200/70 mb-12"
+            >
+              {filteredFaqs.length > 0 ? (
+                filteredFaqs.map((faq) => {
+                  const isOpen = openFaqId === faq.id;
+                  return (
+                    <div key={faq.id} className="py-4 sm:py-5">
+                      <button
+                        type="button"
+                        onClick={() => toggleFaq(faq.id)}
+                        className="w-full flex items-center justify-between text-left rtl:text-right py-1 cursor-pointer group"
+                      >
+                        <span className="text-sm sm:text-base font-medium text-neutral-900 group-hover:text-neutral-600 transition">
+                          {lang === "ar" ? faq.question_ar : faq.question}
+                        </span>
+                        <ChevronDown
+                          size={18}
+                          className={`text-neutral-400 transition-transform duration-200 shrink-0 ml-4 rtl:ml-0 rtl:mr-4 ${
+                            isOpen ? "rotate-180 text-neutral-900" : ""
+                          }`}
+                        />
+                      </button>
 
-                  <div className={`accordion-content ${isOpen ? "is-open" : ""}`}>
-                    <div className="accordion-inner">
-                      <div className="pt-3 pb-1 pr-8 rtl:pr-0 rtl:pl-8 text-sm sm:text-sm text-neutral-600 leading-relaxed">
-                        <p>{lang === "ar" ? faq.answer_ar : faq.answer}</p>
+                      <div className={`accordion-content ${isOpen ? "is-open" : ""}`}>
+                        <div className="accordion-inner">
+                          <div className="pt-3 pb-1 pr-8 rtl:pr-0 rtl:pl-8 text-sm sm:text-sm text-neutral-600 leading-relaxed">
+                            <p>{lang === "ar" ? faq.answer_ar : faq.answer}</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  );
+                })
+              ) : (
+                <div className="py-12 text-center text-sm text-neutral-500">
+                  {lang === "ar" ? "لم يتم العثور على أي أسئلة مطابقة لبحثك." : "No questions matched your search query."}
                 </div>
-              );
-            })}
-          </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
 
           {/* WhatsApp Concierge Card */}
           <div className="bg-neutral-50 rounded-2xl border border-neutral-200/80 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">

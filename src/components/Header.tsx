@@ -59,6 +59,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [currencyOpen, setCurrencyOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [clickedHref, setClickedHref] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const currencyRef = useRef<HTMLDivElement>(null);
@@ -67,6 +68,20 @@ export const Header: React.FC<HeaderProps> = ({
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Reset clickedHref when mobile menu opens/closes or route changes
+  useEffect(() => {
+    if (!mobileMenuOpen) {
+      setClickedHref(null);
+    }
+  }, [mobileMenuOpen, pathname]);
+
+  const handleSidebarNav = (href: string) => {
+    setClickedHref(href);
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+    }, 120);
+  };
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -448,84 +463,88 @@ export const Header: React.FC<HeaderProps> = ({
                 animate={{ x: 0 }}
                 exit={{ x: lang === "ar" ? "-100%" : "100%" }}
                 transition={{ type: "spring", damping: 28, stiffness: 300 }}
-                className="fixed inset-y-0 right-0 rtl:right-auto rtl:left-0 z-[101] w-[300px] sm:w-[350px] max-w-[85vw] h-screen h-[100dvh] bg-white shadow-2xl flex flex-col border-l rtl:border-l-0 rtl:border-r border-neutral-200/90"
+                className="fixed inset-y-0 right-0 rtl:right-auto rtl:left-0 z-[101] w-[84vw] max-w-[340px] sm:w-[350px] h-screen h-[100dvh] bg-white shadow-2xl flex flex-col border-l rtl:border-l-0 rtl:border-r border-neutral-200/90 select-none"
               >
                 {/* Sidebar Top Header */}
-                <div className="px-5 py-4 border-b border-neutral-100 flex items-center justify-between shrink-0 bg-white">
-                  <Link href="/" onClick={() => setMobileMenuOpen(false)}>
+                <div className="px-4 py-3 sm:px-5 sm:py-4 border-b border-neutral-100 flex items-center justify-between shrink-0 bg-white">
+                  <Link href="/" onClick={() => handleSidebarNav("/")} className="shrink-0">
                     <img
                       src="/user/images/black_logo.png"
                       alt="Thabt"
-                      className="h-7 w-auto object-contain"
+                      className="h-6 sm:h-7 w-auto object-contain"
                     />
                   </Link>
                   <button
                     type="button"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer active:scale-95"
+                    className="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer active-press outline-none focus:outline-none"
                     aria-label="Close sidebar"
                   >
-                    <X size={18} />
+                    <X size={17} />
                   </button>
                 </div>
 
                 {/* Search Bar in Mobile Drawer */}
-                <div className="px-5 py-3 border-b border-neutral-100 shrink-0 bg-neutral-50/50">
+                <div className="px-4 py-2 sm:px-5 sm:py-2.5 border-b border-neutral-100 shrink-0 bg-neutral-50/50">
                   <form onSubmit={handleSearchSubmit} className="relative flex items-center">
                     <Search
-                      size={15}
-                      className="absolute left-3.5 rtl:left-auto rtl:right-3.5 text-neutral-400 pointer-events-none"
+                      size={14}
+                      className="absolute left-3 rtl:left-auto rtl:right-3 text-neutral-400 pointer-events-none"
                     />
                     <input
                       type="search"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={lang === "ar" ? "ابحث عن سيارتك أو جهازك..." : "Search car or device..."}
-                      className="w-full h-11 bg-white text-sm text-neutral-900 placeholder-neutral-400 rounded-xl pl-9 pr-4 rtl:pl-4 rtl:pr-9 border border-neutral-200 focus:outline-none focus:border-[#c5a059]"
+                      className="w-full h-9 sm:h-10 bg-white text-xs sm:text-sm text-neutral-900 placeholder-neutral-400 rounded-xl pl-8.5 pr-3.5 rtl:pl-3.5 rtl:pr-8.5 border border-neutral-200 focus:outline-none focus:border-[#c5a059] transition-colors"
                     />
                   </form>
                 </div>
 
                 {/* Scrollable Navigation Body */}
-                <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6">
+                <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-none px-4 py-3 sm:px-5 sm:py-4 space-y-3.5 sm:space-y-4">
                   {/* Hero Matcher Callout Banner */}
                   {(() => {
-                    const isFindActive = pathname === "/find";
+                    const isFindActive = clickedHref ? clickedHref === "/find" : pathname === "/find";
                     return (
                       <Link
                         href="/find"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center justify-between p-3.5 rounded-2xl transition-all shadow-xs group ${
+                        onClick={() => handleSidebarNav("/find")}
+                        className={`flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl transition-all duration-150 shadow-xs group outline-none focus:outline-none select-none active:scale-[0.98] ${
                           isFindActive
-                            ? "bg-[#faf6ed] border border-[#c5a059] ring-1 ring-[#c5a059]/20"
-                            : "bg-gradient-to-r from-[#faf6ed] to-[#f4ebe0] border border-[#c5a059]/40"
+                            ? "bg-neutral-950 text-white border border-neutral-950 shadow-md"
+                            : "bg-gradient-to-r from-[#faf6ed] to-[#f4ebe0] border border-[#c5a059]/40 text-neutral-950 hover:shadow-xs active:bg-[#f4ebe0]"
                         }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl flex items-center justify-center font-bold bg-[#c5a059] text-neutral-950">
-                            <Compass size={18} />
+                        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center font-bold bg-[#c5a059] text-neutral-950 shrink-0">
+                            <Compass size={16} />
                           </div>
-                          <div>
-                            <p className="text-sm font-bold flex items-center gap-1.5 text-neutral-950">
-                              <span>{lang === "ar" ? "مطابق التثبيت للسيارات" : "Vehicle Fitment Matcher"}</span>
-                              {isFindActive && <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />}
+                          <div className="min-w-0">
+                            <p className={`text-xs sm:text-sm font-bold flex items-center gap-1.5 truncate ${
+                              isFindActive ? "text-white" : "text-neutral-950"
+                            }`}>
+                              <span className="truncate">{lang === "ar" ? "مطابق التثبيت للسيارات" : "Vehicle Fitment Matcher"}</span>
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] shrink-0 shadow-[0_0_8px_rgba(197,160,89,0.8)]" />
                             </p>
-                            <p className="text-xs text-[#8c6f2e]">
+                            <p className={`text-[10px] sm:text-xs truncate ${isFindActive ? "text-neutral-300" : "text-[#8c6f2e]"}`}>
                               {lang === "ar" ? "اختر سيارتك وهاتفك خطوة بخطوة" : "2-Step Base + Holder System"}
                             </p>
                           </div>
                         </div>
-                        <ChevronRight size={15} className="text-[#c5a059] rtl:rotate-180 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
+                        <ChevronRight size={14} className={`shrink-0 rtl:rotate-180 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform ${
+                          isFindActive ? "text-[#c5a059]" : "text-[#c5a059]"
+                        }`} />
                       </Link>
                     );
                   })()}
 
                   {/* Collections */}
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2 px-1">
+                    <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1 px-1">
                       {lang === "ar" ? "التشكيلات والمنتجات" : "Collections"}
                     </p>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5 sm:space-y-1">
                       {[
                         { label: lang === "ar" ? "قواعد برو كليبس" : "ProClips Mounts", href: "/categories/pro-clips" },
                         { label: lang === "ar" ? "حوامل الأجهزة" : "Device Holders", href: "/categories/device-holders" },
@@ -535,29 +554,29 @@ export const Header: React.FC<HeaderProps> = ({
                         { label: lang === "ar" ? "الهوائيات والدفع الرباعي" : "Antenna & Off-Road", href: "/categories/antenna-accessories" },
                         { label: lang === "ar" ? "تصفح كامل الكتالوج" : "Browse All Products", href: "/search", icon: SlidersHorizontal, isCatalog: true },
                       ].map((item) => {
-                        const isItemActive = isRouteActive(item.href);
+                        const isItemActive = clickedHref ? clickedHref === item.href : isRouteActive(item.href);
                         const ItemIcon = item.icon;
                         return (
                           <Link
                             key={item.href}
                             href={item.href}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className={`flex items-center justify-between px-3.5 py-3 rounded-xl text-sm transition-colors ${
+                            onClick={() => handleSidebarNav(item.href)}
+                            className={`flex items-center justify-between px-3 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-150 outline-none focus:outline-none select-none active:scale-[0.98] ${
                               isItemActive
-                                ? "bg-neutral-100 text-neutral-950 font-bold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#c5a059]"
+                                ? "bg-neutral-950 text-white font-bold border border-neutral-950 shadow-xs"
                                 : item.isCatalog
-                                ? "text-[#8c6f2e] bg-[#faf6ed]/50 hover:bg-[#faf6ed] font-medium"
-                                : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 font-medium"
+                                ? "text-[#8c6f2e] bg-[#faf6ed]/70 hover:bg-[#faf6ed] font-medium border border-transparent"
+                                : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100 font-medium border border-transparent"
                             }`}
                           >
-                            <span className="flex items-center gap-2.5">
-                              {ItemIcon && <ItemIcon size={16} className={isItemActive ? "text-[#c5a059]" : item.isCatalog ? "text-[#8c6f2e]" : "text-neutral-400"} />}
-                              <span>{item.label}</span>
+                            <span className="flex items-center gap-2 min-w-0">
+                              {ItemIcon && <ItemIcon size={14} className={isItemActive ? "text-[#c5a059]" : item.isCatalog ? "text-[#8c6f2e]" : "text-neutral-400"} />}
+                              <span className="truncate">{item.label}</span>
                             </span>
                             {isItemActive ? (
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] shrink-0" />
+                              <span className="w-2 h-2 rounded-full bg-[#c5a059] shadow-[0_0_8px_rgba(197,160,89,0.8)] shrink-0" />
                             ) : (
-                              <ChevronRight size={15} className="text-neutral-300 rtl:rotate-180" />
+                              <ChevronRight size={13} className="text-neutral-300 rtl:rotate-180 shrink-0" />
                             )}
                           </Link>
                         );
@@ -567,10 +586,10 @@ export const Header: React.FC<HeaderProps> = ({
 
                   {/* Company & Content */}
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2 px-1">
+                    <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1 px-1">
                       {lang === "ar" ? "المحتوى والمجتمع" : "Experience"}
                     </p>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5 sm:space-y-1">
                       {[
                         { label: lang === "ar" ? "معرض صور تركيبات العملاء" : "Customer Builds Gallery", href: "/gallery", icon: Camera },
                         { label: lang === "ar" ? "معارض الدوحة وأوقات العمل" : "Doha Showrooms & Locations", href: "/contact-us", icon: MapPin },
@@ -578,27 +597,27 @@ export const Header: React.FC<HeaderProps> = ({
                         { label: lang === "ar" ? "الأسئلة الشائعة والضمان" : "FAQs & Support", href: "/faqs", icon: HelpCircle },
                         { label: lang === "ar" ? "حسابي وتتبع الشحنات" : "My Account & Orders", href: "/profile", icon: User },
                       ].map((item) => {
-                        const isItemActive = pathname === item.href;
+                        const isItemActive = clickedHref ? clickedHref === item.href : (pathname === item.href || (item.href === "/profile" && pathname.startsWith("/profile")));
                         const ItemIcon = item.icon;
                         return (
                           <Link
                             key={item.href}
                             href={item.href}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className={`flex items-center justify-between px-3.5 py-3 rounded-xl text-sm transition-colors ${
+                            onClick={() => handleSidebarNav(item.href)}
+                            className={`flex items-center justify-between px-3 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-150 outline-none focus:outline-none select-none active:scale-[0.98] ${
                               isItemActive
-                                ? "bg-neutral-100 text-neutral-950 font-bold border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#c5a059]"
-                                : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 font-medium"
+                                ? "bg-neutral-950 text-white font-bold border border-neutral-950 shadow-xs"
+                                : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100 font-medium border border-transparent"
                             }`}
                           >
-                            <span className="flex items-center gap-2.5">
-                              <ItemIcon size={16} className={isItemActive ? "text-[#c5a059]" : "text-neutral-400"} />
-                              <span>{item.label}</span>
+                            <span className="flex items-center gap-2 min-w-0">
+                              <ItemIcon size={14} className={isItemActive ? "text-[#c5a059]" : "text-neutral-400"} />
+                              <span className="truncate">{item.label}</span>
                             </span>
                             {isItemActive ? (
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] shrink-0" />
+                              <span className="w-2 h-2 rounded-full bg-[#c5a059] shadow-[0_0_8px_rgba(197,160,89,0.8)] shrink-0" />
                             ) : (
-                              <ChevronRight size={15} className="text-neutral-300 rtl:rotate-180" />
+                              <ChevronRight size={13} className="text-neutral-300 rtl:rotate-180 shrink-0" />
                             )}
                           </Link>
                         );
@@ -607,21 +626,21 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
 
                   {/* Cart Action */}
-                  <div className="pt-2">
+                  <div className="pt-1">
                     {(() => {
-                      const isCartActive = pathname === "/cart";
+                      const isCartActive = clickedHref ? clickedHref === "/cart" : pathname === "/cart";
                       return (
                         <Link
                           href="/cart"
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={`w-full flex items-center justify-between p-3.5 rounded-xl text-sm font-semibold transition-colors ${
+                          onClick={() => handleSidebarNav("/cart")}
+                          className={`w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-150 outline-none focus:outline-none select-none active:scale-[0.98] ${
                             isCartActive
-                              ? "bg-neutral-100 text-neutral-950 border border-[#c5a059]/40"
-                              : "bg-neutral-100 hover:bg-neutral-200 text-neutral-900"
+                              ? "bg-neutral-950 text-white border border-neutral-950 shadow-xs"
+                              : "bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-transparent"
                           }`}
                         >
-                          <span className="flex items-center gap-2.5">
-                            <ShoppingBag size={16} className={isCartActive ? "text-[#c5a059]" : ""} />
+                          <span className="flex items-center gap-2">
+                            <ShoppingBag size={15} className={isCartActive ? "text-[#c5a059]" : "text-neutral-700"} />
                             <span>{lang === "ar" ? "عرض سلة المشتريات" : "View Shopping Cart"}</span>
                           </span>
                           <span className="px-2 py-0.5 rounded-full bg-[#c5a059] text-neutral-950 text-xs font-black">
@@ -634,7 +653,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
 
                 {/* Sidebar Footer: Currency, Language & WhatsApp */}
-                <div className="p-4 border-t border-neutral-100 bg-neutral-50/90 space-y-3 shrink-0">
+                <div className="p-3 sm:p-4 border-t border-neutral-100 bg-neutral-50/90 space-y-2 sm:space-y-2.5 shrink-0">
                   <div className="flex items-center justify-between gap-2">
                     {/* Language Switch */}
                     <button
@@ -643,7 +662,7 @@ export const Header: React.FC<HeaderProps> = ({
                         setLang(lang === "en" ? "ar" : "en");
                         setMobileMenuOpen(false);
                       }}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white border border-neutral-200 text-xs font-semibold text-neutral-800 hover:border-[#c5a059] transition-all cursor-pointer active:scale-95"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 sm:px-3 rounded-xl bg-white border border-neutral-200 text-xs font-semibold text-neutral-800 hover:border-[#c5a059] transition-all cursor-pointer active-press outline-none focus:outline-none select-none"
                     >
                       <Globe size={13} className="text-[#c5a059]" />
                       <span>{lang === "ar" ? "English" : "العربية"}</span>
@@ -654,7 +673,7 @@ export const Header: React.FC<HeaderProps> = ({
                       <button
                         type="button"
                         onClick={() => setCurrencyOpen(!currencyOpen)}
-                        className="w-full flex items-center justify-between py-2 px-3 rounded-xl bg-white border border-neutral-200 text-xs font-semibold text-neutral-800 hover:border-[#c5a059] transition-all cursor-pointer active:scale-95"
+                        className="w-full flex items-center justify-between py-2 px-2.5 sm:px-3 rounded-xl bg-white border border-neutral-200 text-xs font-semibold text-neutral-800 hover:border-[#c5a059] transition-all cursor-pointer active-press outline-none focus:outline-none select-none"
                       >
                         <span>{currency}</span>
                         <ChevronDown size={13} className="text-neutral-400" />
@@ -672,7 +691,7 @@ export const Header: React.FC<HeaderProps> = ({
                                 setCurrency(c.code);
                                 setCurrencyOpen(false);
                               }}
-                              className={`w-full text-left rtl:text-right px-3 py-1.5 text-xs transition cursor-pointer flex items-center justify-between ${
+                              className={`w-full text-left rtl:text-right px-3 py-1.5 text-xs transition cursor-pointer flex items-center justify-between outline-none focus:outline-none ${
                                 currency === c.code
                                   ? "bg-[#faf6ed] font-bold text-[#c5a059]"
                                   : "text-neutral-600 hover:bg-neutral-50"
@@ -692,7 +711,7 @@ export const Header: React.FC<HeaderProps> = ({
                     href="https://api.whatsapp.com/send?phone=97450400314"
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all duration-200 shadow-sm active:scale-95 cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 py-2 sm:py-2.5 px-3.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all duration-200 shadow-sm active-press cursor-pointer outline-none focus:outline-none select-none"
                   >
                     <span>{lang === "ar" ? "تواصل معنا عبر واتساب" : "WhatsApp Concierge"}</span>
                   </a>
