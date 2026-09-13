@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -230,33 +230,148 @@ export const Header: React.FC<HeaderProps> = ({
     { code: "USD", name: "USD" },
   ];
 
-  // Navigation Links: when search is open, MountX and Catalog collapse into More
-  const allNavLinks = [
-    { name: lang === "ar" ? "مطابق التثبيت" : "Vehicle Matcher", href: "/find", highlight: true },
-    { name: lang === "ar" ? "قواعد برو كليبس" : "ProClips Bases", href: "/categories/pro-clips" },
-    { name: lang === "ar" ? "حوامل الأجهزة" : "Device Holders", href: "/categories/device-holders" },
-    { name: lang === "ar" ? "ماونت إكس" : "MountX", href: "/mountx", icon: Shield, collapseOnSearch: true },
-    { name: lang === "ar" ? "الكتالوج" : "Catalog", href: "/search", icon: SlidersHorizontal, collapseOnSearch: true },
-  ];
+  // Base secondary links for the "More" dropdown
+  const baseMoreLinks = useMemo(
+    () => [
+      { name: lang === "ar" ? "معرض التركيبات" : "Builds Gallery", href: "/gallery", icon: Camera },
+      { name: lang === "ar" ? "معارض الدوحة" : "Doha Showrooms", href: "/contact-us", icon: MapPin },
+      { name: lang === "ar" ? "الأسئلة والضمان" : "FAQs & Support", href: "/faqs", icon: HelpCircle },
+      { name: lang === "ar" ? "الوظائف وبيئة العمل" : "Careers", href: "/careers", icon: Briefcase },
+    ],
+    [lang]
+  );
 
-  const visibleNavLinks = searchOpen
-    ? allNavLinks.filter((l) => !l.collapseOnSearch)
-    : allNavLinks;
+  // All desktop navigation links in order of importance (left to right)
+  const allNavLinks = useMemo(
+    () => [
+      { name: lang === "ar" ? "مطابق التثبيت" : "Vehicle Matcher", href: "/find", icon: Compass, highlight: true },
+      { name: lang === "ar" ? "قواعد برو كليبس" : "ProClips Bases", href: "/categories/pro-clips", icon: Car },
+      { name: lang === "ar" ? "حوامل الأجهزة" : "Device Holders", href: "/categories/device-holders", icon: Package },
+      { name: lang === "ar" ? "ماونت إكس" : "MountX", href: "/mountx", icon: Shield },
+      { name: lang === "ar" ? "الكتالوج" : "Catalog", href: "/search", icon: SlidersHorizontal },
+    ],
+    [lang]
+  );
 
-  const baseMoreLinks = [
-    { name: lang === "ar" ? "معرض التركيبات" : "Builds Gallery", href: "/gallery", icon: Camera },
-    { name: lang === "ar" ? "معارض الدوحة" : "Doha Showrooms", href: "/contact-us", icon: MapPin },
-    { name: lang === "ar" ? "الأسئلة والضمان" : "FAQs & Support", href: "/faqs", icon: HelpCircle },
-    { name: lang === "ar" ? "الوظائف وبيئة العمل" : "Careers", href: "/careers", icon: Briefcase },
-  ];
+  // Dynamic space-aware overflow calculation: folds only the links strictly needed for space
+  const [collapsedCount, setCollapsedCount] = useState(0);
+  const headerPillRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLAnchorElement>(null);
+  const rightActionsRef = useRef<HTMLDivElement>(null);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
+  const measuredWidthsRef = useRef<number[]>([140, 115, 115, 80, 75]);
 
-  const moreLinks = searchOpen
-    ? [
-        { name: lang === "ar" ? "ماونت إكس ألمنيوم" : "MountX All-Terrain", href: "/mountx", icon: Shield },
-        { name: lang === "ar" ? "كتالوج المنتجات" : "Product Catalog", href: "/search", icon: SlidersHorizontal },
-        ...baseMoreLinks,
-      ]
-    : baseMoreLinks;
+  const calculateOverflow = useCallback(() => {
+    if (!headerPillRef.current) return;
+
+    // When search is closed, all navigation links immediately restore
+    if (!searchOpen) {
+      setCollapsedCount(0);
+      return;
+    }
+
+    const pillRect = headerPillRef.current.getBoundingClientRect();
+    const pillWidth = pillRect.width;
+    if (pillWidth <= 0) return;
+
+    // 1. Logo width
+    const logoWidth = logoRef.current ? logoRef.current.getBoundingClientRect().width : 95;
+
+    // 2. Right actions width (accounting for target search bar expansion)
+    let rightWidth = rightActionsRef.current ? rightActionsRef.current.getBoundingClientRect().width : 270;
+    const targetSearchWidth = typeof window !== "undefined" && window.innerWidth >= 1280 ? 250 : 210;
+    const currentSearchWidth = searchContainerRef.current
+      ? searchContainerRef.current.getBoundingClientRect().width
+      : 38;
+    if (currentSearchWidth < targetSearchWidth) {
+      rightWidth += (targetSearchWidth - currentSearchWidth);
+    }
+
+    // 3. Pill horizontal padding and flex gaps between Logo, Nav, and Right Actions
+    const pillPadding = isScrolled ? 40 : 48; // px-5 (40px) vs px-6 (48px)
+    const flexGaps = 32; // gap-4 (16px) * 2 between the 3 main flex columns
+    const safetyBuffer = 20; // safety clearance ensures zero clipping or pop-out of cart button
+
+    const availableForNav = pillWidth - (logoWidth + rightWidth + pillPadding + flexGaps + safetyBuffer);
+
+    // 4. "More" button width
+    const moreWidth = moreButtonRef.current
+      ? moreButtonRef.current.getBoundingClientRect().width
+      : 82;
+    const availableForLinks = availableForNav - moreWidth;
+
+    const linkWidths = measuredWidthsRef.current;
+    const navGap = typeof window !== "undefined" && window.innerWidth >= 1280 ? 6 : 2;
+
+    const w0 = linkWidths[0] || 140;
+    const w1 = linkWidths[1] || 115;
+    const w2 = linkWidths[2] || 115;
+    const w3 = linkWidths[3] || 80;
+    const w4 = linkWidths[4] || 75;
+
+    const widthAll5 = w0 + navGap + w1 + navGap + w2 + navGap + w3 + navGap + w4;
+    const width4 = w0 + navGap + w1 + navGap + w2 + navGap + w3;
+    const width3 = w0 + navGap + w1 + navGap + w2;
+    const width2 = w0 + navGap + w1;
+
+    let count = 0;
+    if (widthAll5 <= availableForLinks) {
+      count = 0;
+    } else if (width4 <= availableForLinks) {
+      count = 1;
+    } else if (width3 <= availableForLinks) {
+      count = 2;
+    } else if (width2 <= availableForLinks) {
+      count = 3;
+    } else {
+      count = 4;
+    }
+
+    setCollapsedCount(count);
+  }, [searchOpen, isScrolled]);
+
+  useEffect(() => {
+    calculateOverflow();
+
+    // Re-verify after CSS/Framer transitions settle
+    const timer = setTimeout(() => {
+      calculateOverflow();
+    }, 360);
+
+    const handleResize = () => {
+      calculateOverflow();
+    };
+    window.addEventListener("resize", handleResize, { passive: true });
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined" && headerPillRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        calculateOverflow();
+      });
+      resizeObserver.observe(headerPillRef.current);
+    }
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", handleResize);
+      if (resizeObserver) resizeObserver.disconnect();
+    };
+  }, [calculateOverflow, searchOpen]);
+
+  const visibleNavLinks = useMemo(
+    () => allNavLinks.slice(0, allNavLinks.length - collapsedCount),
+    [allNavLinks, collapsedCount]
+  );
+
+  const collapsedLinks = useMemo(
+    () => (collapsedCount > 0 ? allNavLinks.slice(allNavLinks.length - collapsedCount) : []),
+    [allNavLinks, collapsedCount]
+  );
+
+  const moreLinks = useMemo(
+    () => [...collapsedLinks, ...baseMoreLinks],
+    [collapsedLinks, baseMoreLinks]
+  );
 
   const isRouteActive = (href: string) => {
     if (!pathname) return false;
@@ -285,7 +400,7 @@ export const Header: React.FC<HeaderProps> = ({
     return false;
   };
 
-  const isMoreActive = moreLinks.some((l) => pathname === l.href);
+  const isMoreActive = moreLinks.some((l) => isRouteActive(l.href));
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -300,26 +415,27 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       {/* ========================================================================= */}
       {/* DESKTOP FLOATING PILL DOCK (lg+)                                         */}
-      {/* Fixed-height wrapper (74px) prevents ANY layout shift or jumping of content */}
+      {/* Fixed-height wrapper (68px) prevents ANY layout shift or jumping of content */}
       {/* GPU hardware-accelerated CSS transition with Apple cubic-bezier curve     */}
       {/* Consistent rounded-full pill shape at all times                           */}
       {/* ========================================================================= */}
-      <header className="hidden lg:block sticky top-0 z-40 w-full pointer-events-none h-[74px] pt-2 px-4 sm:px-6 lg:px-8">
+      <header className="hidden lg:block sticky top-0 z-40 w-full pointer-events-none h-[68px] pt-1 px-4 sm:px-6 lg:px-8">
         <div
+          ref={headerPillRef}
           style={{ transform: "translateZ(0)" }}
-          className={`pointer-events-auto mx-auto w-full px-6 rounded-full border flex items-center justify-between gap-4 select-none will-change-[max-width,height,background-color,border-color,box-shadow] transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          className={`pointer-events-auto mx-auto w-full rounded-full border flex items-center justify-between gap-4 select-none will-change-[max-width,height,padding,background-color,border-color,box-shadow] transition-all duration-500 ease-[cubic-bezier(0.3,0,0.15,1)] ${
             isScrolled
-              ? "max-w-[1200px] h-[56px] bg-white/75 backdrop-blur-2xl backdrop-saturate-[170%] border-[#c5a059]/35 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)]"
-              : `max-w-[1260px] h-[64px] bg-white/85 ${tierStyles.blur} border-neutral-200/80 shadow-[0_2px_10px_0_rgba(0,0,0,0.04)]`
+              ? "max-w-[1060px] h-[52px] px-5 bg-white/70 backdrop-blur-2xl backdrop-saturate-[170%] border-[#c5a059]/40 shadow-[0_12px_32px_-6px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)]"
+              : `max-w-7xl h-16 px-6 bg-white/85 ${tierStyles.blur} border-neutral-200/80 shadow-[0_2px_10px_0_rgba(0,0,0,0.04)]`
           }`}
         >
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center shrink-0 group">
+          <Link ref={logoRef} href="/" className="flex items-center shrink-0 group">
             <img
               src="/user/images/black_logo.png"
               alt="Thabt"
-              className={`w-auto object-contain transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:opacity-90 shrink-0 ${
-                isScrolled ? "h-8" : "h-9"
+              className={`w-auto object-contain transition-all duration-500 ease-[cubic-bezier(0.3,0,0.15,1)] group-hover:opacity-90 shrink-0 ${
+                isScrolled ? "h-7 sm:h-7.5" : "h-9"
               }`}
             />
           </Link>
@@ -332,10 +448,22 @@ export const Header: React.FC<HeaderProps> = ({
                 return (
                   <motion.div
                     key={link.href}
-                    initial={{ opacity: 0, scale: 0.9, width: 0 }}
+                    ref={(el) => {
+                      if (el && !searchOpen) {
+                        const w = el.getBoundingClientRect().width;
+                        if (w >= 60) {
+                          const idx = allNavLinks.findIndex((l) => l.href === link.href);
+                          if (idx !== -1) {
+                            const fallback = [140, 115, 115, 80, 75][idx] || 80;
+                            measuredWidthsRef.current[idx] = Math.max(w, fallback);
+                          }
+                        }
+                      }
+                    }}
+                    initial={{ opacity: 0, scale: 0.95, width: 0 }}
                     animate={{ opacity: 1, scale: 1, width: "auto" }}
-                    exit={{ opacity: 0, scale: 0.9, width: 0 }}
-                    transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                    exit={{ opacity: 0, scale: 0.95, width: 0 }}
+                    transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
                     className="overflow-hidden flex items-center h-full shrink-0"
                   >
                     <Link
@@ -374,6 +502,7 @@ export const Header: React.FC<HeaderProps> = ({
               onMouseLeave={handleMoreMouseLeave}
             >
               <button
+                ref={moreButtonRef}
                 type="button"
                 onClick={() => {
                   if (moreCloseTimeout.current) clearTimeout(moreCloseTimeout.current);
@@ -398,7 +527,7 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <span className="relative inline-flex items-center gap-1 py-0.5">
                   <span>{lang === "ar" ? "المزيد" : "More"}</span>
-                  {searchOpen && (
+                  {collapsedCount > 0 && (
                     <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] animate-pulse" />
                   )}
                   <ChevronDown
@@ -427,33 +556,45 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   <div className="bg-white border border-neutral-200/90 rounded-2xl shadow-xl py-1.5 overflow-hidden">
                     {moreLinks.map((sub, idx) => {
-                      const isSubActive = pathname === sub.href;
+                      const isSubActive = isRouteActive(sub.href);
                       const SubIcon = sub.icon;
-                      const isOverflowItem = searchOpen && idx < 2;
+                      const isOverflowItem = idx < collapsedCount;
                       return (
-                        <Link
-                          key={sub.href}
-                          href={sub.href}
-                          onClick={() => setMoreOpen(false)}
-                          className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors ${
-                            isSubActive
-                              ? "bg-neutral-50 text-neutral-950 font-bold"
-                              : isOverflowItem
-                              ? "text-neutral-900 bg-neutral-50/50 hover:bg-neutral-100 hover:text-neutral-950 font-medium"
-                              : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950 font-medium"
-                          }`}
-                        >
-                          <span className="flex items-center gap-2">
-                            <SubIcon
-                              size={14}
-                              className={isSubActive ? "text-[#c5a059]" : isOverflowItem ? "text-[#9b7832]" : "text-neutral-400"}
-                            />
-                            <span>{sub.name}</span>
-                          </span>
-                          {isSubActive && (
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
+                        <React.Fragment key={sub.href}>
+                          <Link
+                            key={sub.href}
+                            href={sub.href}
+                            onClick={() => setMoreOpen(false)}
+                            className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors ${
+                              isSubActive
+                                ? "bg-[#faf6ed] text-[#c5a059] font-bold"
+                                : isOverflowItem
+                                ? "text-neutral-900 bg-neutral-50/60 hover:bg-neutral-100 hover:text-neutral-950 font-semibold"
+                                : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950 font-medium"
+                            }`}
+                          >
+                            <span className="flex items-center gap-2">
+                              <SubIcon
+                                size={14}
+                                className={
+                                  isSubActive
+                                    ? "text-[#c5a059]"
+                                    : isOverflowItem
+                                    ? "text-[#c5a059]"
+                                    : "text-neutral-400"
+                                }
+                              />
+                              <span>{sub.name}</span>
+                            </span>
+                            {isSubActive && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
+                            )}
+                          </Link>
+                          {/* Subtle separator between collapsed overflow links and secondary menu links */}
+                          {collapsedCount > 0 && idx === collapsedCount - 1 && (
+                            <div className="my-1.5 border-t border-neutral-150" />
                           )}
-                        </Link>
+                        </React.Fragment>
                       );
                     })}
                   </div>
@@ -463,13 +604,13 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Clean Right Actions */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0 flex-nowrap h-full">
+          <div ref={rightActionsRef} className="flex items-center gap-2 sm:gap-3 shrink-0 flex-nowrap h-full">
             {/* Search Icon Toggle with Smooth Animated Inline Expansion */}
             <div ref={searchContainerRef} className="relative flex items-center shrink-0">
               <motion.div
                 initial={false}
                 animate={{
-                  width: searchOpen ? (typeof window !== "undefined" && window.innerWidth >= 1280 ? 270 : 220) : 38,
+                  width: searchOpen ? (typeof window !== "undefined" && window.innerWidth >= 1280 ? 250 : 210) : 38,
                 }}
                 transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
                 className={`flex items-center h-8.5 rounded-full overflow-hidden transition-colors duration-200 ${
@@ -678,7 +819,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={onOpenCart}
-              className={`relative p-2 transition-colors flex items-center justify-center rounded-full ${
+              className={`relative p-2 transition-colors flex items-center justify-center rounded-full shrink-0 ${
                 pathname === "/cart" || pathname === "/checkout"
                   ? "text-[#c5a059] bg-[#faf6ed]"
                   : "text-neutral-900 hover:text-[#c5a059] hover:bg-neutral-100"

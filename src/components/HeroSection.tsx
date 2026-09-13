@@ -50,7 +50,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
   const parallaxY = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
 
   return (
-    <section ref={heroRef} id="home-hero" className="relative w-full bg-white text-neutral-900 py-6 sm:py-8 lg:py-0 lg:min-h-[calc(100dvh-4rem)] lg:flex lg:items-center border-b border-neutral-100 overflow-hidden">
+    <section ref={heroRef} id="home-hero" className="relative w-full bg-white text-neutral-900 pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-3 lg:pb-12 border-b border-neutral-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
           {/* Left Column: Headline & The Front-and-Center Matcher Console (7 cols) */}

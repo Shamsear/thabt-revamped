@@ -159,7 +159,7 @@ function SearchCatalogContent() {
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-5 sm:py-12">
+      <main className="flex-1 pt-3 pb-8 sm:pt-4 sm:pb-12">
         <motion.div
           initial="hidden"
           whileInView="visible"

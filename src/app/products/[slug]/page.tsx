@@ -268,7 +268,7 @@ export default function ProductDetailPage({
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-3 sm:py-8 pb-28 sm:pb-8">
+      <main className="flex-1 pt-2 pb-28 sm:pt-4 sm:pb-8">
         <motion.div
           variants={staggerContainerVariants}
           initial="hidden"

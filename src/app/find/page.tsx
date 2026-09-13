@@ -73,7 +73,7 @@ export default function FindPage() {
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-5 sm:py-12 overflow-hidden">
+      <main className="flex-1 pt-3 pb-8 sm:pt-4 sm:pb-12 overflow-hidden">
         <div className="max-w-7xl mx-auto px-3 sm:px-8">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
