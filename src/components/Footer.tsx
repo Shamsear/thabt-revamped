@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowUp, MapPin, Phone, Mail, ChevronRight } from "lucide-react";
 import { useAppContext, SupportedLanguage } from "@/context/AppContext";
+import { NewsletterSignup } from "@/components/NewsletterSignup";
 
 interface FooterProps {
   lang?: SupportedLanguage;
@@ -34,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
 
   return (
     <>
-      <footer className="bg-[#0b0d11] text-neutral-400 text-xs pt-16 pb-12 border-t border-neutral-800">
+      <footer className="bg-[#0b0d11] text-neutral-400 text-xs pt-16 pb-20 sm:pb-12 border-t border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-neutral-800/80">
             {/* 1. Brand with White & Gold Logo */}
@@ -61,6 +62,9 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
                   <span dir="ltr" className="font-mono text-neutral-300 hover:text-[#c5a059] transition">+974 4483 2731</span>
                 </div>
               </div>
+
+              {/* Newsletter Signup (#16) */}
+              <NewsletterSignup lang={lang} />
             </div>
 
             {/* 2. Collections */}

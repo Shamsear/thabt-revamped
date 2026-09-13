@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Smartphone, Mail, User, ArrowRight, CheckCircle2, Sparkles, KeyRound } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
@@ -13,6 +13,17 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, lang }) => {
   const { login } = useAppContext();
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   const [mode, setMode] = useState<"otp" | "register">("otp");
   const [step, setStep] = useState<"phone" | "verify">("phone");

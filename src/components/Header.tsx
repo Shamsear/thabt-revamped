@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -76,6 +76,27 @@ export const Header: React.FC<HeaderProps> = ({
     setMounted(true);
   }, []);
 
+  // #9: Header shadow on scroll
+  const [isScrolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // #7: Cart badge bounce key — triggers re-animation on count change
+  const [badgeBounceKey, setBadgeBounceKey] = useState(0);
+  const prevCartCount = useRef(cartCount);
+  useEffect(() => {
+    if (cartCount !== prevCartCount.current) {
+      setBadgeBounceKey((k) => k + 1);
+      prevCartCount.current = cartCount;
+    }
+  }, [cartCount]);
+
   // Reset clickedHref when mobile menu opens/closes or route changes
   useEffect(() => {
     if (!mobileMenuOpen) {
@@ -114,18 +135,24 @@ export const Header: React.FC<HeaderProps> = ({
         setMoreOpen(false);
         setCurrencyOpen(false);
         setUserMenuOpen(false);
+        setMobileMenuOpen(false);
       }
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K" || e.code === "KeyK")) {
         e.preventDefault();
-        setSearchOpen((prev) => !prev);
+        e.stopPropagation();
+        setSearchOpen(true);
+        setTimeout(() => {
+          searchInputRef.current?.focus();
+          searchInputRef.current?.select();
+        }, 30);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown, true);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown, true);
       if (moreCloseTimeout.current) clearTimeout(moreCloseTimeout.current);
     };
   }, []);
@@ -238,7 +265,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-neutral-200/80 shadow-[0_1px_8px_rgba(0,0,0,0.03)] transition-colors duration-200">
+      <header className={`sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-neutral-200/80 transition-all duration-200 ${isScrolled ? "header-scrolled" : "shadow-[0_1px_8px_rgba(0,0,0,0.03)]"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4 flex-nowrap overflow-x-clip">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center shrink-0 group">
@@ -613,7 +640,10 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <ShoppingBag size={20} className="stroke-[1.6]" />
               {cartCount > 0 && (
-                <span className="absolute top-0.5 right-0.5 rtl:right-auto rtl:left-0.5 w-4 h-4 rounded-full bg-[#c5a059] text-neutral-950 text-[9px] font-black flex items-center justify-center shadow-xs">
+                <span
+                  key={badgeBounceKey}
+                  className={`absolute top-0.5 right-0.5 rtl:right-auto rtl:left-0.5 w-4 h-4 rounded-full bg-[#c5a059] text-neutral-950 text-[9px] font-black flex items-center justify-center shadow-xs ${badgeBounceKey > 0 ? "badge-bounce" : ""}`}
+                >
                   {cartCount}
                 </span>
               )}

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
-import { motion, LayoutGroup } from "framer-motion";
+import { motion, LayoutGroup, useScroll, useTransform } from "framer-motion";
 import { CustomSelect } from "@/components/CustomSelect";
 import { staggerContainerVariants, fadeUpItemVariants } from "@/utils/animations";
 import {
@@ -41,8 +41,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
     }
   };
 
+  // #13: Parallax scroll effect for hero visual
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const parallaxY = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
+
   return (
-    <section id="home-hero" className="relative w-full bg-white text-neutral-900 py-6 sm:py-8 lg:py-0 lg:min-h-[calc(100dvh-4rem)] lg:flex lg:items-center border-b border-neutral-100">
+    <section ref={heroRef} id="home-hero" className="relative w-full bg-white text-neutral-900 py-6 sm:py-8 lg:py-0 lg:min-h-[calc(100dvh-4rem)] lg:flex lg:items-center border-b border-neutral-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
           {/* Left Column: Headline & The Front-and-Center Matcher Console (7 cols) */}
@@ -296,14 +304,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
             className="lg:col-span-5"
           >
             <div className="relative rounded-2xl overflow-hidden bg-white border border-neutral-200/80 shadow-md group">
-              {/* Image Frame: Exact 16:9 ratio to fit home-3.png without any overflow, crop, or white space */}
-              <div className="relative w-full aspect-[16/9] overflow-hidden bg-white">
+              {/* Image Frame: Exact 16:9 ratio with parallax (#13) */}
+              <motion.div style={{ y: parallaxY }} className="relative w-full aspect-[16/9] overflow-hidden bg-white">
                 <img
                   src="/home-3.png"
                   alt="ProClip Cockpit Fit"
                   className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] transform-gpu will-change-transform block"
                 />
-              </div>
+              </motion.div>
 
               {/* Inset Technical Note Card: Cleanly stacked directly below the exact image frame */}
               <div className="p-3.5 sm:p-4 bg-white border-t border-neutral-100 text-neutral-900">

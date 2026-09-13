@@ -157,7 +157,7 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                   <motion.div
                     variants={fadeUpItemVariants}
                     onClick={() => handleProductNavigate(product.slug)}
-                    className="h-full flex flex-col justify-between group select-none cursor-pointer p-1"
+                    className="h-full flex flex-col justify-between group select-none cursor-pointer product-card-hover rounded-xl p-1"
                   >
                     <Link
                       href={`/products/${product.slug}`}
@@ -169,6 +169,7 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                         <img
                           src={product.image}
                           alt={product.name}
+                          loading="lazy"
                           className="w-full h-full object-contain object-center group-hover:scale-105 group-active:scale-95 transition-transform duration-500 ease-out"
                           onError={(e) => {
                             e.currentTarget.src = "/admin/banners/accessories.jpg";

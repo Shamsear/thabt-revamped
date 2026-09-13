@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Product } from "@/data/mockData";
 import { X, Send, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,6 +12,16 @@ interface PreOrderModalProps {
 }
 
 export const PreOrderModal: React.FC<PreOrderModalProps> = ({ product, onClose, lang }) => {
+  useEffect(() => {
+    if (!product) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [product, onClose]);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");

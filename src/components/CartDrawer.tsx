@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { Product } from "@/data/mockData";
 import { X, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
@@ -25,6 +25,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   currency,
   lang,
 }) => {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   const totalAmount = cartItems.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0
@@ -50,7 +61,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               animate={{ x: 0 }}
               exit={{ x: lang === "ar" ? "-100%" : "100%" }}
               transition={{ type: "spring", damping: 32, stiffness: 350 }}
-              className="w-full sm:w-[420px] max-w-full bg-white shadow-2xl flex flex-col border-l rtl:border-l-0 rtl:border-r border-neutral-100 h-full"
+              drag="x"
+              dragConstraints={{ left: lang === "ar" ? -200 : 0, right: lang === "ar" ? 0 : 200 }}
+              dragElastic={0.15}
+              dragSnapToOrigin
+              onDragEnd={(_e, info) => {
+                const threshold = 80;
+                if (lang === "ar" ? info.offset.x < -threshold : info.offset.x > threshold) {
+                  onClose();
+                }
+              }}
+              className="w-full sm:w-[420px] max-w-full bg-white shadow-2xl flex flex-col border-l rtl:border-l-0 rtl:border-r border-neutral-100 h-full touch-pan-y"
             >
           {/* Header */}
           <div className="px-4 sm:px-6 py-3.5 sm:py-5 border-b border-neutral-100 flex items-center justify-between">
@@ -94,6 +115,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <img
                       src={product.image}
                       alt={product.name}
+                      loading="lazy"
                       className="max-h-full max-w-full object-contain"
                     />
                   </div>

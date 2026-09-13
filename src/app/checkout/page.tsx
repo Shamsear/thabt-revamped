@@ -61,6 +61,17 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMobileSummary, setShowMobileSummary] = useState(false);
 
+  // #18: Form field touched state for inline validation
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const markTouched = (field: string) => setTouched((prev) => ({ ...prev, [field]: true }));
+  const fieldError = (field: string, value: string) => {
+    if (!touched[field]) return null;
+    if (!value.trim()) return lang === "ar" ? "هذا الحقل مطلوب" : "This field is required";
+    if (field === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return lang === "ar" ? "البريد الإلكتروني غير صالح" : "Invalid email address";
+    if (field === "phone" && value.replace(/\s/g, "").length < 7) return lang === "ar" ? "رقم هاتف غير صالح" : "Invalid phone number";
+    return null;
+  };
+
   // If empty cart, allow browsing
   if (cartItems.length === 0) {
     return (
@@ -260,8 +271,12 @@ export default function CheckoutPage() {
                       required
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      className="w-full h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      onBlur={() => markTouched("firstName")}
+                      className={`w-full h-11 sm:h-10 bg-neutral-50/70 border rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:bg-white transition-all ${fieldError("firstName", formData.firstName) ? "border-rose-400 focus:border-rose-500" : "border-neutral-200/90 focus:border-neutral-950"}`}
                     />
+                    {fieldError("firstName", formData.firstName) && (
+                      <p className="text-[10px] text-rose-500 mt-0.5 font-medium">{fieldError("firstName", formData.firstName)}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-xs text-neutral-700 mb-1 font-medium">
@@ -272,8 +287,12 @@ export default function CheckoutPage() {
                       required
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      className="w-full h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      onBlur={() => markTouched("lastName")}
+                      className={`w-full h-11 sm:h-10 bg-neutral-50/70 border rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:bg-white transition-all ${fieldError("lastName", formData.lastName) ? "border-rose-400 focus:border-rose-500" : "border-neutral-200/90 focus:border-neutral-950"}`}
                     />
+                    {fieldError("lastName", formData.lastName) && (
+                      <p className="text-[10px] text-rose-500 mt-0.5 font-medium">{fieldError("lastName", formData.lastName)}</p>
+                    )}
                   </div>
                 </div>
 
@@ -286,8 +305,12 @@ export default function CheckoutPage() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                    onBlur={() => markTouched("email")}
+                    className={`w-full h-11 sm:h-10 bg-neutral-50/70 border rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:bg-white transition-all ${fieldError("email", formData.email) ? "border-rose-400 focus:border-rose-500" : "border-neutral-200/90 focus:border-neutral-950"}`}
                   />
+                  {fieldError("email", formData.email) && (
+                    <p className="text-[10px] text-rose-500 mt-0.5 font-medium">{fieldError("email", formData.email)}</p>
+                  )}
                 </div>
 
                 <div>
@@ -316,9 +339,13 @@ export default function CheckoutPage() {
                       placeholder="5500 0000"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="flex-1 min-w-0 h-11 sm:h-10 bg-neutral-50/70 border border-neutral-200/90 rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:border-neutral-950 focus:bg-white transition-all"
+                      onBlur={() => markTouched("phone")}
+                      className={`flex-1 min-w-0 h-11 sm:h-10 bg-neutral-50/70 border rounded-xl px-3.5 text-sm sm:text-xs text-neutral-900 focus:outline-none focus:bg-white transition-all ${fieldError("phone", formData.phone) ? "border-rose-400 focus:border-rose-500" : "border-neutral-200/90 focus:border-neutral-950"}`}
                     />
                   </div>
+                  {fieldError("phone", formData.phone) && (
+                    <p className="text-[10px] text-rose-500 mt-0.5 font-medium">{fieldError("phone", formData.phone)}</p>
+                  )}
                 </div>
               </div>
 

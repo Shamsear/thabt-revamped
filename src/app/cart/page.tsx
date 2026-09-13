@@ -408,8 +408,13 @@ export default function CartPage() {
               </motion.div>
             </div>
           ) : (
-            /* Empty Cart State */
-            <div className="text-center py-20 max-w-sm mx-auto">
+            /* Empty Cart State (#4: Animated entrance) */
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="text-center py-20 max-w-sm mx-auto"
+            >
               <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center mx-auto mb-3 text-neutral-400">
                 <ShoppingBag size={20} />
               </div>
@@ -436,7 +441,7 @@ export default function CartPage() {
                   <span>{lang === "ar" ? "مطابق السيارات" : "Fitment Matcher"}</span>
                 </Link>
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
       </motion.main>

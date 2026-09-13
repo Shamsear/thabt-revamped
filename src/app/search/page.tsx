@@ -420,7 +420,7 @@ function SearchCatalogContent() {
                       <motion.div
                         key={product.id}
                         variants={fadeUpItemVariants}
-                        className="h-full flex flex-col justify-between group select-none"
+                        className="h-full flex flex-col justify-between group select-none product-card-hover rounded-xl p-1"
                       >
                         <div>
                           {/* Pure Container-less Product Photo Showcase */}
@@ -431,6 +431,7 @@ function SearchCatalogContent() {
                             <img
                               src={product.image}
                               alt={product.name}
+                              loading="lazy"
                               className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 ease-out"
                               onError={(e) => {
                                 e.currentTarget.src = "/admin/banners/accessories.jpg";

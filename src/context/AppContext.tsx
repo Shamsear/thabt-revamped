@@ -78,6 +78,8 @@ interface AppContextType {
   toast: ToastMessage | null;
   showToast: (toastData: Omit<ToastMessage, "id">) => void;
   hideToast: () => void;
+  recentlyViewed: string[];
+  trackProductView: (slug: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -91,6 +93,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [customWhatsAppMessage, setCustomWhatsAppMessage] = useState<string | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
+  const [recentlyViewed, setRecentlyViewed] = useState<string[]>([]);
 
   const showToast = (toastData: Omit<ToastMessage, "id">) => {
     const id = Math.random().toString(36).substring(2, 9);
@@ -99,6 +102,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const hideToast = () => {
     setToast(null);
+  };
+
+  // #14 Recently Viewed — track product slug
+  const trackProductView = (slug: string) => {
+    setRecentlyViewed((prev) => {
+      const filtered = prev.filter((s) => s !== slug);
+      const updated = [slug, ...filtered].slice(0, 6);
+      try {
+        localStorage.setItem("thabt_recently_viewed", JSON.stringify(updated));
+      } catch { /* ignore */ }
+      return updated;
+    });
   };
 
   // User auth state with demo default state (Mohammed Al-Kuwari)
@@ -173,6 +188,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (valid.length > 0) {
             setCartItems(valid);
           }
+        }
+      }
+
+      // Restore recently viewed products (#14)
+      const savedRecent = localStorage.getItem("thabt_recently_viewed");
+      if (savedRecent) {
+        const parsed = JSON.parse(savedRecent);
+        if (Array.isArray(parsed)) {
+          setRecentlyViewed(parsed.slice(0, 6));
         }
       }
     } catch {
@@ -313,6 +337,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toast,
         showToast,
         hideToast,
+        recentlyViewed,
+        trackProductView,
       }}
     >
       {children}

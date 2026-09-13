@@ -51,6 +51,7 @@ export default function ProductDetailPage({
     setHasStickyBottomBar,
     setCustomWhatsAppMessage,
     setPreOrderProduct,
+    trackProductView,
   } = useAppContext();
 
   // Find product by slug
@@ -61,6 +62,13 @@ export default function ProductDetailPage({
   if (!product) {
     notFound();
   }
+
+  // #14: Track recently viewed product
+  useEffect(() => {
+    if (product) {
+      trackProductView(slug);
+    }
+  }, [slug]);
 
   // Gallery state
   const images = product.images && product.images.length > 0 ? product.images : [product.image];
@@ -731,7 +739,7 @@ export default function ProductDetailPage({
                 <motion.div
                   key={relProd.id}
                   variants={fadeUpItemVariants}
-                  className="h-full flex flex-col justify-between group select-none"
+                  className="h-full flex flex-col justify-between group select-none product-card-hover rounded-xl p-1"
                 >
                   <div>
                     {/* Pure Container-less Image */}
@@ -742,6 +750,7 @@ export default function ProductDetailPage({
                       <img
                         src={relProd.image}
                         alt={relProd.name}
+                        loading="lazy"
                         className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
                           e.currentTarget.src = "/admin/banners/accessories.jpg";
