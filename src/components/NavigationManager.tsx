@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
+import { RouteProgressBar } from "@/components/RouteProgressBar";
+
 export function NavigationManager() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -23,5 +25,5 @@ export function NavigationManager() {
     }
   }, [pathname, searchParams]);
 
-  return null;
+  return <RouteProgressBar />;
 }

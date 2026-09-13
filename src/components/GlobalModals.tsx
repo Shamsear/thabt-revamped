@@ -4,6 +4,7 @@ import React from "react";
 import { useAppContext } from "@/context/AppContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { PreOrderModal } from "@/components/PreOrderModal";
+import { ToastContainer } from "@/components/ToastContainer";
 
 export const GlobalModals: React.FC = () => {
   const {
@@ -34,6 +35,7 @@ export const GlobalModals: React.FC = () => {
         onClose={() => setPreOrderProduct(null)}
         lang={lang}
       />
+      <ToastContainer />
     </>
   );
 };

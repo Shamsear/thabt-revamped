@@ -39,6 +39,15 @@ export const CURRENCY_MAP: Record<SupportedCurrency, CurrencyRate> = {
   USD: { code: "USD", symbol: "$", symbol_ar: "$", rate: 0.275, name: "US Dollar" },
 };
 
+export interface ToastMessage {
+  id: string;
+  title: string;
+  title_ar?: string;
+  message?: string;
+  image?: string;
+  type?: "success" | "info" | "warning";
+}
+
 interface AppContextType {
   lang: SupportedLanguage;
   setLang: (lang: SupportedLanguage) => void;
@@ -66,6 +75,9 @@ interface AppContextType {
   authModalOpen: boolean;
   setAuthModalOpen: (open: boolean) => void;
   openAuthModal: () => void;
+  toast: ToastMessage | null;
+  showToast: (toastData: Omit<ToastMessage, "id">) => void;
+  hideToast: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -78,6 +90,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [hasStickyBottomBar, setHasStickyBottomBar] = useState(false);
   const [customWhatsAppMessage, setCustomWhatsAppMessage] = useState<string | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
+
+  const showToast = (toastData: Omit<ToastMessage, "id">) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    setToast({ ...toastData, id });
+  };
+
+  const hideToast = () => {
+    setToast(null);
+  };
 
   // User auth state with demo default state (Mohammed Al-Kuwari)
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -178,6 +200,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         );
       }
       return [...prev, { product, quantity }];
+    });
+    showToast({
+      title: product.name,
+      title_ar: product.name_ar,
+      message: `Added to cart (${quantity})`,
+      image: product.image,
+      type: "success",
     });
     setCartDrawerOpen(true);
   };
@@ -281,6 +310,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         authModalOpen,
         setAuthModalOpen,
         openAuthModal,
+        toast,
+        showToast,
+        hideToast,
       }}
     >
       {children}
