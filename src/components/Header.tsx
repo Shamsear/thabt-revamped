@@ -115,6 +115,10 @@ export const Header: React.FC<HeaderProps> = ({
         setCurrencyOpen(false);
         setUserMenuOpen(false);
       }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -436,6 +440,9 @@ export const Header: React.FC<HeaderProps> = ({
                         placeholder={lang === "ar" ? "ابحث عن سيارة أو قطعة..." : "Search model or mount..."}
                         className="bg-transparent text-xs text-neutral-900 w-full focus:outline-none placeholder-neutral-400 py-1"
                       />
+                      <span className="hidden xl:inline-block px-1.5 py-0.5 text-[9px] font-mono font-semibold text-neutral-400 bg-neutral-200/70 border border-neutral-300/80 rounded shrink-0 mr-1 rtl:mr-0 rtl:ml-1">
+                        ⌘K
+                      </span>
                       <button
                         type="button"
                         onClick={(e) => {
