@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { Play, RotateCcw } from "lucide-react";
+import { motion } from "framer-motion";
+import { scaleUpVariants, viewportOnce } from "@/utils/animations";
 
 interface VideoShowcaseSectionProps {
   lang: "en" | "ar";
@@ -15,7 +17,13 @@ export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ lang
       {/* Subtle Gold Ambient Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-[#c5a059]/10 blur-[140px] pointer-events-none rounded-full" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 relative z-10">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={scaleUpVariants}
+        className="max-w-6xl mx-auto px-4 sm:px-8 relative z-10"
+      >
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-6">
           <div className="max-w-xl">
             <p className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2 flex items-center gap-2">
@@ -97,7 +105,7 @@ export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ lang
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -45,7 +45,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
           {/* Left Column: Headline & The Front-and-Center Matcher Console (7 cols) */}
-          <div className="animate-lcp-fade-up lg:col-span-7 space-y-4 sm:space-y-4.5 lg:space-y-3.5">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-7 space-y-4 sm:space-y-4.5 lg:space-y-3.5"
+          >
             <div>
               <p className="text-[11px] uppercase tracking-[0.22em] text-[#c5a059] font-semibold mb-1 sm:mb-1.5">
                 {lang === "ar" ? "قواعد تثبيت مخصصة بدون حفر" : "Vehicle-Specific Dashboard Mounts"}
@@ -280,10 +285,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                 <span className="leading-tight font-medium sm:font-normal">{lang === "ar" ? "حرارة 60°م" : "60°C Proof"}</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Right Column: Architectural Visual Framing (5 cols) with Live Dynamic Sync */}
-          <div className="animate-lcp-fade-up lg:col-span-5">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5"
+          >
             <div className="relative rounded-2xl overflow-hidden bg-white border border-neutral-200/80 shadow-md group">
               {/* Image Frame: Exact 16:9 ratio to fit home-3.png without any overflow, crop, or white space */}
               <div className="relative w-full aspect-[16/9] overflow-hidden bg-white">
@@ -331,7 +341,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                 </motion.div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

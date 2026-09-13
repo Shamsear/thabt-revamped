@@ -4,6 +4,8 @@ import React from "react";
 import { Trophy, Award, ShieldCheck, MapPin, Calendar, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { fadeUpItemVariants, viewportOnce } from "@/utils/animations";
+
 interface AwardSectionProps {
   lang: "en" | "ar";
 }
@@ -44,8 +46,13 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
       <div className="absolute bottom-10 left-10 w-80 h-80 bg-[#c5a059]/8 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={fadeUpItemVariants}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+        >
           {/* Left Column: Certification Authority & Narrative (7 cols) */}
           <div className="lg:col-span-7 space-y-5 sm:space-y-6">
             
@@ -175,7 +182,7 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
             </div>
           </div>
 
-        </div>
+        </motion.div>
       </div>
     </section>
   );
