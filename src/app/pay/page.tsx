@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context/AppContext";
 import { CheckoutStepper } from "@/components/CheckoutStepper";
+import { ConfirmationModal } from "@/components/ConfirmationModal";
+import { useNavigationConfirmation } from "@/utils/useNavigationConfirmation";
 import {
   CreditCard,
   Lock,
@@ -18,6 +20,7 @@ import {
   MapPin,
   ShoppingBag,
   ChevronDown,
+  ArrowLeft,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
@@ -29,6 +32,17 @@ export default function DummyPayPage() {
   const [paymentMethod, setPaymentMethod] = useState<"card" | "qpay" | "apple" | "cod">("card");
   const [checkoutInfo, setCheckoutInfo] = useState<any>(null);
   const [showDetails, setShowDetails] = useState(false);
+
+  // Simulation loading state
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+
+  // Guard navigation so user doesn't accidentally cancel/leave in-flight payment session
+  const { showConfirmModal, requestNavigation, handleConfirm, handleCancel } =
+    useNavigationConfirmation({
+      enabled: !isProcessing,
+      defaultTargetUrl: "/checkout",
+    });
 
   useEffect(() => {
     try {
@@ -46,10 +60,6 @@ export default function DummyPayPage() {
   const [cardNumber, setCardNumber] = useState("4000 1234 5678 9010");
   const [cardExpiry, setCardExpiry] = useState("12/28");
   const [cardCvv, setCardCvv] = useState("789");
-
-  // Simulation loading state
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("");
 
   const subtotalQar =
     Number.isFinite(cartSubtotalQar) && cartSubtotalQar >= 0
@@ -111,9 +121,27 @@ export default function DummyPayPage() {
       {/* Header */}
       <header className="bg-white border-b border-neutral-200/80 py-4 px-4 sm:px-8 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <img src="/user/images/black_logo.png" alt="Thabt" className="h-8 sm:h-9.5 md:h-10 w-auto object-contain" />
-          </Link>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => requestNavigation("/checkout")}
+              className="p-1.5 -ml-1.5 rtl:-ml-0 rtl:-mr-1.5 text-neutral-600 hover:text-neutral-950 rounded-xl hover:bg-neutral-100 transition cursor-pointer flex items-center gap-1 text-xs font-medium"
+              title={lang === "ar" ? "العودة لتعديل العنوان" : "Back to Delivery Details"}
+            >
+              <ArrowLeft size={16} className="rtl:rotate-180" />
+              <span className="hidden sm:inline">
+                {lang === "ar" ? "العودة للعنوان" : "Back to Address"}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => requestNavigation("/")}
+              className="flex items-center cursor-pointer border-none bg-transparent p-0"
+              aria-label="Thabt Home"
+            >
+              <img src="/user/images/black_logo.png" alt="Thabt" className="h-8 sm:h-9.5 md:h-10 w-auto object-contain" />
+            </button>
+          </div>
           <div className="flex items-center gap-2 text-xs font-semibold text-neutral-700 bg-[#faf6ed] border border-[#c5a059]/30 px-3.5 py-1.5 rounded-full">
             <Lock size={13} className="text-[#c5a059]" />
             <span>{lang === "ar" ? "بوابة الدفع التوضيحية المشفرة" : "Simulated Payment Gateway"}</span>
@@ -477,6 +505,17 @@ export default function DummyPayPage() {
                 <span>{lang === "ar" ? "تتبع فوري وفاتورة رسمية" : "Official invoice & tracking"}</span>
               </div>
             </div>
+
+            {/* Cancel & Return to Delivery Details */}
+            <div className="text-center pt-1">
+              <button
+                type="button"
+                onClick={() => requestNavigation("/checkout")}
+                className="text-xs text-neutral-500 hover:text-neutral-900 transition underline underline-offset-4 cursor-pointer"
+              >
+                {lang === "ar" ? "← العودة لتعديل بيانات العنوان والشحن" : "← Return to Delivery & Shipping Details"}
+              </button>
+            </div>
           </div>
 
           {/* Right Summary Sidebar (5 cols, desktop only) */}
@@ -566,6 +605,23 @@ export default function DummyPayPage() {
         </div>
       </motion.div>
     </main>
+
+      {/* Confirmation Modal when Leaving Payment Gateway */}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={handleCancel}
+        onConfirm={handleConfirm}
+        title={lang === "ar" ? "هل تريد مغادرة صفحة الدفع؟" : "Leave Payment Screen?"}
+        description={
+          lang === "ar"
+            ? "لم يتم إتمام وتأكيد طلبك بعد. العودة إلى صفحة العنوان ستلغي جلسة الدفع الحالية مع الاحتفاظ ببيانات العنوان."
+            : "Your order has not been placed yet. Returning to delivery details will cancel this simulated payment session (your address details will remain saved)."
+        }
+        confirmText={lang === "ar" ? "نعم، العودة للعنوان" : "Yes, Return to Checkout"}
+        cancelText={lang === "ar" ? "البقاء وإتمام الدفع" : "Stay & Complete Payment"}
+        confirmVariant="warning"
+        lang={lang}
+      />
     </div>
   );
 }

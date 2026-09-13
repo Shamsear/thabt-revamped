@@ -6,12 +6,15 @@ import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context/AppContext";
 import { CustomSelect } from "@/components/CustomSelect";
 import { CheckoutStepper } from "@/components/CheckoutStepper";
+import { ConfirmationModal } from "@/components/ConfirmationModal";
+import { useNavigationConfirmation } from "@/utils/useNavigationConfirmation";
 import { motion } from "framer-motion";
 import { staggerContainerVariants, fadeUpItemVariants } from "@/utils/animations";
 import {
   ShieldCheck,
   Lock,
   ArrowRight,
+  ArrowLeft,
   Building,
   MapPin,
   CheckCircle2,
@@ -60,6 +63,13 @@ export default function CheckoutPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMobileSummary, setShowMobileSummary] = useState(false);
+
+  // Guard navigation so user doesn't accidentally abandon checkout
+  const { showConfirmModal, requestNavigation, handleConfirm, handleCancel } =
+    useNavigationConfirmation({
+      enabled: !isSubmitting,
+      defaultTargetUrl: "/cart",
+    });
 
   // #18: Form field touched state for inline validation
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -121,9 +131,27 @@ export default function CheckoutPage() {
       {/* Focused Checkout Minimal Header */}
       <header className="bg-white border-b border-neutral-200/80 py-4 px-4 sm:px-8 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <img src="/user/images/black_logo.png" alt="Thabt" className="h-8 sm:h-9.5 md:h-10 w-auto object-contain" />
-          </Link>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => requestNavigation("/cart")}
+              className="p-1.5 -ml-1.5 rtl:-ml-0 rtl:-mr-1.5 text-neutral-600 hover:text-neutral-950 rounded-xl hover:bg-neutral-100 transition cursor-pointer flex items-center gap-1 text-xs font-medium"
+              title={lang === "ar" ? "العودة إلى سلة المشتريات" : "Back to Shopping Bag"}
+            >
+              <ArrowLeft size={16} className="rtl:rotate-180" />
+              <span className="hidden sm:inline">
+                {lang === "ar" ? "العودة للسلة" : "Back to Cart"}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => requestNavigation("/")}
+              className="flex items-center cursor-pointer border-none bg-transparent p-0"
+              aria-label="Thabt Home"
+            >
+              <img src="/user/images/black_logo.png" alt="Thabt" className="h-8 sm:h-9.5 md:h-10 w-auto object-contain" />
+            </button>
+          </div>
           <div className="flex items-center gap-2 text-xs font-semibold text-neutral-700 bg-[#faf6ed] border border-[#c5a059]/30 px-3.5 py-1.5 rounded-full">
             <Lock size={13} className="text-[#c5a059]" />
             <span>{lang === "ar" ? "إتمام الشراء المشفر والآمن" : "Encrypted Checkout"}</span>
@@ -493,6 +521,17 @@ export default function CheckoutPage() {
                 <ArrowRight size={15} className="rtl:rotate-180" />
               </button>
 
+              {/* Cancel & Return to Shopping Bag */}
+              <div className="text-center pt-1">
+                <button
+                  type="button"
+                  onClick={() => requestNavigation("/cart")}
+                  className="text-xs text-neutral-500 hover:text-neutral-900 transition underline underline-offset-4 cursor-pointer"
+                >
+                  {lang === "ar" ? "← العودة إلى سلة المشتريات" : "← Return to Shopping Bag"}
+                </button>
+              </div>
+
               {/* Mobile Guarantee Bar */}
               <div className="lg:hidden p-3 rounded-xl bg-[#faf6ed]/60 border border-[#c5a059]/30 text-xs text-neutral-700 flex items-center gap-2.5">
                 <ShieldCheck size={16} className="text-[#c5a059] shrink-0" />
@@ -578,6 +617,23 @@ export default function CheckoutPage() {
           </motion.div>
         </div>
       </motion.main>
+
+      {/* Confirmation Modal when Leaving Checkout */}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={handleCancel}
+        onConfirm={handleConfirm}
+        title={lang === "ar" ? "العودة إلى سلة المشتريات؟" : "Return to Shopping Bag?"}
+        description={
+          lang === "ar"
+            ? "هل أنت متأكد من رغبتك في العودة للسلة؟ قد تفقد أي تعديلات قمت بإدخالها في تفاصيل العنوان ورقم الهاتف."
+            : "Are you sure you want to return to your cart? Any delivery address or contact details you entered may be lost."
+        }
+        confirmText={lang === "ar" ? "نعم، العودة للسلة" : "Yes, Return to Cart"}
+        cancelText={lang === "ar" ? "متابعة إتمام الطلب" : "Continue Checkout"}
+        confirmVariant="warning"
+        lang={lang}
+      />
     </div>
   );
 }

@@ -7,6 +7,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
 import { CustomSelect } from "@/components/CustomSelect";
+import { ConfirmationModal } from "@/components/ConfirmationModal";
+import { useNavigationConfirmation } from "@/utils/useNavigationConfirmation";
 import {
   Briefcase,
   ChevronRight,
@@ -14,6 +16,7 @@ import {
   UploadCloud,
   CheckCircle2,
   ArrowRight,
+  ArrowLeft,
   FileText,
   Link2,
 } from "lucide-react";
@@ -35,6 +38,23 @@ function CareersApplyForm() {
     notes: "",
     fileName: "",
   });
+
+  const hasUnsavedChanges =
+    !submitted &&
+    Boolean(
+      formData.fullName.trim() ||
+      formData.email.trim() ||
+      formData.phone.trim() ||
+      formData.fileName ||
+      formData.notes.trim() ||
+      formData.portfolioUrl.trim()
+    );
+
+  const { showConfirmModal, requestNavigation, handleConfirm, handleCancel } =
+    useNavigationConfirmation({
+      enabled: hasUnsavedChanges,
+      defaultTargetUrl: "/careers",
+    });
 
   const jobOptions = [
     {
@@ -70,13 +90,22 @@ function CareersApplyForm() {
     <div className="max-w-3xl mx-auto px-4 sm:px-8">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-6">
-        <Link href="/" className="hover:text-neutral-900 transition">
+        <button
+          type="button"
+          onClick={() => requestNavigation("/")}
+          className="hover:text-neutral-900 transition cursor-pointer"
+        >
           {lang === "ar" ? "الرئيسية" : "Home"}
-        </Link>
+        </button>
         <ChevronRight size={12} className="rtl:rotate-180 text-neutral-300" />
-        <Link href="/careers" className="hover:text-neutral-900 transition">
-          {lang === "ar" ? "الوظائف" : "Careers"}
-        </Link>
+        <button
+          type="button"
+          onClick={() => requestNavigation("/careers")}
+          className="hover:text-neutral-900 transition cursor-pointer flex items-center gap-1"
+        >
+          <ArrowLeft size={12} className="rtl:rotate-180" />
+          <span>{lang === "ar" ? "الوظائف" : "Careers"}</span>
+        </button>
         <ChevronRight size={12} className="rtl:rotate-180 text-neutral-300" />
         <span className="text-neutral-900 font-medium">
           {lang === "ar" ? "نموذج التقديم" : "Application Form"}
@@ -289,6 +318,23 @@ function CareersApplyForm() {
           </button>
         </form>
       )}
+
+      {/* Confirmation Modal when Leaving Application Form */}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={handleCancel}
+        onConfirm={handleConfirm}
+        title={lang === "ar" ? "إلغاء تقديم طلب التوظيف؟" : "Discard Job Application?"}
+        description={
+          lang === "ar"
+            ? "لديك بيانات غير محفوظة وسيرة ذاتية مدخلة في نموذج التقديم. هل أنت متأكد من رغبتك في المغادرة وفقدان البيانات؟"
+            : "You have unsaved information and an attached CV in this application. Are you sure you want to leave and discard your progress?"
+        }
+        confirmText={lang === "ar" ? "نعم، إلغاء ومغادرة" : "Yes, Discard & Leave"}
+        cancelText={lang === "ar" ? "متابعة التقديم" : "Keep Editing"}
+        confirmVariant="danger"
+        lang={lang}
+      />
     </div>
   );
 }

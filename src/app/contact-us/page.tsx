@@ -6,6 +6,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
 import { CustomSelect } from "@/components/CustomSelect";
+import { ConfirmationModal } from "@/components/ConfirmationModal";
+import { useNavigationConfirmation } from "@/utils/useNavigationConfirmation";
 import { motion } from "framer-motion";
 import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 import {
@@ -30,6 +32,21 @@ export default function ContactUsPage() {
     vehicle: "",
     inquiryType: "fitment",
     message: "",
+  });
+
+  const hasUnsavedInquiry =
+    !formSubmitted &&
+    Boolean(
+      formData.name.trim() ||
+      formData.email.trim() ||
+      formData.phone.trim() ||
+      formData.vehicle.trim() ||
+      formData.message.trim()
+    );
+
+  const { showConfirmModal, handleConfirm, handleCancel } = useNavigationConfirmation({
+    enabled: hasUnsavedInquiry,
+    defaultTargetUrl: "/",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -364,6 +381,23 @@ export default function ContactUsPage() {
       </main>
 
       <Footer />
+
+      {/* Confirmation Modal when Leaving Unsaved Contact Form */}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={handleCancel}
+        onConfirm={handleConfirm}
+        title={lang === "ar" ? "تجاهل رسالة الاستفسار؟" : "Discard Message Draft?"}
+        description={
+          lang === "ar"
+            ? "لديك استفسار غير مرسل في النموذج. هل أنت متأكد من رغبتك في مغادرة الصفحة وإلغاء المسودة؟"
+            : "You have an unsent inquiry message. Are you sure you want to leave and discard your draft?"
+        }
+        confirmText={lang === "ar" ? "نعم، تجاهل ومغادرة" : "Yes, Discard & Leave"}
+        cancelText={lang === "ar" ? "متابعة الكتابة" : "Keep Writing"}
+        confirmVariant="danger"
+        lang={lang}
+      />
     </div>
   );
 }

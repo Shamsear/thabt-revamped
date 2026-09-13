@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CheckoutStepper } from "@/components/CheckoutStepper";
@@ -17,6 +18,7 @@ import { motion } from "framer-motion";
 import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 
 export default function OrderSuccessPage() {
+  const router = useRouter();
   const { lang, formatPrice } = useAppContext();
 
   const [orderInfo, setOrderInfo] = useState<any>({
@@ -63,6 +65,18 @@ export default function OrderSuccessPage() {
       // ignore
     }
   }, []);
+
+  // Safe navigation guard: Prevent going back into payment gateway once order is completed
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.history.pushState(null, "", window.location.href);
+      const handlePopState = () => {
+        router.replace("/");
+      };
+      window.addEventListener("popstate", handlePopState);
+      return () => window.removeEventListener("popstate", handlePopState);
+    }
+  }, [router]);
 
   const handleDownloadInvoice = () => {
     setDownloadedInvoice(true);
