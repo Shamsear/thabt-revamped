@@ -956,8 +956,8 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
                 </div>
 
-                {/* Sidebar Footer: Currency, Language & WhatsApp */}
-                <div className="p-3 sm:p-4 border-t border-neutral-100 bg-neutral-50/90 space-y-2 sm:space-y-2.5 shrink-0">
+                {/* Sidebar Footer: Currency, Language & WhatsApp (lifted above mobile browser bottom bar) */}
+                <div className="p-3 sm:p-4 pt-3 pb-[max(1.75rem,calc(1.25rem+env(safe-area-inset-bottom)))] sm:pb-4 border-t border-neutral-100 bg-neutral-50/95 space-y-2 sm:space-y-2.5 shrink-0">
                   <div className="flex items-center justify-between gap-2">
                     {/* Language Switch */}
                     <button
