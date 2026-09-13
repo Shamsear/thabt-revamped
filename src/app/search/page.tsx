@@ -13,6 +13,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CustomSelect } from "@/components/CustomSelect";
 import { Pagination } from "@/components/Pagination";
+import { ProductGridSkeleton } from "@/components/ProductGridSkeleton";
 import { useAppContext } from "@/context/AppContext";
 import { MOCK_ALL_PRODUCTS, MOCK_CATEGORIES, Product } from "@/data/mockData";
 import {
@@ -420,7 +421,7 @@ function SearchCatalogContent() {
                       <motion.div
                         key={product.id}
                         variants={fadeUpItemVariants}
-                        className="h-full flex flex-col justify-between group select-none product-card-hover rounded-xl p-1"
+                        className="h-full flex flex-col justify-between group select-none"
                       >
                         <div>
                           {/* Pure Container-less Product Photo Showcase */}
@@ -609,8 +610,14 @@ export default function SearchPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-white flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-neutral-300 border-t-[#c5a059] rounded-full animate-spin" />
+        <div className="min-h-screen bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-28">
+            <div className="animate-pulse space-y-4 mb-8">
+              <div className="h-4 bg-neutral-100 rounded w-1/4" />
+              <div className="h-8 bg-neutral-100 rounded w-2/5" />
+            </div>
+            <ProductGridSkeleton count={8} />
+          </div>
         </div>
       }
     >

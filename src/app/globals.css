@@ -294,14 +294,7 @@ a:active, button:active, [role="button"]:active {
   }
 }
 
-/* #6 Product Card Hover Elevation */
-.product-card-hover {
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease;
-}
-.product-card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -4px rgba(0, 0, 0, 0.04);
-}
+/* Product cards: only image hover zoom, no container lift */
 
 /* #7 Cart Badge Bounce Animation */
 @keyframes badge-bounce {

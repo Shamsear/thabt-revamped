@@ -385,7 +385,7 @@ export default function CartPage() {
 
                     <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
                       <span className="text-sm font-semibold text-neutral-900">{lang === "ar" ? "الإجمالي:" : "Total:"}</span>
-                      <span className="text-xl font-semibold text-neutral-950">
+                      <span className="text-xl font-semibold text-neutral-950 price-counter">
                         {formatPrice(finalTotalQar)}
                       </span>
                     </div>

@@ -739,7 +739,7 @@ export default function ProductDetailPage({
                 <motion.div
                   key={relProd.id}
                   variants={fadeUpItemVariants}
-                  className="h-full flex flex-col justify-between group select-none product-card-hover rounded-xl p-1"
+                  className="h-full flex flex-col justify-between group select-none"
                 >
                   <div>
                     {/* Pure Container-less Image */}

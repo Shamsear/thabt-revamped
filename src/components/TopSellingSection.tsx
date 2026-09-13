@@ -157,7 +157,7 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                   <motion.div
                     variants={fadeUpItemVariants}
                     onClick={() => handleProductNavigate(product.slug)}
-                    className="h-full flex flex-col justify-between group select-none cursor-pointer product-card-hover rounded-xl p-1"
+                    className="h-full flex flex-col justify-between group select-none cursor-pointer p-1"
                   >
                     <Link
                       href={`/products/${product.slug}`}

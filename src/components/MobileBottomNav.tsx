@@ -3,12 +3,14 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, ShoppingBag, User } from "lucide-react";
+import { Home, Compass, SlidersHorizontal, User } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
+import { useDevicePerfTier, perfClasses } from "@/utils/useDevicePerfTier";
 
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
-  const { lang, totalCartCount, setCartDrawerOpen } = useAppContext();
+  const { lang, user, openAuthModal } = useAppContext();
+  const perfTier = useDevicePerfTier();
 
   const navItems = [
     {
@@ -18,66 +20,75 @@ export const MobileBottomNav: React.FC = () => {
       isActive: pathname === "/",
     },
     {
-      icon: Search,
-      label: lang === "ar" ? "بحث" : "Search",
-      href: "/search",
-      isActive: pathname === "/search",
+      icon: Compass,
+      label: lang === "ar" ? "مطابق سيارتك" : "Matcher",
+      href: "/find",
+      isActive: pathname === "/find",
+      highlight: true,
     },
     {
-      icon: ShoppingBag,
-      label: lang === "ar" ? "السلة" : "Cart",
-      href: "/cart",
-      isActive: pathname === "/cart" || pathname === "/checkout",
-      badge: totalCartCount > 0 ? totalCartCount : undefined,
-      onClick: () => setCartDrawerOpen(true),
+      icon: SlidersHorizontal,
+      label: lang === "ar" ? "الكتالوج" : "Shop",
+      href: "/search",
+      isActive: pathname.startsWith("/search") || pathname.startsWith("/categories"),
     },
     {
       icon: User,
       label: lang === "ar" ? "حسابي" : "Profile",
       href: "/profile",
       isActive: pathname === "/profile",
+      onClick: !user?.isLoggedIn ? () => openAuthModal() : undefined,
     },
   ];
 
   return (
-    <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-neutral-200/80 mobile-bottom-nav">
-      <div className="flex items-center justify-around h-14 max-w-md mx-auto">
+    <nav
+      className={`sm:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-neutral-200/80 pb-[env(safe-area-inset-bottom)] ${
+        perfClasses[perfTier].hasBlur ? "bg-white/95 backdrop-blur-lg" : "bg-white"
+      }`}
+      dir={lang === "ar" ? "rtl" : "ltr"}
+    >
+      <div className="flex items-center justify-around h-14 max-w-md mx-auto px-2">
         {navItems.map((item) => {
           const IconComponent = item.icon;
+          const content = (
+            <div
+              className={`relative flex flex-col items-center justify-center gap-0.5 w-16 py-1 transition-colors cursor-pointer select-none active:scale-95 ${
+                item.isActive
+                  ? "text-[#c5a059] font-bold"
+                  : item.highlight
+                  ? "text-[#9b7832] font-semibold"
+                  : "text-neutral-500 hover:text-neutral-900"
+              }`}
+            >
+              <div className="relative">
+                <IconComponent
+                  size={19}
+                  className={`stroke-[1.7] ${item.isActive ? "text-[#c5a059]" : ""}`}
+                />
+                {item.highlight && !item.isActive && (
+                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
+                )}
+              </div>
+              <span className="text-[10px] tracking-tight">{item.label}</span>
+              {item.isActive && (
+                <span className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-[#c5a059] shadow-[0_1px_4px_rgba(197,160,89,0.5)]" />
+              )}
+            </div>
+          );
+
           return item.onClick ? (
             <button
               key={item.label}
               type="button"
               onClick={item.onClick}
-              className={`relative flex flex-col items-center justify-center gap-0.5 w-14 py-1 transition-colors cursor-pointer ${
-                item.isActive
-                  ? "text-[#c5a059]"
-                  : "text-neutral-400 hover:text-neutral-700"
-              }`}
+              className="outline-none focus:outline-none"
             >
-              <IconComponent size={20} className="stroke-[1.6]" />
-              <span className="text-[10px] font-medium">{item.label}</span>
-              {item.badge !== undefined && (
-                <span className="absolute top-0 right-1.5 w-4 h-4 rounded-full bg-[#c5a059] text-neutral-950 text-[9px] font-black flex items-center justify-center">
-                  {item.badge > 9 ? "9+" : item.badge}
-                </span>
-              )}
+              {content}
             </button>
           ) : (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`relative flex flex-col items-center justify-center gap-0.5 w-14 py-1 transition-colors ${
-                item.isActive
-                  ? "text-[#c5a059]"
-                  : "text-neutral-400 hover:text-neutral-700"
-              }`}
-            >
-              <IconComponent size={20} className="stroke-[1.6]" />
-              <span className="text-[10px] font-medium">{item.label}</span>
-              {item.isActive && (
-                <span className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-[#c5a059]" />
-              )}
+            <Link key={item.label} href={item.href} className="outline-none focus:outline-none">
+              {content}
             </Link>
           );
         })}

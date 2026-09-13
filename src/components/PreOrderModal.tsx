@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Product } from "@/data/mockData";
 import { X, Send, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useFocusTrap } from "@/utils/useFocusTrap";
 
 interface PreOrderModalProps {
   product: Product | null;
@@ -12,6 +13,7 @@ interface PreOrderModalProps {
 }
 
 export const PreOrderModal: React.FC<PreOrderModalProps> = ({ product, onClose, lang }) => {
+  const focusTrapRef = useFocusTrap(!!product);
   useEffect(() => {
     if (!product) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -39,7 +41,7 @@ export const PreOrderModal: React.FC<PreOrderModalProps> = ({ product, onClose, 
   return (
     <AnimatePresence>
       {product && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden" dir={lang === "ar" ? "rtl" : "ltr"}>
+        <div ref={focusTrapRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden" dir={lang === "ar" ? "rtl" : "ltr"}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

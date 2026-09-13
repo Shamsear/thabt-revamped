@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Smartphone, Mail, User, ArrowRight, CheckCircle2, Sparkles, KeyRound } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
+import { useFocusTrap } from "@/utils/useFocusTrap";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, lang }) => {
   const { login } = useAppContext();
+  const focusTrapRef = useFocusTrap(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -95,7 +97,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, lang }) =
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden" dir={lang === "ar" ? "rtl" : "ltr"}>
+        <div ref={focusTrapRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden" dir={lang === "ar" ? "rtl" : "ltr"}>
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
