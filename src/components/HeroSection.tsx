@@ -77,11 +77,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                   </>
                 )}
               </h1>
-              <p className="text-neutral-500 text-xs sm:text-sm font-normal leading-relaxed mt-1.5 sm:mt-1 max-w-xl">
+              {/* Desktop: Full Technical Paragraph */}
+              <p className="hidden sm:block text-neutral-500 text-xs sm:text-sm font-normal leading-relaxed mt-1.5 sm:mt-1 max-w-xl">
                 {lang === "ar"
                   ? "تثبيت محكم بالضغط داخل فواصل لوحة القيادة الأصلية. ثبات تام على الكثبان الرملية بدون أي تلف لمقصورة السيارة."
                   : "Precision snap-fit directly into factory dashboard panel seams. Unshakeable stability on desert dunes with zero drilling or adhesive damage."}
               </p>
+
+              {/* Mobile (< sm): Ultra-Compact Luxury Trust Badges */}
+              <div className="flex sm:hidden items-center gap-1.5 flex-wrap mt-2">
+                <span className="inline-flex items-center gap-1 bg-[#faf6ed] text-[#9b7832] border border-[#c5a059]/30 px-2 py-0.5 rounded-md text-[10.5px] font-semibold">
+                  <span className="w-1 h-1 rounded-full bg-[#c5a059]" />
+                  <span>{lang === "ar" ? "بدون حفر أو لصق" : "Zero Drilling"}</span>
+                </span>
+                <span className="inline-flex items-center gap-1 bg-neutral-100/90 text-neutral-800 border border-neutral-200/80 px-2 py-0.5 rounded-md text-[10.5px] font-medium">
+                  <span className="w-1 h-1 rounded-full bg-neutral-400" />
+                  <span>{lang === "ar" ? "ثبات صحراوي فائق" : "Dune Stability"}</span>
+                </span>
+                <span className="inline-flex items-center gap-1 bg-neutral-100/90 text-neutral-800 border border-neutral-200/80 px-2 py-0.5 rounded-md text-[10.5px] font-medium">
+                  <span className="w-1 h-1 rounded-full bg-neutral-400" />
+                  <span>{lang === "ar" ? "ضمان رسمي عام" : "1-Yr Warranty"}</span>
+                </span>
+              </div>
             </motion.div>
 
             {/* The Front-and-Center Selector Console */}
