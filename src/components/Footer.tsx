@@ -209,12 +209,6 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
         }`}
         aria-label={lang === "ar" ? "العودة إلى الأعلى" : "Back to top"}
       >
-          showScrollTop
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 translate-y-4 pointer-events-none"
-        }`}
-        aria-label={lang === "ar" ? "العودة إلى الأعلى" : "Back to top"}
-      >
         <ArrowUp size={16} className="text-neutral-300 group-hover:text-white" />
       </button>
     </>
