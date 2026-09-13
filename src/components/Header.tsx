@@ -183,15 +183,33 @@ export const Header: React.FC<HeaderProps> = ({
     }, 200);
   };
 
-  // Lock body scroll when mobile sidebar is open
+  // Robust mobile body scroll lock when mobile sidebar is open (prevents iOS Safari & mobile background scrolling)
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    if (!mobileMenuOpen) return;
+
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const originalBodyStyle = {
+      overflow: document.body.style.overflow,
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+    };
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+
+    // Lock both html and body, fixing document in place without shifting visual offset
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+
     return () => {
-      document.body.style.overflow = "";
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.overflow = originalBodyStyle.overflow;
+      document.body.style.position = originalBodyStyle.position;
+      document.body.style.top = originalBodyStyle.top;
+      document.body.style.width = originalBodyStyle.width;
+      window.scrollTo(0, scrollY);
     };
   }, [mobileMenuOpen]);
 
@@ -750,7 +768,7 @@ export const Header: React.FC<HeaderProps> = ({
       {mounted && createPortal(
         <AnimatePresence>
           {mobileMenuOpen && (
-            <div className="fixed inset-0 z-[100] lg:hidden" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <div className="fixed inset-0 z-[100] lg:hidden touch-none overscroll-none" dir={lang === "ar" ? "rtl" : "ltr"}>
               {/* Dark Full-Screen Backdrop */}
               <motion.div
                 initial={{ opacity: 0 }}
@@ -758,7 +776,7 @@ export const Header: React.FC<HeaderProps> = ({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 onClick={() => setMobileMenuOpen(false)}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer touch-none"
               />
 
               {/* Sliding Sidebar Shell */}
@@ -806,7 +824,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
 
                 {/* Scrollable Navigation Body */}
-                <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-none px-4 py-3 sm:px-5 sm:py-4 space-y-3.5 sm:space-y-4">
+                <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-none px-4 py-3 sm:px-5 sm:py-4 space-y-3.5 sm:space-y-4 touch-pan-y">
                   {/* Hero Matcher Callout Banner */}
                   {(() => {
                     const isFindActive = clickedHref ? clickedHref === "/find" : pathname === "/find";
