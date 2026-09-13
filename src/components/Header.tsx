@@ -689,8 +689,8 @@ export const Header: React.FC<HeaderProps> = ({
         className={`lg:hidden sticky top-0 z-40 w-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isScrolled
             ? tierStyles.hasBlur
-              ? "bg-white/40 backdrop-blur-2xl backdrop-saturate-[180%] supports-[backdrop-filter]:bg-white/30 border-b border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.06),inset_0_-1px_0_rgba(255,255,255,0.7)]"
-              : "bg-white/95 border-b border-neutral-200 shadow-xs"
+              ? "bg-white/45 backdrop-blur-2xl backdrop-saturate-[180%] supports-[backdrop-filter]:bg-white/35 border-b border-neutral-200/30 shadow-[0_4px_24px_rgba(0,0,0,0.04)]"
+              : "bg-white/95 border-b border-neutral-200/80 shadow-xs"
             : "bg-white border-b border-neutral-100 shadow-none"
         }`}
       >
