@@ -307,9 +307,9 @@ export const Header: React.FC<HeaderProps> = ({
       <header className="hidden lg:block sticky top-0 z-40 w-full pointer-events-none h-[74px] pt-2 px-4 sm:px-6 lg:px-8">
         <div
           style={{ transform: "translateZ(0)" }}
-          className={`pointer-events-auto mx-auto w-full px-5 sm:px-6 rounded-full border flex items-center justify-between gap-4 select-none will-change-[max-width,height,background-color,border-color,box-shadow] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`pointer-events-auto mx-auto w-full px-6 rounded-full border flex items-center justify-between gap-4 select-none will-change-[max-width,height,background-color,border-color,box-shadow] transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
             isScrolled
-              ? "max-w-[1080px] h-[52px] bg-white/65 backdrop-blur-2xl backdrop-saturate-[170%] border-[#c5a059]/35 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.09),inset_0_1px_1px_rgba(255,255,255,0.9)]"
+              ? "max-w-[1180px] h-14 bg-white/70 backdrop-blur-2xl backdrop-saturate-[170%] border-[#c5a059]/35 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)]"
               : `max-w-7xl h-16 bg-white/85 ${tierStyles.blur} border-neutral-200/80 shadow-[0_2px_10px_0_rgba(0,0,0,0.04)]`
           }`}
         >
@@ -318,8 +318,8 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src="/user/images/black_logo.png"
               alt="Thabt"
-              className={`w-auto object-contain transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-90 shrink-0 ${
-                isScrolled ? "h-7" : "h-9"
+              className={`w-auto object-contain transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-90 shrink-0 ${
+                isScrolled ? "h-8" : "h-9"
               }`}
             />
           </Link>
