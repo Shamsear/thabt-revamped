@@ -713,38 +713,38 @@ export const Header: React.FC<HeaderProps> = ({
         }`}
       >
         <div className="px-4 h-14 flex items-center justify-between gap-2 flex-nowrap">
-          {/* Brand Logo */}
+          {/* Brand Logo - Darker & Bolder */}
           <Link href="/" className="flex items-center shrink-0">
             <img
               src="/user/images/black_logo.png"
               alt="Thabt"
-              className="h-8 w-auto object-contain shrink-0"
+              className="h-[34px] w-auto object-contain shrink-0 contrast-125 brightness-95 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.12)]"
             />
           </Link>
 
-          {/* Clean Mobile Right Actions: Search + Cart + Menu */}
+          {/* Clean Mobile Right Actions: Search + Cart + Menu (Darker & Bolder) */}
           <div className="flex items-center gap-1 shrink-0">
             {/* Search Icon */}
             <Link
               href="/search"
-              className="p-2 text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 rounded-full transition-colors"
+              className="p-2 text-neutral-950 hover:text-black hover:bg-neutral-100/80 active:bg-neutral-200/70 rounded-full transition-colors"
               aria-label="Search"
             >
-              <Search size={19} />
+              <Search size={20} className="stroke-[2.4]" />
             </Link>
 
             {/* Shopping Bag */}
             <button
               type="button"
               onClick={onOpenCart}
-              className="relative p-2 text-neutral-900 hover:text-[#c5a059] hover:bg-neutral-100 rounded-full transition-colors flex items-center justify-center"
+              className="relative p-2 text-neutral-950 hover:text-black hover:bg-neutral-100/80 active:bg-neutral-200/70 rounded-full transition-colors flex items-center justify-center"
               aria-label="Shopping Bag"
             >
-              <ShoppingBag size={19} className="stroke-[1.6]" />
+              <ShoppingBag size={20} className="stroke-[2.3]" />
               {cartCount > 0 && (
                 <span
                   key={badgeBounceKey}
-                  className={`absolute top-0.5 right-0.5 rtl:right-auto rtl:left-0.5 w-4 h-4 rounded-full bg-[#c5a059] text-neutral-950 text-[9px] font-black flex items-center justify-center shadow-xs ${badgeBounceKey > 0 ? "badge-bounce" : ""}`}
+                  className={`absolute top-0.5 right-0.5 rtl:right-auto rtl:left-0.5 w-4.5 h-4.5 rounded-full bg-[#c5a059] text-neutral-950 text-[9px] font-black flex items-center justify-center shadow-xs ring-1 ring-white/80 ${badgeBounceKey > 0 ? "badge-bounce" : ""}`}
                 >
                   {cartCount}
                 </span>
@@ -755,10 +755,10 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="p-2 text-neutral-800 hover:text-neutral-950 hover:bg-neutral-100 rounded-full cursor-pointer active:scale-95 transition-transform"
+              className="p-2 text-neutral-950 hover:text-black hover:bg-neutral-100/80 active:bg-neutral-200/70 rounded-full cursor-pointer active:scale-95 transition-transform"
               aria-label="Open navigation menu"
             >
-              <Menu size={22} />
+              <Menu size={22} className="stroke-[2.5]" />
             </button>
           </div>
         </div>
