@@ -88,8 +88,8 @@ export const Header: React.FC<HeaderProps> = ({
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY || document.documentElement.scrollTop || window.pageYOffset || 0;
           setIsScrolled((prev) => {
-            if (!prev && scrollY > 30) return true;
-            if (prev && scrollY < 10) return false;
+            if (!prev && scrollY > 60) return true;
+            if (prev && scrollY < 20) return false;
             return prev;
           });
           ticking = false;
@@ -307,10 +307,10 @@ export const Header: React.FC<HeaderProps> = ({
       <header className="hidden lg:block sticky top-0 z-40 w-full pointer-events-none h-[74px] pt-2 px-4 sm:px-6 lg:px-8">
         <div
           style={{ transform: "translateZ(0)" }}
-          className={`pointer-events-auto mx-auto w-full px-6 rounded-full border flex items-center justify-between gap-4 select-none will-change-[max-width,height,background-color,border-color,box-shadow] transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+          className={`pointer-events-auto mx-auto w-full px-6 rounded-full border flex items-center justify-between gap-4 select-none will-change-[max-width,height,background-color,border-color,box-shadow] transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
             isScrolled
-              ? "max-w-[1180px] h-14 bg-white/70 backdrop-blur-2xl backdrop-saturate-[170%] border-[#c5a059]/35 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)]"
-              : `max-w-7xl h-16 bg-white/85 ${tierStyles.blur} border-neutral-200/80 shadow-[0_2px_10px_0_rgba(0,0,0,0.04)]`
+              ? "max-w-[1200px] h-[56px] bg-white/75 backdrop-blur-2xl backdrop-saturate-[170%] border-[#c5a059]/35 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)]"
+              : `max-w-[1260px] h-[64px] bg-white/85 ${tierStyles.blur} border-neutral-200/80 shadow-[0_2px_10px_0_rgba(0,0,0,0.04)]`
           }`}
         >
           {/* Brand Logo */}
@@ -318,7 +318,7 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src="/user/images/black_logo.png"
               alt="Thabt"
-              className={`w-auto object-contain transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-90 shrink-0 ${
+              className={`w-auto object-contain transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:opacity-90 shrink-0 ${
                 isScrolled ? "h-8" : "h-9"
               }`}
             />
@@ -335,7 +335,7 @@ export const Header: React.FC<HeaderProps> = ({
                     initial={{ opacity: 0, scale: 0.9, width: 0 }}
                     animate={{ opacity: 1, scale: 1, width: "auto" }}
                     exit={{ opacity: 0, scale: 0.9, width: 0 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
                     className="overflow-hidden flex items-center h-full shrink-0"
                   >
                     <Link
@@ -471,7 +471,7 @@ export const Header: React.FC<HeaderProps> = ({
                 animate={{
                   width: searchOpen ? (typeof window !== "undefined" && window.innerWidth >= 1280 ? 270 : 220) : 38,
                 }}
-                transition={{ type: "spring", stiffness: 460, damping: 34 }}
+                transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
                 className={`flex items-center h-8.5 rounded-full overflow-hidden transition-colors duration-200 ${
                   searchOpen
                     ? "bg-neutral-50/95 hover:bg-neutral-100/70 focus-within:bg-white border border-neutral-300 focus-within:border-[#c5a059] shadow-2xs px-2"
@@ -704,7 +704,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Opaque at rest, dissolves into translucent liquid glass on scroll          */}
       {/* ========================================================================= */}
       <header
-        className={`lg:hidden sticky top-0 z-40 w-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`lg:hidden sticky top-0 z-40 w-full transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           isScrolled
             ? tierStyles.hasBlur
               ? "bg-white/45 backdrop-blur-2xl backdrop-saturate-[180%] supports-[backdrop-filter]:bg-white/35 border-b border-neutral-200/30 shadow-[0_4px_24px_rgba(0,0,0,0.04)]"
