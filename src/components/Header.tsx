@@ -88,8 +88,8 @@ export const Header: React.FC<HeaderProps> = ({
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY || document.documentElement.scrollTop || window.pageYOffset || 0;
           setIsScrolled((prev) => {
-            if (!prev && scrollY > 45) return true;
-            if (prev && scrollY < 15) return false;
+            if (!prev && scrollY > 30) return true;
+            if (prev && scrollY < 10) return false;
             return prev;
           });
           ticking = false;
@@ -451,7 +451,6 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Search Icon Toggle with Smooth Animated Inline Expansion */}
             <div ref={searchContainerRef} className="relative flex items-center shrink-0">
               <motion.div
-                layout
                 initial={false}
                 animate={{
                   width: searchOpen ? (typeof window !== "undefined" && window.innerWidth >= 1280 ? 270 : 220) : 38,
@@ -681,14 +680,22 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
           </div>
-        </motion.div>
+        </div>
       </header>
 
       {/* ========================================================================= */}
-      {/* MOBILE CLEAN TOP BAR (<lg)                                               */}
-      {/* Clean, un-cramped sticky bar: Logo + Search + Cart + Menu Drawer         */}
+      {/* MOBILE LIQUID TOP BAR (<lg)                                               */}
+      {/* Opaque at rest, dissolves into translucent liquid glass on scroll          */}
       {/* ========================================================================= */}
-      <header className="lg:hidden sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-neutral-200/80 transition-colors duration-200 shadow-2xs">
+      <header
+        className={`lg:hidden sticky top-0 z-40 w-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isScrolled
+            ? tierStyles.hasBlur
+              ? "bg-white/60 backdrop-blur-xl supports-[backdrop-filter]:bg-white/50 border-b border-neutral-200/40 shadow-[0_4px_24px_rgba(0,0,0,0.06)]"
+              : "bg-white/95 border-b border-neutral-200 shadow-xs"
+            : "bg-white border-b border-neutral-100 shadow-none"
+        }`}
+      >
         <div className="px-4 h-14 flex items-center justify-between gap-2 flex-nowrap">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center shrink-0">

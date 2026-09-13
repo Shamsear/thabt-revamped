@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowUp, MapPin, Phone, Mail, ChevronRight } from "lucide-react";
 import { useAppContext, SupportedLanguage } from "@/context/AppContext";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
@@ -12,14 +13,28 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
   const context = useAppContext();
+  const pathname = usePathname();
   const lang = propLang || context.lang;
   const { hasStickyBottomBar, customWhatsAppMessage } = context;
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isScrolledDown, setIsScrolledDown] = useState(false);
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
+
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 300);
+      const currentScrollY = window.scrollY;
+      setShowScrollTop(currentScrollY > 300);
+
+      // Match MobileBottomNav scroll-down threshold so buttons track bottom nav in lockstep
+      if (currentScrollY > lastScrollY && currentScrollY > 60) {
+        setIsScrolledDown(true);
+      } else {
+        setIsScrolledDown(false);
+      }
+      lastScrollY = currentScrollY;
     };
+
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -32,6 +47,19 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
   const whatsappHref = `https://api.whatsapp.com/send?phone=97450400314${
     customWhatsAppMessage ? `&text=${encodeURIComponent(customWhatsAppMessage)}` : ""
   }`;
+
+  const isCheckout = pathname === "/checkout";
+
+  // Coordinates with MobileBottomNav safe-area calculation so buttons never go down behind or under the nav bar
+  const floatingBottomClass = isCheckout
+    ? "bottom-[calc(1.25rem+env(safe-area-inset-bottom))] sm:bottom-5"
+    : hasStickyBottomBar
+    ? isScrolledDown
+      ? "bottom-[calc(8.2rem+env(safe-area-inset-bottom))] sm:bottom-20"
+      : "bottom-[calc(8.8rem+env(safe-area-inset-bottom))] sm:bottom-20"
+    : isScrolledDown
+    ? "bottom-[calc(4.8rem+env(safe-area-inset-bottom))] sm:bottom-5"
+    : "bottom-[calc(5.4rem+env(safe-area-inset-bottom))] sm:bottom-5";
 
   return (
     <>
