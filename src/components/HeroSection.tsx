@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
-import { motion, LayoutGroup, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup, useScroll, useTransform } from "framer-motion";
 import { CustomSelect } from "@/components/CustomSelect";
 import { staggerContainerVariants, fadeUpItemVariants } from "@/utils/animations";
 import {
@@ -102,7 +102,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
             </motion.div>
 
             {/* The Front-and-Center Selector Console */}
-            <motion.div variants={fadeUpItemVariants} className="bg-neutral-50/90 border border-neutral-200/90 rounded-2xl p-4 sm:p-4.5 shadow-xs">
+            <motion.div
+              layout
+              variants={fadeUpItemVariants}
+              transition={{ layout: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } }}
+              className="bg-neutral-50/90 border border-neutral-200/90 rounded-2xl p-4 sm:p-4.5 shadow-xs"
+            >
               {/* Tab Toggles with Calibrated Animated Gold Sliding Indicator */}
               <LayoutGroup id="heroTabSelector">
                 <div className="flex border-b border-neutral-200/80 mb-3 relative">
@@ -146,154 +151,152 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                 </div>
               </LayoutGroup>
 
-              {/* Tab Forms with Simultaneous Zero-Jitter Crossfade */}
-              <div className="grid grid-cols-1 items-start">
-                {/* Tab 1: Vehicle Base Finder */}
-                <div
-                  className={`col-start-1 row-start-1 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                    activeTab === "vehicle"
-                      ? "opacity-100 translate-y-0 pointer-events-auto"
-                      : "opacity-0 translate-y-1 pointer-events-none"
-                  }`}
-                  aria-hidden={activeTab !== "vehicle"}
-                >
-                  <form onSubmit={handleSearchSubmit} className="space-y-3 sm:space-y-2.5">
-                    <div className="flex items-center justify-between gap-1">
-                      <h2 className="text-[10px] sm:text-[11px] uppercase tracking-normal sm:tracking-wider text-neutral-500 font-semibold whitespace-nowrap">
-                        {lang === "ar" ? "ما هي السيارة التي تستخدمها؟" : "What car are you using?"}
-                      </h2>
-                      <span className="text-[10px] sm:text-[11px] text-[#c5a059] font-medium whitespace-nowrap shrink-0">
-                        {lang === "ar" ? "تطابق مصنعي 100%" : "100% Factory Match"}
-                      </span>
-                    </div>
+              {/* Tab Forms with Dynamic Auto-Sizing Container */}
+              <AnimatePresence mode="wait" initial={false}>
+                {activeTab === "vehicle" ? (
+                  <motion.div
+                    key="vehicle-tab"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                  >
+                    <form onSubmit={handleSearchSubmit} className="space-y-3 sm:space-y-2.5">
+                      <div className="flex items-center justify-between gap-1">
+                        <h2 className="text-[10px] sm:text-[11px] uppercase tracking-normal sm:tracking-wider text-neutral-500 font-semibold whitespace-nowrap">
+                          {lang === "ar" ? "ما هي السيارة التي تستخدمها؟" : "What car are you using?"}
+                        </h2>
+                        <span className="text-[10px] sm:text-[11px] text-[#c5a059] font-medium whitespace-nowrap shrink-0">
+                          {lang === "ar" ? "تطابق مصنعي 100%" : "100% Factory Match"}
+                        </span>
+                      </div>
 
-                    {/* 3 Dropdowns: Compact 2-row layout on mobile, 3-column row on sm/lg */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                      {/* Brand: full-width on mobile */}
-                      <div className="col-span-2 sm:col-span-1">
+                      {/* 3 Dropdowns: Compact 2-row layout on mobile, 3-column row on sm/lg */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                        {/* Brand: full-width on mobile */}
+                        <div className="col-span-2 sm:col-span-1">
+                          <CustomSelect
+                            label={lang === "ar" ? "السيارة" : "Vehicle"}
+                            value={selectedVehicleBrand}
+                            onChange={(newBrand) => {
+                              setSelectedVehicleBrand(newBrand);
+                              const models = VEHICLE_MODELS[newBrand] || [];
+                              setSelectedVehicleModel(models[0] || "");
+                            }}
+                            options={VEHICLE_BRANDS}
+                            placeholder={lang === "ar" ? "الماركة" : "Brand"}
+                            lang={lang}
+                          />
+                        </div>
+
+                        {/* Model: 1 column on mobile */}
+                        <div className="col-span-1">
+                          <CustomSelect
+                            label={lang === "ar" ? "الموديل" : "Vehicle Model"}
+                            value={selectedVehicleModel}
+                            onChange={(newModel) => setSelectedVehicleModel(newModel)}
+                            options={availableVehicleModels}
+                            placeholder={lang === "ar" ? "الموديل" : "Model"}
+                            disabled={!selectedVehicleBrand}
+                            disabledText={lang === "ar" ? "اختر الماركة أولاً" : "Select Brand First"}
+                            lang={lang}
+                          />
+                        </div>
+
+                        {/* Year: 1 column on mobile */}
+                        <div className="col-span-1">
+                          <CustomSelect
+                            label={lang === "ar" ? "السنة" : "Vehicle Year"}
+                            value={selectedVehicleYear}
+                            onChange={(newYear) => setSelectedVehicleYear(newYear)}
+                            options={VEHICLE_YEARS}
+                            placeholder={lang === "ar" ? "السنة" : "Year"}
+                            disabled={!selectedVehicleModel}
+                            disabledText={lang === "ar" ? "اختر الموديل أولاً" : "Select Model First"}
+                            lang={lang}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Primary Action Button */}
+                      <div className="pt-1">
+                        <button
+                          type="submit"
+                          className="w-full py-3 px-3 sm:px-5 rounded-xl sm:rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-[11px] sm:text-xs uppercase tracking-wide sm:tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
+                        >
+                          <span className="whitespace-nowrap truncate">
+                            {lang === "ar"
+                              ? `عرض قاعدة ${selectedVehicleBrand} المخصصة`
+                              : `View Exact Fit for ${selectedVehicleBrand}`}
+                          </span>
+                          <ArrowRight size={14} className="rtl:rotate-180 transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 shrink-0" />
+                        </button>
+                      </div>
+                    </form>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="device-tab"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                  >
+                    <form onSubmit={handleSearchSubmit} className="space-y-3 sm:space-y-2.5">
+                      <div className="flex items-center justify-between gap-1">
+                        <h2 className="text-[10px] sm:text-[11px] uppercase tracking-normal sm:tracking-wider text-neutral-500 font-semibold whitespace-nowrap">
+                          {lang === "ar" ? "ما هو الجهاز الذي تستخدمه؟" : "What device are you using?"}
+                        </h2>
+                        <span className="text-[10px] sm:text-[11px] text-[#c5a059] font-medium whitespace-nowrap shrink-0">
+                          {lang === "ar" ? "يدعم MagSafe" : "MagSafe Qi2 Ready"}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2.5">
+                        {/* Device Brand */}
                         <CustomSelect
-                          label={lang === "ar" ? "السيارة" : "Vehicle"}
-                          value={selectedVehicleBrand}
-                          onChange={(newBrand) => {
-                            setSelectedVehicleBrand(newBrand);
-                            const models = VEHICLE_MODELS[newBrand] || [];
-                            setSelectedVehicleModel(models[0] || "");
+                          label={lang === "ar" ? "الجهاز" : "Device"}
+                          value={selectedDeviceBrand}
+                          onChange={(newDevice) => {
+                            setSelectedDeviceBrand(newDevice);
+                            const models = DEVICE_MODELS[newDevice] || [];
+                            setSelectedDeviceModel(models[0] || "");
                           }}
-                          options={VEHICLE_BRANDS}
+                          options={DEVICE_BRANDS}
                           placeholder={lang === "ar" ? "الماركة" : "Brand"}
                           lang={lang}
                         />
-                      </div>
 
-                      {/* Model: 1 column on mobile */}
-                      <div className="col-span-1">
+                        {/* Device Model */}
                         <CustomSelect
-                          label={lang === "ar" ? "الموديل" : "Vehicle Model"}
-                          value={selectedVehicleModel}
-                          onChange={(newModel) => setSelectedVehicleModel(newModel)}
-                          options={availableVehicleModels}
+                          label={lang === "ar" ? "موديل الجهاز" : "Device Model"}
+                          value={selectedDeviceModel}
+                          onChange={(newModel) => setSelectedDeviceModel(newModel)}
+                          options={availableDeviceModels}
                           placeholder={lang === "ar" ? "الموديل" : "Model"}
-                          disabled={!selectedVehicleBrand}
+                          disabled={!selectedDeviceBrand}
                           disabledText={lang === "ar" ? "اختر الماركة أولاً" : "Select Brand First"}
                           lang={lang}
                         />
                       </div>
 
-                      {/* Year: 1 column on mobile */}
-                      <div className="col-span-1">
-                        <CustomSelect
-                          label={lang === "ar" ? "السنة" : "Vehicle Year"}
-                          value={selectedVehicleYear}
-                          onChange={(newYear) => setSelectedVehicleYear(newYear)}
-                          options={VEHICLE_YEARS}
-                          placeholder={lang === "ar" ? "السنة" : "Year"}
-                          disabled={!selectedVehicleModel}
-                          disabledText={lang === "ar" ? "اختر الموديل أولاً" : "Select Model First"}
-                          lang={lang}
-                        />
+                      <div className="pt-1">
+                        <button
+                          type="submit"
+                          className="w-full py-3 px-3 sm:px-5 rounded-xl sm:rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-[11px] sm:text-xs uppercase tracking-wide sm:tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
+                        >
+                          <span className="whitespace-nowrap truncate">
+                            {lang === "ar"
+                              ? `عرض حامل ${selectedDeviceBrand}`
+                              : `View Compatible ${selectedDeviceBrand} Holder`}
+                          </span>
+                          <ArrowRight size={14} className="rtl:rotate-180 transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 shrink-0" />
+                        </button>
                       </div>
-                    </div>
-
-                    {/* Primary Action Button */}
-                    <div className="pt-1">
-                      <button
-                        type="submit"
-                        className="w-full py-3 px-3 sm:px-5 rounded-xl sm:rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-[11px] sm:text-xs uppercase tracking-wide sm:tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
-                      >
-                        <span className="whitespace-nowrap truncate">
-                          {lang === "ar"
-                            ? `عرض قاعدة ${selectedVehicleBrand} المخصصة`
-                            : `View Exact Fit for ${selectedVehicleBrand}`}
-                        </span>
-                        <ArrowRight size={14} className="rtl:rotate-180 transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 shrink-0" />
-                      </button>
-                    </div>
-                  </form>
-                </div>
-
-                {/* Tab 2: Device Holder Finder */}
-                <div
-                  className={`col-start-1 row-start-1 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                    activeTab === "device"
-                      ? "opacity-100 translate-y-0 pointer-events-auto"
-                      : "opacity-0 translate-y-1 pointer-events-none"
-                  }`}
-                  aria-hidden={activeTab !== "device"}
-                >
-                  <form onSubmit={handleSearchSubmit} className="space-y-3 sm:space-y-2.5">
-                    <div className="flex items-center justify-between gap-1">
-                      <h2 className="text-[10px] sm:text-[11px] uppercase tracking-normal sm:tracking-wider text-neutral-500 font-semibold whitespace-nowrap">
-                        {lang === "ar" ? "ما هو الجهاز الذي تستخدمه؟" : "What device are you using?"}
-                      </h2>
-                      <span className="text-[10px] sm:text-[11px] text-[#c5a059] font-medium whitespace-nowrap shrink-0">
-                        {lang === "ar" ? "يدعم MagSafe" : "MagSafe Qi2 Ready"}
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2.5">
-                      {/* Device Brand */}
-                      <CustomSelect
-                        label={lang === "ar" ? "الجهاز" : "Device"}
-                        value={selectedDeviceBrand}
-                        onChange={(newDevice) => {
-                          setSelectedDeviceBrand(newDevice);
-                          const models = DEVICE_MODELS[newDevice] || [];
-                          setSelectedDeviceModel(models[0] || "");
-                        }}
-                        options={DEVICE_BRANDS}
-                        placeholder={lang === "ar" ? "الماركة" : "Brand"}
-                        lang={lang}
-                      />
-
-                      {/* Device Model */}
-                      <CustomSelect
-                        label={lang === "ar" ? "موديل الجهاز" : "Device Model"}
-                        value={selectedDeviceModel}
-                        onChange={(newModel) => setSelectedDeviceModel(newModel)}
-                        options={availableDeviceModels}
-                        placeholder={lang === "ar" ? "الموديل" : "Model"}
-                        disabled={!selectedDeviceBrand}
-                        disabledText={lang === "ar" ? "اختر الماركة أولاً" : "Select Brand First"}
-                        lang={lang}
-                      />
-                    </div>
-
-                    <div className="pt-1">
-                      <button
-                        type="submit"
-                        className="w-full py-3 px-3 sm:px-5 rounded-xl sm:rounded-lg bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-[11px] sm:text-xs uppercase tracking-wide sm:tracking-widest font-bold transition-[background-color,box-shadow] duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs hover:shadow-[0_6px_24px_rgba(197,160,89,0.3)] active-press group"
-                      >
-                        <span className="whitespace-nowrap truncate">
-                          {lang === "ar"
-                            ? `عرض حامل ${selectedDeviceBrand}`
-                            : `View Compatible ${selectedDeviceBrand} Holder`}
-                        </span>
-                        <ArrowRight size={14} className="rtl:rotate-180 transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 shrink-0" />
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
+                    </form>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
 
             {/* Feature Badges: Clean 3-tile grid on mobile, inline checkmark row on desktop */}
