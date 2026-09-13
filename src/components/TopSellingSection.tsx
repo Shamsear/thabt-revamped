@@ -10,6 +10,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/free-mode";
 import { Plus, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { motion } from "framer-motion";
+import { fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 
 interface TopSellingSectionProps {
   products: Product[];
@@ -42,10 +44,16 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
   };
 
   return (
-    <section id="hardware" className="py-12 sm:py-16 lg:py-20 bg-white text-neutral-900 border-b border-neutral-100 scroll-mt-16">
+    <section id="hardware" className="py-12 sm:py-16 lg:py-20 bg-white text-neutral-900 border-b border-neutral-100 scroll-mt-16 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         {/* Section Header with Minimalist Carousel Controls */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-6">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={fadeUpItemVariants}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-6"
+        >
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2">
               {lang === "ar" ? "حلول التثبيت الأكثر طلباً" : "Precision Equipment"}
@@ -88,7 +96,7 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Swiper Carousel */}
         <div className="relative">

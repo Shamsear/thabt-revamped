@@ -1,5 +1,7 @@
 import React from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 
 interface WhyMountSectionProps {
   lang: "en" | "ar";
@@ -55,10 +57,16 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
   ];
 
   return (
-    <section id="architecture" className="py-10 sm:py-16 lg:py-20 bg-neutral-50 text-neutral-900 border-b border-neutral-100">
+    <section id="architecture" className="py-10 sm:py-16 lg:py-20 bg-neutral-50 text-neutral-900 border-b border-neutral-100 overflow-hidden">
       <div className="max-w-6xl mx-auto px-3 sm:px-8">
         {/* Section Header */}
-        <div className="max-w-2xl mb-6 sm:mb-12">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={fadeUpItemVariants}
+          className="max-w-2xl mb-6 sm:mb-12"
+        >
           <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2">
             {lang === "ar" ? "هندسة التثبيت المزدوجة" : "The Two-Part Architecture"}
           </p>
@@ -73,49 +81,63 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
               </>
             )}
           </h2>
-        </div>
+        </motion.div>
 
         {/* 2-Part System Display */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-8 mb-6 sm:mb-12">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={staggerContainerVariants}
+          className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-8 mb-6 sm:mb-12"
+        >
           {steps.map((step) => (
-            <Link
-              key={step.num}
-              href={step.href}
-              className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-8 border border-neutral-200/80 hover:border-[#c5a059] active:border-[#c5a059] shadow-xs hover:shadow-lg active:shadow-md hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 ease-out flex flex-col justify-between group cursor-pointer active-press select-none"
-            >
-              <div className="h-32 sm:h-48 flex items-center justify-center p-2 sm:p-4 mb-3 sm:mb-6">
-                <img
-                  src={step.image}
-                  alt={step.title}
-                  className="max-h-full max-w-full object-contain group-hover:scale-105 group-active:scale-105 transition-transform duration-500 ease-out"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center gap-1.5 mb-1 sm:mb-2">
-                  <span className="text-[10px] sm:text-[11px] font-mono text-[#c5a059] font-semibold">
-                    {step.num}
-                  </span>
-                  <span className="text-[10px] sm:text-[11px] text-neutral-400 uppercase tracking-wider font-medium">
-                    // {step.tag}
-                  </span>
+            <motion.div key={step.num} variants={fadeUpItemVariants}>
+              <Link
+                href={step.href}
+                className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-8 border border-neutral-200/80 hover:border-[#c5a059] active:border-[#c5a059] shadow-xs hover:shadow-lg active:shadow-md hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 ease-out flex flex-col justify-between group cursor-pointer active-press select-none h-full"
+              >
+                <div className="h-32 sm:h-48 flex items-center justify-center p-2 sm:p-4 mb-3 sm:mb-6">
+                  <img
+                    src={step.image}
+                    alt={step.title}
+                    className="max-h-full max-w-full object-contain group-hover:scale-105 group-active:scale-105 transition-transform duration-500 ease-out"
+                  />
                 </div>
-                <h3 className="text-sm sm:text-lg font-semibold text-neutral-900 group-hover:text-[#c5a059] group-active:text-[#c5a059] mb-1 sm:mb-2 transition-colors duration-200">
-                  {step.title}
-                </h3>
-                <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
-            </Link>
+
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1 sm:mb-2">
+                    <span className="text-[10px] sm:text-[11px] font-mono text-[#c5a059] font-semibold">
+                      {step.num}
+                    </span>
+                    <span className="text-[10px] sm:text-[11px] text-neutral-400 uppercase tracking-wider font-medium">
+                      // {step.tag}
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-lg font-semibold text-neutral-900 group-hover:text-[#c5a059] group-active:text-[#c5a059] mb-1 sm:mb-2 transition-colors duration-200">
+                    {step.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
+                    {step.desc}
+                  </p>
+                </div>
+              </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* 4 Minimalist Engineering Standards: 2x2 grid on mobile, 4-col on desktop */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 pt-5 sm:pt-10 border-t border-neutral-200/80">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={staggerContainerVariants}
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 pt-5 sm:pt-10 border-t border-neutral-200/80"
+        >
           {specs.map((item) => (
-            <div
+            <motion.div
               key={item.num}
+              variants={fadeUpItemVariants}
               className="group space-y-0.5 sm:space-y-1 p-2.5 sm:p-3.5 rounded-xl bg-white/70 hover:bg-white border border-neutral-200/60 hover:border-[#c5a059]/60 shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 ease-out select-none"
             >
               <span className="text-[10px] sm:text-xs font-mono text-[#c5a059] group-hover:text-[#b38e46] tracking-wider font-semibold transition-colors duration-200">
@@ -124,12 +146,12 @@ export const WhyMountSection: React.FC<WhyMountSectionProps> = ({ lang }) => {
               <h4 className="text-xs sm:text-sm font-semibold text-neutral-900 group-hover:text-[#0b0d11] leading-snug transition-colors duration-200">
                 {item.title}
               </h4>
-              <p className="text-[10px] sm:text-xs text-neutral-500 leading-relaxed">
+              <p className="text-[11px] sm:text-xs text-neutral-500 leading-relaxed font-normal">
                 {item.desc}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CustomSelect } from "@/components/CustomSelect";
 import { useAppContext } from "@/context/AppContext";
+import { motion } from "framer-motion";
 import {
   ShoppingBag,
   Trash2,
@@ -97,7 +98,12 @@ export default function CartPage() {
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-5 sm:py-12">
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.15 }}
+        className="flex-1 py-5 sm:py-12"
+      >
         <div className="max-w-7xl mx-auto px-3 sm:px-8">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
@@ -432,7 +438,7 @@ export default function CartPage() {
             </div>
           )}
         </div>
-      </main>
+      </motion.main>
 
       <Footer />
     </div>

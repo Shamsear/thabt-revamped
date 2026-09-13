@@ -100,6 +100,36 @@
   will-change: transform;
 }
 
+/* LCP-Safe Fast Entrance Keyframes (CSS-native, runs on mount instantly without JS IntersectionObserver delays) */
+@keyframes lcpFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-lcp-fade-up {
+  animation: lcpFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-lcp-fade-up {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 .animate-ticker:hover {
   animation-play-state: paused;
 }
