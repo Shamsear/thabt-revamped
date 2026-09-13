@@ -67,8 +67,11 @@ export const Header: React.FC<HeaderProps> = ({
   const [moreOpen, setMoreOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [mobileSearchQuery, setMobileSearchQuery] = useState("");
   const [clickedHref, setClickedHref] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const currencyRef = useRef<HTMLDivElement>(null);
@@ -147,6 +150,7 @@ export const Header: React.FC<HeaderProps> = ({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSearchOpen(false);
+        setMobileSearchOpen(false);
         setMoreOpen(false);
         setCurrencyOpen(false);
         setUserMenuOpen(false);
@@ -183,9 +187,9 @@ export const Header: React.FC<HeaderProps> = ({
     }, 200);
   };
 
-  // Robust mobile body scroll lock when mobile sidebar is open (prevents iOS Safari & mobile background scrolling)
+  // Robust mobile body scroll lock when mobile sidebar or mobile search is open
   useEffect(() => {
-    if (!mobileMenuOpen) return;
+    if (!mobileMenuOpen && !mobileSearchOpen) return;
 
     const scrollY = window.scrollY || window.pageYOffset || 0;
     const originalBodyStyle = {
@@ -211,14 +215,58 @@ export const Header: React.FC<HeaderProps> = ({
       document.body.style.width = originalBodyStyle.width;
       window.scrollTo(0, scrollY);
     };
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, mobileSearchOpen]);
 
-  // Focus search input when toggled open
+  // Focus desktop search input when toggled open
   useEffect(() => {
     if (searchOpen) {
       setTimeout(() => searchInputRef.current?.focus(), 50);
     }
   }, [searchOpen]);
+
+  // Focus mobile search input when toggled open
+  useEffect(() => {
+    if (mobileSearchOpen) {
+      setTimeout(() => mobileSearchInputRef.current?.focus(), 80);
+    }
+  }, [mobileSearchOpen]);
+
+  // Close mobile search and sidebar on route navigation
+  useEffect(() => {
+    setMobileSearchOpen(false);
+  }, [pathname]);
+
+  const handleMobileSearchSubmit = (queryToSearch?: string) => {
+    const q = (queryToSearch !== undefined ? queryToSearch : mobileSearchQuery).trim();
+    if (q) {
+      setMobileSearchOpen(false);
+      router.push(`/search?q=${encodeURIComponent(q)}`);
+    }
+  };
+
+  const mobileLiveMatches = useMemo(() => {
+    const q = mobileSearchQuery.trim().toLowerCase();
+    if (q.length < 2) return [];
+    return MOCK_ALL_PRODUCTS.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.name_ar && p.name_ar.includes(q)) ||
+        (p.category_slug && p.category_slug.toLowerCase().includes(q)) ||
+        (p.compatible_cars && p.compatible_cars.some((c: string) => c.toLowerCase().includes(q)))
+    ).slice(0, 4);
+  }, [mobileSearchQuery]);
+
+  const mobileQuickTags = useMemo(
+    () => [
+      { label: lang === "ar" ? "لاندكروزر" : "Land Cruiser", query: "Land Cruiser" },
+      { label: lang === "ar" ? "قواعد تثبيت" : "ProClips Bases", query: "ProClips" },
+      { label: lang === "ar" ? "حوامل أجهزة" : "Device Holders", query: "Holder" },
+      { label: lang === "ar" ? "نيسان باترول" : "Patrol", query: "Patrol" },
+      { label: lang === "ar" ? "ماج سيف" : "MagSafe", query: "MagSafe" },
+      { label: lang === "ar" ? "ماونت إكس" : "MountX", query: "MountX" },
+    ],
+    [lang]
+  );
 
   const currencies: { code: SupportedCurrency; name: string }[] = [
     { code: "QAR", name: "Qatar" },
@@ -865,14 +913,18 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Clean Mobile Right Actions: Search + Cart + Menu (Darker & Bolder) */}
           <div className="flex items-center gap-1 shrink-0">
-            {/* Search Icon */}
-            <Link
-              href="/search"
-              className="p-2 text-neutral-950 hover:text-black hover:bg-neutral-100/80 active:bg-neutral-200/70 rounded-full transition-colors"
-              aria-label="Search"
+            {/* Search Icon — Instant Luxury Mobile Search Sheet */}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileSearchOpen(true);
+                setMobileMenuOpen(false);
+              }}
+              className="p-2 text-neutral-950 hover:text-black hover:bg-neutral-100/80 active:bg-neutral-200/70 rounded-full transition-colors cursor-pointer"
+              aria-label="Open search"
             >
               <Search size={20} className="stroke-[2.4]" />
-            </Link>
+            </button>
 
             {/* Shopping Bag */}
             <button
@@ -1178,6 +1230,179 @@ export const Header: React.FC<HeaderProps> = ({
                   >
                     <span>{lang === "ar" ? "تواصل معنا عبر واتساب" : "WhatsApp Concierge"}</span>
                   </a>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* Luxury Mobile Search Overlay Sheet */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {mobileSearchOpen && (
+            <div className="fixed inset-0 z-[95] lg:hidden overscroll-none" dir={lang === "ar" ? "rtl" : "ltr"}>
+              {/* Semi-transparent dark blur backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setMobileSearchOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-pointer"
+              />
+
+              {/* Animated Slide-down Search Sheet */}
+              <motion.div
+                initial={{ y: "-100%", opacity: 0.8 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: "-100%", opacity: 0.8 }}
+                transition={{ type: "spring", damping: 30, stiffness: 350 }}
+                className="fixed top-0 inset-x-0 bg-white border-b border-neutral-200 shadow-2xl rounded-b-3xl overflow-hidden max-h-[85vh] flex flex-col z-[96]"
+              >
+                {/* Search Bar Input Row */}
+                <div className="pt-[max(0.75rem,env(safe-area-inset-top))] px-4 pb-3 flex items-center gap-2.5 border-b border-neutral-100">
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleMobileSearchSubmit();
+                    }}
+                    className="flex-1 flex items-center h-11 px-3.5 bg-neutral-100/90 rounded-2xl border border-neutral-200/80 focus-within:border-[#c5a059] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#c5a059]/20 transition-all"
+                  >
+                    <Search size={18} className="text-[#c5a059] shrink-0 mr-2 rtl:mr-0 rtl:ml-2" />
+                    <input
+                      ref={mobileSearchInputRef}
+                      type="search"
+                      enterKeyHint="search"
+                      value={mobileSearchQuery}
+                      onChange={(e) => setMobileSearchQuery(e.target.value)}
+                      placeholder={lang === "ar" ? "ابحث عن سيارة أو قطعة أو حامل..." : "Search model, mount, or car..."}
+                      className="bg-transparent text-sm text-neutral-900 w-full focus:outline-none placeholder-neutral-400 font-medium"
+                    />
+                    {mobileSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileSearchQuery("");
+                          mobileSearchInputRef.current?.focus();
+                        }}
+                        className="p-1 text-neutral-400 hover:text-neutral-700 active:bg-neutral-200/70 rounded-full cursor-pointer shrink-0 ml-1 rtl:ml-0 rtl:mr-1"
+                        aria-label="Clear text"
+                      >
+                        <X size={15} />
+                      </button>
+                    )}
+                  </form>
+
+                  {/* Cancel / Dismiss Button */}
+                  <button
+                    type="button"
+                    onClick={() => setMobileSearchOpen(false)}
+                    className="px-2 py-2 text-xs font-bold text-neutral-600 hover:text-neutral-950 active:text-black cursor-pointer shrink-0 transition-colors"
+                  >
+                    {lang === "ar" ? "إلغاء" : "Cancel"}
+                  </button>
+                </div>
+
+                {/* Suggestions and Live Results */}
+                <div className="p-4 overflow-y-auto max-h-[calc(85vh-80px)] space-y-4">
+                  {/* If user typed and has matches: live results */}
+                  {mobileLiveMatches.length > 0 && (
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">
+                        {lang === "ar" ? "منتجات مطابقة" : "Matching Products"}
+                      </p>
+                      <div className="divide-y divide-neutral-100 rounded-2xl border border-neutral-150 overflow-hidden bg-neutral-50/50">
+                        {mobileLiveMatches.map((product) => (
+                          <Link
+                            key={product.id}
+                            href={`/products/${product.slug}`}
+                            onClick={() => setMobileSearchOpen(false)}
+                            className="flex items-center gap-3 p-2.5 hover:bg-neutral-100 active:bg-neutral-150 transition-colors"
+                          >
+                            <img
+                              src={product.image}
+                              alt={lang === "ar" && product.name_ar ? product.name_ar : product.name}
+                              className="w-11 h-11 object-cover rounded-xl bg-white border border-neutral-200/70 shrink-0"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-semibold text-neutral-900 truncate">
+                                {lang === "ar" && product.name_ar ? product.name_ar : product.name}
+                              </p>
+                              {product.category_slug && (
+                                <p className="text-[11px] text-neutral-500 capitalize truncate">
+                                  {product.category_slug.replace(/-/g, " ")}
+                                </p>
+                              )}
+                            </div>
+                            <div className="text-right rtl:text-left shrink-0">
+                              <span className="text-xs font-bold text-[#c5a059]">
+                                {context.formatPrice(product.price)}
+                              </span>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Quick Trending Tags */}
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">
+                      {lang === "ar" ? "عمليات البحث الشائعة" : "Trending Searches"}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {mobileQuickTags.map((tag) => (
+                        <button
+                          key={tag.query}
+                          type="button"
+                          onClick={() => {
+                            setMobileSearchQuery(tag.query);
+                            handleMobileSearchSubmit(tag.query);
+                          }}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium bg-neutral-100 hover:bg-[#faf6ed] hover:text-[#c5a059] hover:border-[#c5a059]/40 border border-neutral-200/70 text-neutral-700 active:scale-95 transition cursor-pointer"
+                        >
+                          {tag.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Quick Shortcuts: Matcher & Catalog */}
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-neutral-100">
+                    <Link
+                      href="/find"
+                      onClick={() => setMobileSearchOpen(false)}
+                      className="flex items-center gap-2 p-3 rounded-2xl bg-neutral-50 hover:bg-[#faf6ed] border border-neutral-200/70 text-neutral-800 transition"
+                    >
+                      <Compass size={16} className="text-[#c5a059] shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold leading-tight truncate">
+                          {lang === "ar" ? "مطابق سيارتك" : "Vehicle Matcher"}
+                        </p>
+                        <p className="text-[10px] text-neutral-400 truncate">
+                          {lang === "ar" ? "اختر موديل سيارتك" : "Find exact base"}
+                        </p>
+                      </div>
+                    </Link>
+
+                    <Link
+                      href="/search"
+                      onClick={() => setMobileSearchOpen(false)}
+                      className="flex items-center gap-2 p-3 rounded-2xl bg-neutral-50 hover:bg-[#faf6ed] border border-neutral-200/70 text-neutral-800 transition"
+                    >
+                      <SlidersHorizontal size={16} className="text-[#c5a059] shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold leading-tight truncate">
+                          {lang === "ar" ? "كامل الكتالوج" : "All Products"}
+                        </p>
+                        <p className="text-[10px] text-neutral-400 truncate">
+                          {lang === "ar" ? "تصفح مع الفلاتر" : "Browse catalog"}
+                        </p>
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </motion.div>
             </div>
