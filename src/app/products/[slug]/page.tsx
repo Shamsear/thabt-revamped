@@ -739,7 +739,8 @@ export default function ProductDetailPage({
                 <motion.div
                   key={relProd.id}
                   variants={fadeUpItemVariants}
-                  className="h-full flex flex-col justify-between group select-none"
+                  onClick={() => router.push(`/products/${relProd.slug}`)}
+                  className="h-full flex flex-col justify-between group select-none cursor-pointer p-1 rounded-2xl transition-colors hover:bg-neutral-50/40"
                 >
                   <div>
                     {/* Pure Container-less Image */}
@@ -767,7 +768,7 @@ export default function ProductDetailPage({
 
                   <div className="pt-2 flex items-center justify-between gap-1.5 mt-auto">
                     <div className="shrink-0 whitespace-nowrap">
-                      <span className="text-xs sm:text-sm font-bold text-neutral-950 font-mono">
+                      <span className="text-xs sm:text-sm font-bold text-neutral-950 group-hover:text-[#c5a059] transition-colors font-mono">
                         {relProd.price}
                       </span>
                       <span className="text-[10px] sm:text-xs font-semibold text-[#c5a059] ms-1">
@@ -776,7 +777,10 @@ export default function ProductDetailPage({
                     </div>
                     <button
                       type="button"
-                      onClick={() => addToCart(relProd, 1)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(relProd, 1);
+                      }}
                       className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 flex items-center justify-center transition cursor-pointer shrink-0 active-press shadow-2xs"
                       title={lang === "ar" ? "أضف للسلة" : "Add to Cart"}
                     >

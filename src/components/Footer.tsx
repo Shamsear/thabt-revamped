@@ -53,9 +53,9 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
 
   return (
     <>
-      <footer className="bg-[#0b0d11] text-neutral-400 text-xs pt-16 pb-20 sm:pb-12 border-t border-neutral-800">
+      <footer className="bg-[#0b0d11] text-neutral-400 text-xs pt-12 pb-16 sm:pb-9 border-t border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-neutral-800/80">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 pb-9 border-b border-neutral-800/80">
             {/* 1. Brand with White & Gold Logo */}
             <div className="lg:col-span-2 space-y-3">
               <Link href="/">
@@ -144,7 +144,7 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
           </div>
 
           {/* Bottom Bar: Copyright & Legal */}
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
             <p>© {new Date().getFullYear()} Thabt (Gulf Digital Solution). All rights reserved.</p>
             <div className="flex items-center gap-4">
               <Link href="/terms-and-conditions" className="hover:text-neutral-300 transition">

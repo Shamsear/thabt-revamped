@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   staggerContainerVariants,
@@ -37,6 +37,7 @@ function SearchCatalogContent() {
   const initialBrand = searchParams.get("brand") || "all";
   const initialCategory = searchParams.get("category") || "all";
 
+  const router = useRouter();
   const { lang, formatPrice, addToCart, currency, setPreOrderProduct } = useAppContext();
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
@@ -421,7 +422,8 @@ function SearchCatalogContent() {
                       <motion.div
                         key={product.id}
                         variants={fadeUpItemVariants}
-                        className="h-full flex flex-col justify-between group select-none"
+                        onClick={() => router.push(`/products/${product.slug}`)}
+                        className="h-full flex flex-col justify-between group select-none cursor-pointer p-1 rounded-2xl transition-colors hover:bg-neutral-50/40"
                       >
                         <div>
                           {/* Pure Container-less Product Photo Showcase */}
@@ -462,7 +464,7 @@ function SearchCatalogContent() {
                         {/* Pricing & Add to Bag */}
                         <div className="pt-2 flex items-center justify-between gap-2 mt-auto">
                           <div className="shrink-0 whitespace-nowrap">
-                            <span className="text-sm sm:text-base font-bold text-neutral-950 font-mono">
+                            <span className="text-sm sm:text-base font-bold text-neutral-950 group-hover:text-[#c5a059] transition-colors font-mono">
                               {product.price}
                             </span>
                             <span className="text-[11px] sm:text-xs font-semibold text-[#c5a059] ms-1">
@@ -473,7 +475,10 @@ function SearchCatalogContent() {
                           {inStock ? (
                             <button
                               type="button"
-                              onClick={() => handleAddClick(product)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddClick(product);
+                              }}
                               className={`flex items-center justify-center gap-1 text-[11px] sm:text-xs font-semibold py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl transition-all duration-200 cursor-pointer shrink-0 active-press shadow-2xs ${
                                 isAdded
                                   ? "bg-[#25D366] text-white"
@@ -495,7 +500,10 @@ function SearchCatalogContent() {
                           ) : (
                             <button
                               type="button"
-                              onClick={() => setPreOrderProduct(product)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPreOrderProduct(product);
+                              }}
                               className="flex items-center justify-center gap-1 text-[11px] sm:text-xs font-semibold py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 transition-colors shrink-0 cursor-pointer active-press shadow-2xs"
                             >
                               <Clock size={11} />

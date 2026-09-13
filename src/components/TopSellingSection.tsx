@@ -161,7 +161,6 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                   >
                     <Link
                       href={`/products/${product.slug}`}
-                      onClick={(e) => e.stopPropagation()}
                       className="block focus:outline-none"
                     >
                       {/* Pure Container-less Product Photo Showcase */}
@@ -195,21 +194,21 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                     </Link>
 
                     {/* Pricing & Add to Bag */}
-                    <div
-                      className="pt-2 flex items-center justify-between gap-2 mt-auto"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Link href={`/products/${product.slug}`} className="shrink-0 whitespace-nowrap">
-                        <span className="text-sm sm:text-base font-bold text-neutral-950 hover:text-[#c5a059] transition-colors font-mono">
+                    <div className="pt-2 flex items-center justify-between gap-2 mt-auto">
+                      <div className="shrink-0 whitespace-nowrap">
+                        <span className="text-sm sm:text-base font-bold text-neutral-950 group-hover:text-[#c5a059] transition-colors font-mono">
                           {product.price}
                         </span>
                         <span className="text-[11px] sm:text-xs font-semibold text-[#c5a059] ms-1">{currency}</span>
-                      </Link>
+                      </div>
 
                       {inStock ? (
                         <button
                           type="button"
-                          onClick={() => handleAddClick(product)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddClick(product);
+                          }}
                           className={`flex items-center gap-1 text-xs sm:text-xs font-semibold py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl transition-all duration-200 cursor-pointer active-press shadow-2xs shrink-0 ${
                             isAdded
                               ? "bg-[#25D366] text-white"
@@ -231,7 +230,10 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                       ) : (
                         <button
                           type="button"
-                          onClick={() => onOpenPreOrder(product)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onOpenPreOrder(product);
+                          }}
                           className="flex items-center gap-1 text-xs sm:text-xs font-medium py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl bg-neutral-100 hover:bg-[#faf6ed] text-neutral-800 hover:text-[#c5a059] transition-colors cursor-pointer active-press shrink-0"
                         >
                           <span>{lang === "ar" ? "طلب مسبق" : "Pre-Order"}</span>

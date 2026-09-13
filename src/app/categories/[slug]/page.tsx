@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, use, useEffect } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -42,6 +42,7 @@ export default function CategoryPage({
   const resolvedParams = use(params);
   const { slug } = resolvedParams;
 
+  const router = useRouter();
   const { lang, formatPrice, addToCart, currency, setPreOrderProduct } = useAppContext();
 
   // Inline Search, Vehicle, and Sort Filters
@@ -434,7 +435,8 @@ export default function CategoryPage({
                       <motion.div
                         key={product.id}
                         variants={fadeUpItemVariants}
-                        className="h-full flex flex-col justify-between group select-none"
+                        onClick={() => router.push(`/products/${product.slug}`)}
+                        className="h-full flex flex-col justify-between group select-none cursor-pointer p-1 rounded-2xl transition-colors hover:bg-neutral-50/40"
                       >
                         <div>
                           {/* Pure Container-less Product Photo Showcase */}
@@ -474,7 +476,7 @@ export default function CategoryPage({
                         {/* Pricing & Add to Bag */}
                         <div className="pt-2 flex items-center justify-between gap-2 mt-auto">
                           <div className="shrink-0 whitespace-nowrap">
-                            <span className="text-sm sm:text-base font-bold text-neutral-950 font-mono">
+                            <span className="text-sm sm:text-base font-bold text-neutral-950 group-hover:text-[#c5a059] transition-colors font-mono">
                               {product.price}
                             </span>
                             <span className="text-[11px] sm:text-xs font-semibold text-[#c5a059] ms-1">
@@ -485,7 +487,10 @@ export default function CategoryPage({
                           {inStock ? (
                             <button
                               type="button"
-                              onClick={() => handleAddClick(product)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddClick(product);
+                              }}
                               className={`flex items-center justify-center gap-1 text-[11px] sm:text-xs font-semibold py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl transition-all duration-200 cursor-pointer shrink-0 active-press shadow-2xs ${
                                 isAdded
                                   ? "bg-[#25D366] text-white"
@@ -507,7 +512,10 @@ export default function CategoryPage({
                           ) : (
                             <button
                               type="button"
-                              onClick={() => setPreOrderProduct(product)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPreOrderProduct(product);
+                              }}
                               className="flex items-center justify-center gap-1 text-[11px] sm:text-xs font-semibold py-1.5 px-2.5 sm:py-2 sm:px-3.5 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 transition-colors shrink-0 cursor-pointer active-press shadow-2xs"
                             >
                               <Clock size={11} />
