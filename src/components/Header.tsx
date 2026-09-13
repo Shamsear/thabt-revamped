@@ -767,10 +767,10 @@ export const Header: React.FC<HeaderProps> = ({
                 animate={{ x: 0 }}
                 exit={{ x: lang === "ar" ? "-100%" : "100%" }}
                 transition={{ type: "spring", damping: 28, stiffness: 300 }}
-                className="fixed inset-y-0 right-0 rtl:right-auto rtl:left-0 z-[101] w-[84vw] max-w-[340px] sm:w-[350px] h-screen h-[100dvh] bg-white shadow-2xl flex flex-col border-l rtl:border-l-0 rtl:border-r border-neutral-200/90 select-none"
+                className="fixed inset-y-0 right-0 rtl:right-auto rtl:left-0 z-[101] w-[85vw] max-w-[340px] sm:w-[350px] h-[100dvh] max-h-[100dvh] bg-white shadow-2xl flex flex-col border-l rtl:border-l-0 rtl:border-r border-neutral-200/90 select-none overflow-hidden"
               >
                 {/* Sidebar Top Header */}
-                <div className="px-4 py-3 sm:px-5 sm:py-4 border-b border-neutral-100 flex items-center justify-between shrink-0 bg-white">
+                <div className="px-4 py-3 sm:px-5 sm:py-4 pt-[max(0.75rem,env(safe-area-inset-top))] border-b border-neutral-100 flex items-center justify-between shrink-0 bg-white">
                   <Link href="/" onClick={() => handleSidebarNav("/")} className="shrink-0">
                     <img
                       src="/user/images/black_logo.png"
