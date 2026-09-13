@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext, SupportedCurrency, SupportedLanguage } from "@/context/AppContext";
 import { MOCK_ALL_PRODUCTS } from "@/data/mockData";
 import { AuthModal } from "@/components/AuthModal";
+import { useDevicePerfTier, perfClasses } from "@/utils/useDevicePerfTier";
 
 interface HeaderProps {
   cartCount?: number;
@@ -49,6 +50,8 @@ export const Header: React.FC<HeaderProps> = ({
   const context = useAppContext();
   const router = useRouter();
   const pathname = usePathname();
+  const perfTier = useDevicePerfTier();
+  const tierStyles = perfClasses[perfTier];
 
   const lang = propLang || context.lang;
   const setLang = propSetLang || context.setLang;
@@ -76,11 +79,23 @@ export const Header: React.FC<HeaderProps> = ({
     setMounted(true);
   }, []);
 
-  // #9: Header shadow on scroll
+  // #9: Header scroll state with hysteresis deadband (prevents any fluctuation or getting stuck)
   const [isScrolled, setIsScrolled] = useState(false);
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY || document.documentElement.scrollTop || window.pageYOffset || 0;
+          setIsScrolled((prev) => {
+            if (!prev && scrollY > 45) return true;
+            if (prev && scrollY < 15) return false;
+            return prev;
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -265,19 +280,46 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className={`sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-neutral-200/80 transition-all duration-200 ${isScrolled ? "header-scrolled" : "shadow-[0_1px_8px_rgba(0,0,0,0.03)]"}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4 flex-nowrap overflow-x-clip">
+      {/* ========================================================================= */}
+      {/* DESKTOP FLOATING PILL DOCK (lg+)                                         */}
+      {/* Zero-gap sticky dock: wrapper maintains layout flow without jumping.     */}
+      {/* Pill keeps consistent rounded-full shape at all times (rest & scrolled).  */}
+      {/* Smooth spring animation with no CSS transition collision.                 */}
+      {/* ========================================================================= */}
+      <header className="hidden lg:block sticky top-0 z-40 w-full pointer-events-none pt-2.5 pb-1 px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={false}
+          animate={{
+            maxWidth: isScrolled ? (tierStyles.enableMorph ? 1100 : 1280) : 1280,
+            height: isScrolled ? (tierStyles.enableMorph ? 52 : 64) : 64,
+            backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.94)" : "rgba(255, 255, 255, 0.88)",
+            borderColor: isScrolled ? "rgba(197, 160, 89, 0.28)" : "rgba(229, 231, 235, 0.8)",
+            boxShadow: isScrolled
+              ? "0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04)"
+              : "0 2px 10px 0 rgba(0, 0, 0, 0.04)",
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 280,
+            damping: 28,
+            mass: 0.8,
+          }}
+          className={`pointer-events-auto mx-auto w-full px-5 sm:px-6 rounded-full border flex items-center justify-between gap-4 select-none ${tierStyles.blur}`}
+        >
           {/* Brand Logo */}
           <Link href="/" className="flex items-center shrink-0 group">
-            <img
+            <motion.img
+              initial={false}
+              animate={{ height: isScrolled && tierStyles.enableMorph ? 28 : 36 }}
+              transition={{ type: "spring", stiffness: 280, damping: 28 }}
               src="/user/images/black_logo.png"
               alt="Thabt"
-              className="h-9 sm:h-10 md:h-11 w-auto object-contain transition-all duration-200 group-hover:opacity-90 shrink-0"
+              className="w-auto object-contain transition-opacity duration-200 group-hover:opacity-90 shrink-0"
             />
           </Link>
 
           {/* Minimal, Luxury Active-Aware Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 h-16 text-xs flex-nowrap whitespace-nowrap shrink-0">
+          <nav className="flex items-center gap-0.5 xl:gap-1.5 h-full text-xs flex-nowrap whitespace-nowrap shrink-0">
             <AnimatePresence initial={false}>
               {visibleNavLinks.map((link) => {
                 const active = isRouteActive(link.href);
@@ -288,11 +330,11 @@ export const Header: React.FC<HeaderProps> = ({
                     animate={{ opacity: 1, scale: 1, width: "auto" }}
                     exit={{ opacity: 0, scale: 0.9, width: 0 }}
                     transition={{ duration: 0.2, ease: "easeOut" }}
-                    className="overflow-hidden flex items-center h-16 shrink-0"
+                    className="overflow-hidden flex items-center h-full shrink-0"
                   >
                     <Link
                       href={link.href}
-                      className={`relative h-16 flex items-center px-3 xl:px-3.5 tracking-tight transition-colors whitespace-nowrap ${
+                      className={`relative h-full flex items-center px-3 xl:px-3.5 tracking-tight transition-colors whitespace-nowrap ${
                         active
                           ? "text-neutral-950 font-bold"
                           : "text-neutral-600 hover:text-neutral-950 font-medium"
@@ -318,10 +360,10 @@ export const Header: React.FC<HeaderProps> = ({
               })}
             </AnimatePresence>
 
-            {/* More Dropdown (Gallery, Showrooms, FAQs, Careers, + Dynamic Overflow Links) */}
+            {/* More Dropdown */}
             <div
               ref={moreRef}
-              className="relative h-16 flex items-center shrink-0"
+              className="relative h-full flex items-center shrink-0"
               onMouseEnter={handleMoreMouseEnter}
               onMouseLeave={handleMoreMouseLeave}
             >
@@ -342,7 +384,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }}
                 aria-haspopup="true"
                 aria-expanded={moreOpen}
-                className={`relative h-16 flex items-center px-3 tracking-tight transition-colors cursor-pointer whitespace-nowrap ${
+                className={`relative h-full flex items-center px-3 tracking-tight transition-colors cursor-pointer whitespace-nowrap ${
                   isMoreActive
                     ? "text-neutral-950 font-bold"
                     : "text-neutral-600 hover:text-neutral-950 font-medium"
@@ -367,7 +409,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               {moreOpen && (
                 <div
-                  className="absolute top-full pt-1 right-0 rtl:right-auto rtl:left-0 w-56 z-50 animate-in fade-in zoom-in-95 duration-150"
+                  className="absolute top-full pt-1.5 right-0 rtl:right-auto rtl:left-0 w-56 z-50 animate-in fade-in zoom-in-95 duration-150"
                   onMouseEnter={handleMoreMouseEnter}
                   onMouseLeave={handleMoreMouseLeave}
                   onKeyDown={(e) => {
@@ -415,7 +457,7 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Clean Right Actions */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0 flex-nowrap">
+          <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0 flex-nowrap h-full">
             {/* Search Icon Toggle with Smooth Animated Inline Expansion */}
             <div ref={searchContainerRef} className="relative flex items-center shrink-0">
               <motion.div
@@ -425,7 +467,7 @@ export const Header: React.FC<HeaderProps> = ({
                   width: searchOpen ? (typeof window !== "undefined" && window.innerWidth >= 1280 ? 270 : 220) : 38,
                 }}
                 transition={{ type: "spring", stiffness: 460, damping: 34 }}
-                className={`flex items-center h-9 sm:h-9.5 rounded-full overflow-hidden transition-colors duration-200 ${
+                className={`flex items-center h-8.5 rounded-full overflow-hidden transition-colors duration-200 ${
                   searchOpen
                     ? "bg-neutral-50/95 hover:bg-neutral-100/70 focus-within:bg-white border border-neutral-300 focus-within:border-[#c5a059] shadow-2xs px-2"
                     : "bg-transparent border border-transparent"
@@ -446,7 +488,7 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-label="Search"
                   title={lang === "ar" ? "بحث" : "Search"}
                 >
-                  <Search size={18} />
+                  <Search size={17} />
                 </button>
 
                 <AnimatePresence>
@@ -512,7 +554,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               {currencyOpen && (
                 <div
-                  className="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-36 bg-white border border-neutral-200 rounded-xl shadow-xl py-1 z-50 animate-in fade-in duration-150"
+                  className="absolute right-0 rtl:right-auto rtl:left-0 top-full mt-1.5 w-36 bg-white border border-neutral-200 rounded-xl shadow-xl py-1 z-50 animate-in fade-in duration-150"
                   onKeyDown={(e) => {
                     if (e.key === "Escape") {
                       e.preventDefault();
@@ -545,14 +587,14 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={() => setLang(lang === "en" ? "ar" : "en")}
-              className="hidden sm:block text-xs font-medium text-neutral-600 hover:text-[#c5a059] transition cursor-pointer py-1.5 px-2 rounded-lg hover:bg-neutral-100"
+              className="text-xs font-medium text-neutral-600 hover:text-[#c5a059] transition cursor-pointer py-1.5 px-2 rounded-lg hover:bg-neutral-100"
             >
               {lang === "ar" ? "English" : "العربية"}
             </button>
 
             {/* Profile / Login Button & Dropdown (Desktop) */}
             {context.user?.isLoggedIn ? (
-              <div ref={userMenuRef} className="relative hidden lg:block">
+              <div ref={userMenuRef} className="relative">
                 <button
                   type="button"
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -570,7 +612,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
 
                 {userMenuOpen && (
-                  <div className="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-52 bg-white border border-neutral-200/90 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150 overflow-hidden">
+                  <div className="absolute right-0 rtl:right-auto rtl:left-0 top-full mt-1.5 w-52 bg-white border border-neutral-200/90 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150 overflow-hidden">
                     <div className="px-3.5 py-2 border-b border-neutral-100">
                       <p className="text-xs font-bold text-neutral-950 truncate">
                         {context.user.name || "Mohammed Al-Kuwari"}
@@ -620,7 +662,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={context.openAuthModal}
-                className="hidden lg:flex items-center justify-center p-2 rounded-full text-neutral-600 hover:text-[#c5a059] hover:bg-neutral-100 transition cursor-pointer"
+                className="flex items-center justify-center p-2 rounded-full text-neutral-600 hover:text-[#c5a059] hover:bg-neutral-100 transition cursor-pointer"
                 title={lang === "ar" ? "تسجيل الدخول / إنشاء حساب" : "Login / Register"}
               >
                 <User size={18} />
@@ -638,7 +680,54 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
               aria-label="Shopping Bag"
             >
-              <ShoppingBag size={20} className="stroke-[1.6]" />
+              <ShoppingBag size={19} className="stroke-[1.6]" />
+              {cartCount > 0 && (
+                <span
+                  key={badgeBounceKey}
+                  className={`absolute top-0.5 right-0.5 rtl:right-auto rtl:left-0.5 w-4 h-4 rounded-full bg-[#c5a059] text-neutral-950 text-[9px] font-black flex items-center justify-center shadow-xs ${badgeBounceKey > 0 ? "badge-bounce" : ""}`}
+                >
+                  {cartCount}
+                </span>
+              )}
+            </button>
+          </div>
+        </motion.div>
+      </header>
+
+      {/* ========================================================================= */}
+      {/* MOBILE CLEAN TOP BAR (<lg)                                               */}
+      {/* Clean, un-cramped sticky bar: Logo + Search + Cart + Menu Drawer         */}
+      {/* ========================================================================= */}
+      <header className="lg:hidden sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-neutral-200/80 transition-colors duration-200 shadow-2xs">
+        <div className="px-4 h-14 flex items-center justify-between gap-2 flex-nowrap">
+          {/* Brand Logo */}
+          <Link href="/" className="flex items-center shrink-0">
+            <img
+              src="/user/images/black_logo.png"
+              alt="Thabt"
+              className="h-8 w-auto object-contain shrink-0"
+            />
+          </Link>
+
+          {/* Clean Mobile Right Actions: Search + Cart + Menu */}
+          <div className="flex items-center gap-1 shrink-0">
+            {/* Search Icon */}
+            <Link
+              href="/search"
+              className="p-2 text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 rounded-full transition-colors"
+              aria-label="Search"
+            >
+              <Search size={19} />
+            </Link>
+
+            {/* Shopping Bag */}
+            <button
+              type="button"
+              onClick={onOpenCart}
+              className="relative p-2 text-neutral-900 hover:text-[#c5a059] hover:bg-neutral-100 rounded-full transition-colors flex items-center justify-center"
+              aria-label="Shopping Bag"
+            >
+              <ShoppingBag size={19} className="stroke-[1.6]" />
               {cartCount > 0 && (
                 <span
                   key={badgeBounceKey}
@@ -649,12 +738,12 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
 
-            {/* Mobile Menu Hamburger Button */}
+            {/* Mobile Menu Hamburger */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 text-neutral-800 hover:text-neutral-950 hover:bg-neutral-100 rounded-full cursor-pointer active:scale-95 transition-transform"
-              aria-label="Open navigation sidebar"
+              className="p-2 text-neutral-800 hover:text-neutral-950 hover:bg-neutral-100 rounded-full cursor-pointer active:scale-95 transition-transform"
+              aria-label="Open navigation menu"
             >
               <Menu size={22} />
             </button>

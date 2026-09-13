@@ -146,11 +146,9 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
         </div>
       </footer>
 
-      {/* WhatsApp Concierge floating button (Moves up smoothly when sticky bottom purchase pill is active) */}
+      {/* WhatsApp Concierge floating button (z-30, clears mobile floating bottom nav pill) */}
       <div
-        className={`fixed right-5 rtl:right-auto rtl:left-5 z-40 transition-all duration-300 ease-out ${
-          hasStickyBottomBar ? "bottom-20 sm:bottom-5" : "bottom-5"
-        }`}
+        className="fixed right-5 rtl:right-auto rtl:left-5 z-30 transition-all duration-300 ease-out bottom-20 sm:bottom-5"
       >
         <a
           href={whatsappHref}
@@ -172,13 +170,11 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
         </a>
       </div>
 
-      {/* Back to Top / To Up Button (Positioned on the opposite left side for balanced spacing) */}
+      {/* Back to Top / To Up Button (z-30, clears mobile floating bottom nav pill) */}
       <button
         type="button"
         onClick={scrollToTop}
-        className={`fixed left-5 rtl:left-auto rtl:right-5 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-neutral-300 hover:text-white bg-neutral-900/95 hover:bg-neutral-900 border border-neutral-700/80 rounded-full shadow-lg backdrop-blur-xs transition-all duration-300 active-press cursor-pointer ${
-          hasStickyBottomBar ? "bottom-20 sm:bottom-5" : "bottom-5"
-        } ${
+        className={`fixed left-5 rtl:left-auto rtl:right-5 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-neutral-300 hover:text-white bg-neutral-900/95 hover:bg-neutral-900 border border-neutral-700/80 rounded-full shadow-lg backdrop-blur-xs transition-all duration-300 active-press cursor-pointer bottom-20 sm:bottom-5 ${
           showScrollTop
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-4 pointer-events-none"

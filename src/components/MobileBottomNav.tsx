@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Compass, SlidersHorizontal, User } from "lucide-react";
@@ -11,6 +11,50 @@ export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
   const { lang, user, openAuthModal } = useAppContext();
   const perfTier = useDevicePerfTier();
+  const styles = perfClasses[perfTier];
+
+  const [isScrolledDown, setIsScrolledDown] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  // Auto-shrink on scroll down
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 60) {
+        setIsScrolledDown(true);
+      } else {
+        setIsScrolledDown(false);
+      }
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Detect virtual keyboard via window.visualViewport
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.visualViewport) return;
+
+    const handleViewportChange = () => {
+      const vv = window.visualViewport;
+      if (!vv) return;
+      const isKeyboard = window.innerHeight - vv.height > 150;
+      setKeyboardVisible(isKeyboard);
+    };
+
+    window.visualViewport.addEventListener("resize", handleViewportChange);
+    return () => {
+      window.visualViewport?.removeEventListener("resize", handleViewportChange);
+    };
+  }, []);
+
+  // Hide on checkout page or when keyboard is open
+  if (pathname === "/checkout" || keyboardVisible) {
+    return null;
+  }
 
   const navItems = [
     {
@@ -42,13 +86,19 @@ export const MobileBottomNav: React.FC = () => {
   ];
 
   return (
-    <nav
-      className={`sm:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-neutral-200/80 pb-[env(safe-area-inset-bottom)] ${
-        perfClasses[perfTier].hasBlur ? "bg-white/95 backdrop-blur-lg" : "bg-white"
+    <div
+      className={`sm:hidden fixed left-4 right-4 z-40 transition-all duration-300 pointer-events-none ${
+        isScrolledDown
+          ? "scale-95 opacity-85 translate-y-1 bottom-[calc(0.6rem+env(safe-area-inset-bottom))]"
+          : "scale-100 opacity-100 translate-y-0 bottom-[calc(0.9rem+env(safe-area-inset-bottom))]"
       }`}
-      dir={lang === "ar" ? "rtl" : "ltr"}
     >
-      <div className="flex items-center justify-around h-14 max-w-md mx-auto px-2">
+      <nav
+        className={`pointer-events-auto max-w-sm mx-auto h-14 rounded-full border border-neutral-200/80 shadow-[0_8px_30px_rgba(0,0,0,0.12)] px-2 flex items-center justify-around transition-all ${
+          styles.hasBlur ? "bg-white/92 backdrop-blur-xl" : "bg-white"
+        }`}
+        dir={lang === "ar" ? "rtl" : "ltr"}
+      >
         {navItems.map((item) => {
           const IconComponent = item.icon;
           const content = (
@@ -92,7 +142,9 @@ export const MobileBottomNav: React.FC = () => {
             </Link>
           );
         })}
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 };
+
+export default MobileBottomNav;
