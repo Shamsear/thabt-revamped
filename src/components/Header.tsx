@@ -290,11 +290,9 @@ export const Header: React.FC<HeaderProps> = ({
         <div
           style={{ transform: "translateZ(0)" }}
           className={`pointer-events-auto mx-auto w-full px-5 sm:px-6 rounded-full border flex items-center justify-between gap-4 select-none will-change-[max-width,height,background-color,border-color,box-shadow] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            tierStyles.blur
-          } ${
             isScrolled
-              ? "max-w-[1080px] h-[52px] bg-white/95 border-[#c5a059]/30 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.08),0_8px_10px_-6px_rgba(0,0,0,0.04)]"
-              : "max-w-7xl h-16 bg-white/88 border-neutral-200/80 shadow-[0_2px_10px_0_rgba(0,0,0,0.04)]"
+              ? "max-w-[1080px] h-[52px] bg-white/65 backdrop-blur-2xl backdrop-saturate-[170%] border-[#c5a059]/35 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.09),inset_0_1px_1px_rgba(255,255,255,0.9)]"
+              : `max-w-7xl h-16 bg-white/85 ${tierStyles.blur} border-neutral-200/80 shadow-[0_2px_10px_0_rgba(0,0,0,0.04)]`
           }`}
         >
           {/* Brand Logo */}
@@ -691,7 +689,7 @@ export const Header: React.FC<HeaderProps> = ({
         className={`lg:hidden sticky top-0 z-40 w-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isScrolled
             ? tierStyles.hasBlur
-              ? "bg-white/60 backdrop-blur-xl supports-[backdrop-filter]:bg-white/50 border-b border-neutral-200/40 shadow-[0_4px_24px_rgba(0,0,0,0.06)]"
+              ? "bg-white/40 backdrop-blur-2xl backdrop-saturate-[180%] supports-[backdrop-filter]:bg-white/30 border-b border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.06),inset_0_-1px_0_rgba(255,255,255,0.7)]"
               : "bg-white/95 border-b border-neutral-200 shadow-xs"
             : "bg-white border-b border-neutral-100 shadow-none"
         }`}
