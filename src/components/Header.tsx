@@ -282,39 +282,29 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       {/* ========================================================================= */}
       {/* DESKTOP FLOATING PILL DOCK (lg+)                                         */}
-      {/* Zero-gap sticky dock: wrapper maintains layout flow without jumping.     */}
-      {/* Pill keeps consistent rounded-full shape at all times (rest & scrolled).  */}
-      {/* Smooth spring animation with no CSS transition collision.                 */}
+      {/* Fixed-height wrapper (74px) prevents ANY layout shift or jumping of content */}
+      {/* GPU hardware-accelerated CSS transition with Apple cubic-bezier curve     */}
+      {/* Consistent rounded-full pill shape at all times                           */}
       {/* ========================================================================= */}
-      <header className="hidden lg:block sticky top-0 z-40 w-full pointer-events-none pt-2.5 pb-1 px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={false}
-          animate={{
-            maxWidth: isScrolled ? (tierStyles.enableMorph ? 1100 : 1280) : 1280,
-            height: isScrolled ? (tierStyles.enableMorph ? 52 : 64) : 64,
-            backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.94)" : "rgba(255, 255, 255, 0.88)",
-            borderColor: isScrolled ? "rgba(197, 160, 89, 0.28)" : "rgba(229, 231, 235, 0.8)",
-            boxShadow: isScrolled
-              ? "0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04)"
-              : "0 2px 10px 0 rgba(0, 0, 0, 0.04)",
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 280,
-            damping: 28,
-            mass: 0.8,
-          }}
-          className={`pointer-events-auto mx-auto w-full px-5 sm:px-6 rounded-full border flex items-center justify-between gap-4 select-none ${tierStyles.blur}`}
+      <header className="hidden lg:block sticky top-0 z-40 w-full pointer-events-none h-[74px] pt-2 px-4 sm:px-6 lg:px-8">
+        <div
+          style={{ transform: "translateZ(0)" }}
+          className={`pointer-events-auto mx-auto w-full px-5 sm:px-6 rounded-full border flex items-center justify-between gap-4 select-none will-change-[max-width,height,background-color,border-color,box-shadow] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            tierStyles.blur
+          } ${
+            isScrolled
+              ? "max-w-[1080px] h-[52px] bg-white/95 border-[#c5a059]/30 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.08),0_8px_10px_-6px_rgba(0,0,0,0.04)]"
+              : "max-w-7xl h-16 bg-white/88 border-neutral-200/80 shadow-[0_2px_10px_0_rgba(0,0,0,0.04)]"
+          }`}
         >
           {/* Brand Logo */}
           <Link href="/" className="flex items-center shrink-0 group">
-            <motion.img
-              initial={false}
-              animate={{ height: isScrolled && tierStyles.enableMorph ? 28 : 36 }}
-              transition={{ type: "spring", stiffness: 280, damping: 28 }}
+            <img
               src="/user/images/black_logo.png"
               alt="Thabt"
-              className="w-auto object-contain transition-opacity duration-200 group-hover:opacity-90 shrink-0"
+              className={`w-auto object-contain transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-90 shrink-0 ${
+                isScrolled ? "h-7" : "h-9"
+              }`}
             />
           </Link>
 
