@@ -88,8 +88,8 @@ export const Header: React.FC<HeaderProps> = ({
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY || document.documentElement.scrollTop || window.pageYOffset || 0;
           setIsScrolled((prev) => {
-            if (!prev && scrollY > 60) return true;
-            if (prev && scrollY < 20) return false;
+            if (!prev && scrollY > 40) return true;
+            if (prev && scrollY < 15) return false;
             return prev;
           });
           ticking = false;

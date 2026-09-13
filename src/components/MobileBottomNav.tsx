@@ -9,30 +9,11 @@ import { useDevicePerfTier, perfClasses } from "@/utils/useDevicePerfTier";
 
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
-  const { lang, user, openAuthModal } = useAppContext();
+  const { lang, user, openAuthModal, isMobileNavScrolledDown } = useAppContext();
   const perfTier = useDevicePerfTier();
   const styles = perfClasses[perfTier];
 
-  const [isScrolledDown, setIsScrolledDown] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-
-  // Auto-shrink on scroll down
-  useEffect(() => {
-    let lastScrollY = window.scrollY;
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 60) {
-        setIsScrolledDown(true);
-      } else {
-        setIsScrolledDown(false);
-      }
-      lastScrollY = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // Detect virtual keyboard via window.visualViewport
   useEffect(() => {
@@ -87,10 +68,10 @@ export const MobileBottomNav: React.FC = () => {
 
   return (
     <div
-      className={`sm:hidden fixed left-4 right-4 z-40 transition-all duration-300 pointer-events-none ${
-        isScrolledDown
-          ? "scale-95 opacity-85 translate-y-1 bottom-[calc(0.6rem+env(safe-area-inset-bottom))]"
-          : "scale-100 opacity-100 translate-y-0 bottom-[calc(0.9rem+env(safe-area-inset-bottom))]"
+      className={`sm:hidden fixed left-4 right-4 z-40 transition-all duration-300 ease-out pointer-events-none ${
+        isMobileNavScrolledDown
+          ? "scale-95 opacity-90 bottom-[calc(0.6rem+env(safe-area-inset-bottom))]"
+          : "scale-100 opacity-100 bottom-[calc(0.9rem+env(safe-area-inset-bottom))]"
       }`}
     >
       <nav

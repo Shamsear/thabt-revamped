@@ -80,6 +80,7 @@ interface AppContextType {
   hideToast: () => void;
   recentlyViewed: string[];
   trackProductView: (slug: string) => void;
+  isMobileNavScrolledDown: boolean;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -94,6 +95,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [recentlyViewed, setRecentlyViewed] = useState<string[]>([]);
+  const [isMobileNavScrolledDown, setIsMobileNavScrolledDown] = useState(false);
 
   const showToast = (toastData: Omit<ToastMessage, "id">) => {
     const id = Math.random().toString(36).substring(2, 9);
@@ -202,6 +204,35 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch {
       // ignore storage errors
     }
+  }, []);
+
+  // Single unified directional scroll listener for mobile bottom nav and floating buttons
+  useEffect(() => {
+    let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+          const delta = currentScrollY - lastScrollY;
+
+          // Intentional scroll threshold (8px) prevents micro-jitter and directional fluttering
+          if (delta > 8 && currentScrollY > 60) {
+            setIsMobileNavScrolledDown(true);
+            lastScrollY = currentScrollY;
+          } else if (delta < -8 || currentScrollY <= 60) {
+            setIsMobileNavScrolledDown(false);
+            lastScrollY = currentScrollY;
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Save cart changes to localStorage
@@ -339,6 +370,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         hideToast,
         recentlyViewed,
         trackProductView,
+        isMobileNavScrolledDown,
       }}
     >
       {children}

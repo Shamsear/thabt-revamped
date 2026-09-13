@@ -15,24 +15,12 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
   const context = useAppContext();
   const pathname = usePathname();
   const lang = propLang || context.lang;
-  const { hasStickyBottomBar, customWhatsAppMessage } = context;
+  const { hasStickyBottomBar, customWhatsAppMessage, isMobileNavScrolledDown } = context;
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [isScrolledDown, setIsScrolledDown] = useState(false);
 
   useEffect(() => {
-    let lastScrollY = window.scrollY;
-
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setShowScrollTop(currentScrollY > 300);
-
-      // Match MobileBottomNav scroll-down threshold so buttons track bottom nav in lockstep
-      if (currentScrollY > lastScrollY && currentScrollY > 60) {
-        setIsScrolledDown(true);
-      } else {
-        setIsScrolledDown(false);
-      }
-      lastScrollY = currentScrollY;
+      setShowScrollTop(window.scrollY > 300);
     };
 
     handleScroll();
@@ -50,16 +38,18 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
 
   const isCheckout = pathname === "/checkout";
 
-  // Coordinates with MobileBottomNav safe-area calculation so buttons never go down behind or under the nav bar
+  // Coordinates directly with MobileBottomNav safe-area calculation so buttons maintain a guaranteed 1.2rem clearance
+  // Nav bar top: 4.4rem at rest, 4.1rem when scrolled down.
+  // Floating buttons bottom: 5.6rem at rest, 5.3rem when scrolled down (exact 0.3rem delta lockstep).
   const floatingBottomClass = isCheckout
     ? "bottom-[calc(1.25rem+env(safe-area-inset-bottom))] sm:bottom-5"
     : hasStickyBottomBar
-    ? isScrolledDown
-      ? "bottom-[calc(8.2rem+env(safe-area-inset-bottom))] sm:bottom-20"
-      : "bottom-[calc(8.8rem+env(safe-area-inset-bottom))] sm:bottom-20"
-    : isScrolledDown
-    ? "bottom-[calc(4.8rem+env(safe-area-inset-bottom))] sm:bottom-5"
-    : "bottom-[calc(5.4rem+env(safe-area-inset-bottom))] sm:bottom-5";
+    ? isMobileNavScrolledDown
+      ? "bottom-[calc(8.4rem+env(safe-area-inset-bottom))] sm:bottom-20"
+      : "bottom-[calc(8.7rem+env(safe-area-inset-bottom))] sm:bottom-20"
+    : isMobileNavScrolledDown
+    ? "bottom-[calc(5.3rem+env(safe-area-inset-bottom))] sm:bottom-5"
+    : "bottom-[calc(5.6rem+env(safe-area-inset-bottom))] sm:bottom-5";
 
   return (
     <>
@@ -202,10 +192,10 @@ export const Footer: React.FC<FooterProps> = ({ lang: propLang }) => {
       <button
         type="button"
         onClick={scrollToTop}
-        className={`fixed left-5 rtl:left-auto rtl:right-5 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-neutral-300 hover:text-white bg-neutral-900/95 hover:bg-neutral-900 border border-neutral-700/80 rounded-full shadow-lg backdrop-blur-xs transition-all duration-300 active-press cursor-pointer ${floatingBottomClass} ${
+        className={`fixed left-5 rtl:left-auto rtl:right-5 z-30 w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-neutral-300 hover:text-white bg-neutral-900/95 hover:bg-neutral-900 border border-neutral-700/80 rounded-full shadow-lg backdrop-blur-xs transition-all duration-300 ease-out active-press cursor-pointer ${floatingBottomClass} ${
           showScrollTop
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 translate-y-4 pointer-events-none"
+            ? "opacity-100 scale-100 pointer-events-auto"
+            : "opacity-0 scale-75 pointer-events-none"
         }`}
         aria-label={lang === "ar" ? "العودة إلى الأعلى" : "Back to top"}
       >
