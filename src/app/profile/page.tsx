@@ -19,10 +19,13 @@ import {
   Truck,
   Sparkles,
   ExternalLink,
+  LogOut,
+  User,
+  Lock,
 } from "lucide-react";
 
 export default function ProfilePage() {
-  const { lang, formatPrice, addToCart, setCartDrawerOpen } = useAppContext();
+  const { lang, formatPrice, addToCart, setCartDrawerOpen, user, logout, openAuthModal } = useAppContext();
 
   const [activeTab, setActiveTab] = useState<"orders" | "addresses" | "garage">("orders");
   const [orderStatusFilter, setOrderStatusFilter] = useState("all");
@@ -114,39 +117,77 @@ export default function ProfilePage() {
 
           {/* Profile Header Card */}
           <div className="bg-white rounded-2xl border border-neutral-200/80 p-4 sm:p-7 mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 shadow-2xs">
-            <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 w-full sm:w-auto">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-neutral-950 text-[#c5a059] flex items-center justify-center font-bold text-lg sm:text-xl shrink-0 ring-2 ring-[#c5a059]/30">
-                M
+            {user?.isLoggedIn ? (
+              <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 w-full sm:w-auto">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-neutral-950 text-[#c5a059] flex items-center justify-center font-bold text-lg sm:text-xl shrink-0 ring-2 ring-[#c5a059]/30 uppercase">
+                  {user.name ? user.name.charAt(0) : "M"}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h1 className="text-base sm:text-xl font-semibold text-neutral-950 truncate">
+                      {user.name || "Mohammed Al-Kuwari"}
+                    </h1>
+                    <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2.5 py-1 rounded-xl border border-[#c5a059]/30 shrink-0">
+                      Thabt VIP Member
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-neutral-600 mt-0.5">
+                    <span className="truncate">{user.email || "m.alkuwari@domain.qa"}</span>
+                    <span className="hidden sm:inline text-neutral-300">•</span>
+                    <span className="font-mono text-neutral-700">{user.phone || "+974 5512 3456"}</span>
+                  </div>
+                  <p className="text-xs text-[#9b7832] font-medium mt-1 flex items-center gap-1.5 truncate">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] shrink-0"></span>
+                    <span className="truncate">{user.city || "Doha"}, {user.country || "Qatar"} (Zone 52)</span>
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-base sm:text-xl font-semibold text-neutral-950 truncate">
-                    Mohammed Al-Kuwari
+            ) : (
+              <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 w-full sm:w-auto">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#faf6ed] text-[#c5a059] border border-[#c5a059]/40 flex items-center justify-center font-bold text-lg sm:text-xl shrink-0">
+                  <User size={24} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-base sm:text-xl font-bold text-neutral-950">
+                    {lang === "ar" ? "زائر محترم" : "Welcome, Guest User"}
                   </h1>
-                  <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2.5 py-1 rounded-xl border border-[#c5a059]/30 shrink-0">
-                    Thabt VIP
-                  </span>
+                  <p className="text-xs text-neutral-500 mt-0.5">
+                    {lang === "ar" ? "سجّل دخولك برقم الجوال بضغطة واحدة لمتابعة طلبياتك وحفظ قواعد سياراتك." : "Login with 1-click mobile OTP to manage your orders & garage mounts."}
+                  </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-neutral-600 mt-0.5">
-                  <span className="truncate">mohammed.alkuwari@gmail.com</span>
-                  <span className="hidden sm:inline text-neutral-300">•</span>
-                  <span className="font-mono text-neutral-700">+974 5581 2940</span>
-                </div>
-                <p className="text-xs text-[#9b7832] font-medium mt-1 flex items-center gap-1.5 truncate">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059] shrink-0"></span>
-                  <span className="truncate">Doha, Qatar (Zone 52)</span>
-                </p>
               </div>
-            </div>
+            )}
 
-            <div className="w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-100 flex items-center">
-              <Link
-                href="/find"
-                className="w-full sm:w-auto py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer text-center inline-flex items-center justify-center gap-1.5 shadow-xs"
-              >
-                <Sparkles size={14} className="text-[#c5a059]" />
-                <span>{lang === "ar" ? "مطابقة قطعة جديدة" : "Match New Vehicle"}</span>
-              </Link>
+            <div className="w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-100 flex items-center gap-2">
+              {user?.isLoggedIn ? (
+                <>
+                  <Link
+                    href="/find"
+                    className="flex-1 sm:flex-initial py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl bg-neutral-950 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer text-center inline-flex items-center justify-center gap-1.5 shadow-xs"
+                  >
+                    <Sparkles size={14} className="text-[#c5a059]" />
+                    <span>{lang === "ar" ? "مطابقة قطعة" : "Match Vehicle"}</span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="py-2.5 sm:py-3 px-3 rounded-xl bg-neutral-100 hover:bg-rose-50 text-neutral-600 hover:text-rose-600 border border-neutral-200/80 text-xs font-semibold transition cursor-pointer flex items-center justify-center gap-1"
+                    title={lang === "ar" ? "تسجيل الخروج" : "Logout"}
+                  >
+                    <LogOut size={14} />
+                    <span className="hidden sm:inline">{lang === "ar" ? "خروج" : "Logout"}</span>
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={openAuthModal}
+                  className="w-full sm:w-auto py-2.5 sm:py-3 px-5 rounded-xl bg-[#c5a059] hover:bg-[#b38e46] text-neutral-950 text-xs font-bold uppercase tracking-wider transition cursor-pointer text-center inline-flex items-center justify-center gap-1.5 shadow-xs active:scale-95"
+                >
+                  <Lock size={14} />
+                  <span>{lang === "ar" ? "تسجيل الدخول السريع" : "Fast 1-Tap Login"}</span>
+                </button>
+              )}
             </div>
           </div>
 

@@ -20,10 +20,14 @@ import {
   HelpCircle,
   User,
   SlidersHorizontal,
+  LogOut,
+  Package,
+  Car,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext, SupportedCurrency, SupportedLanguage } from "@/context/AppContext";
 import { MOCK_ALL_PRODUCTS } from "@/data/mockData";
+import { AuthModal } from "@/components/AuthModal";
 
 interface HeaderProps {
   cartCount?: number;
@@ -58,12 +62,14 @@ export const Header: React.FC<HeaderProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [currencyOpen, setCurrencyOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [clickedHref, setClickedHref] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const currencyRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const moreCloseTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -97,6 +103,9 @@ export const Header: React.FC<HeaderProps> = ({
       if (currencyRef.current && !currencyRef.current.contains(target)) {
         setCurrencyOpen(false);
       }
+      if (userMenuRef.current && !userMenuRef.current.contains(target)) {
+        setUserMenuOpen(false);
+      }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -104,6 +113,7 @@ export const Header: React.FC<HeaderProps> = ({
         setSearchOpen(false);
         setMoreOpen(false);
         setCurrencyOpen(false);
+        setUserMenuOpen(false);
       }
     };
 
@@ -506,18 +516,82 @@ export const Header: React.FC<HeaderProps> = ({
               {lang === "ar" ? "English" : "العربية"}
             </button>
 
-            {/* Profile Link (Desktop) */}
-            <Link
-              href="/profile"
-              className={`hidden lg:flex items-center justify-center p-2 rounded-full transition-colors ${
-                pathname === "/profile"
-                  ? "text-[#c5a059] bg-[#faf6ed]"
-                  : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100"
-              }`}
-              title={lang === "ar" ? "حسابي" : "My Account"}
-            >
-              <User size={18} />
-            </Link>
+            {/* Profile / Login Button & Dropdown (Desktop) */}
+            {context.user?.isLoggedIn ? (
+              <div ref={userMenuRef} className="relative hidden lg:block">
+                <button
+                  type="button"
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className={`flex items-center gap-1 p-1 rounded-full transition-colors cursor-pointer ${
+                    userMenuOpen || pathname === "/profile"
+                      ? "bg-[#faf6ed] text-[#c5a059] ring-2 ring-[#c5a059]/30"
+                      : "hover:bg-neutral-100"
+                  }`}
+                  title={context.user.name || (lang === "ar" ? "حسابي" : "My Account")}
+                >
+                  <div className="w-6 h-6 rounded-full bg-[#c5a059] text-neutral-950 font-black text-[10px] flex items-center justify-center shadow-2xs uppercase">
+                    {context.user.name ? context.user.name.charAt(0) : "M"}
+                  </div>
+                  <ChevronDown size={11} className={`text-neutral-400 transition-transform duration-200 ${userMenuOpen ? "rotate-180 text-[#c5a059]" : ""}`} />
+                </button>
+
+                {userMenuOpen && (
+                  <div className="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-52 bg-white border border-neutral-200/90 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150 overflow-hidden">
+                    <div className="px-3.5 py-2 border-b border-neutral-100">
+                      <p className="text-xs font-bold text-neutral-950 truncate">
+                        {context.user.name || "Mohammed Al-Kuwari"}
+                      </p>
+                      <p className="text-[10px] text-neutral-500 font-mono truncate">
+                        {context.user.phone || context.user.email}
+                      </p>
+                    </div>
+
+                    <div className="py-1">
+                      <Link
+                        href="/profile"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 px-3.5 py-2 text-xs text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 font-medium transition-colors"
+                      >
+                        <User size={14} className="text-[#c5a059]" />
+                        <span>{lang === "ar" ? "حسابي والطلبات" : "My Account & Orders"}</span>
+                      </Link>
+
+                      <Link
+                        href="/find"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 px-3.5 py-2 text-xs text-neutral-700 hover:text-neutral-950 hover:bg-neutral-50 font-medium transition-colors"
+                      >
+                        <Compass size={14} className="text-[#c5a059]" />
+                        <span>{lang === "ar" ? "مطابق التثبيت" : "Vehicle Matcher"}</span>
+                      </Link>
+                    </div>
+
+                    <div className="pt-1 border-t border-neutral-100">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          context.logout();
+                          setUserMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2 px-3.5 py-2 text-xs text-rose-600 hover:bg-rose-50 font-semibold transition-colors text-left rtl:text-right cursor-pointer"
+                      >
+                        <LogOut size={14} />
+                        <span>{lang === "ar" ? "تسجيل الخروج" : "Logout"}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={context.openAuthModal}
+                className="hidden lg:flex items-center justify-center p-2 rounded-full text-neutral-600 hover:text-[#c5a059] hover:bg-neutral-100 transition cursor-pointer"
+                title={lang === "ar" ? "تسجيل الدخول / إنشاء حساب" : "Login / Register"}
+              >
+                <User size={18} />
+              </button>
+            )}
 
             {/* Shopping Bag with Gold Badge */}
             <button
@@ -831,6 +905,13 @@ export const Header: React.FC<HeaderProps> = ({
         </AnimatePresence>,
         document.body
       )}
+
+      {/* Instant Fast Auth Modal */}
+      <AuthModal
+        isOpen={context.authModalOpen}
+        onClose={() => context.setAuthModalOpen(false)}
+        lang={lang}
+      />
     </>
   );
 };

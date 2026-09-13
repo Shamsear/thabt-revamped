@@ -15,21 +15,23 @@ import {
   CheckCircle2,
   ShoppingBag,
   ChevronDown,
+  Sparkles,
+  User,
 } from "lucide-react";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { lang, cartItems, cartSubtotalQar, formatPrice } = useAppContext();
+  const { lang, cartItems, cartSubtotalQar, formatPrice, user, openAuthModal } = useAppContext();
 
   // Form state
   const [formData, setFormData] = useState({
-    firstName: "Mohammed",
-    lastName: "Al-Kuwari",
-    email: "mohammed.alkuwari@gmail.com",
+    firstName: user?.name ? user.name.split(" ")[0] : "Mohammed",
+    lastName: user?.name ? user.name.split(" ").slice(1).join(" ") || "Al-Kuwari" : "Al-Kuwari",
+    email: user?.email || "mohammed.alkuwari@gmail.com",
     phoneCode: "+974",
-    phone: "5581 2940",
-    country: "Qatar",
-    city: "Doha",
+    phone: user?.phone ? user.phone.replace("+974", "").trim() : "5581 2940",
+    country: user?.country || "Qatar",
+    city: user?.city || "Doha",
     // Qatar Blue Plate fields
     zoneNumber: "52",
     streetNumber: "990",
@@ -37,6 +39,22 @@ export default function CheckoutPage() {
     additionalNotes: "Old Rayan near Sports Roundabout",
     shippingMethod: "express_qatar",
   });
+
+  const handleAutoFillUser = () => {
+    if (user?.isLoggedIn) {
+      setFormData((prev) => ({
+        ...prev,
+        firstName: user.name ? user.name.split(" ")[0] : prev.firstName,
+        lastName: user.name ? user.name.split(" ").slice(1).join(" ") || prev.lastName : prev.lastName,
+        email: user.email || prev.email,
+        phone: user.phone ? user.phone.replace("+974", "").trim() : prev.phone,
+        country: user.country || prev.country,
+        city: user.city || prev.city,
+      }));
+    } else {
+      openAuthModal();
+    }
+  };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMobileSummary, setShowMobileSummary] = useState(false);
@@ -181,6 +199,36 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           {/* Left Form: Contact & Address (7 cols) */}
           <div className="lg:col-span-7">
+            {/* 1-Tap Fast Auth / Auto-Fill Banner */}
+            <div className="mb-4 p-3.5 rounded-2xl bg-[#faf6ed]/90 border border-[#c5a059]/40 flex items-center justify-between gap-3 shadow-2xs">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-white text-[#c5a059] border border-[#c5a059]/30 flex items-center justify-center shrink-0">
+                  <Sparkles size={16} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-neutral-950 truncate">
+                    {user?.isLoggedIn
+                      ? (lang === "ar" ? `مرحباً ${user.name}` : `Fast Checkout as ${user.name}`)
+                      : (lang === "ar" ? "تسجيل دخول سريع لـ 1-Step" : "Fast 1-Step Mobile Login")}
+                  </p>
+                  <p className="text-[11px] text-neutral-600 truncate">
+                    {user?.isLoggedIn
+                      ? (lang === "ar" ? "انقر لتعبئة بياناتك المحفوظة تلقائياً" : "Click to auto-fill your saved GCC details")
+                      : (lang === "ar" ? "دخول برقم الجوال بدون كلمة سر للتعبئة الفورية" : "Sign in with phone OTP to auto-fill details")}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleAutoFillUser}
+                className="shrink-0 text-xs font-bold text-neutral-950 bg-white hover:bg-[#c5a059] hover:text-neutral-950 px-3.5 py-2 rounded-xl border border-[#c5a059]/50 transition cursor-pointer shadow-2xs active:scale-95"
+              >
+                {user?.isLoggedIn
+                  ? (lang === "ar" ? "⚡ تعبئة بياناتي" : "⚡ Auto-Fill")
+                  : (lang === "ar" ? "⚡ دخول سريع" : "⚡ Fast Login")}
+              </button>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Contact Information */}
               <div className="bg-white rounded-2xl border border-neutral-200/80 p-4 sm:p-6 space-y-3.5">

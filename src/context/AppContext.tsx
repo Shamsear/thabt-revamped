@@ -11,6 +11,16 @@ export interface CartItem {
 export type SupportedLanguage = "en" | "ar";
 export type SupportedCurrency = "QAR" | "SAR" | "AED" | "KWD" | "BHD" | "OMR" | "USD";
 
+export interface UserProfile {
+  name: string;
+  phone: string;
+  email: string;
+  isLoggedIn: boolean;
+  avatar?: string;
+  city?: string;
+  country?: string;
+}
+
 export interface CurrencyRate {
   code: SupportedCurrency;
   symbol: string;
@@ -50,6 +60,12 @@ interface AppContextType {
   setHasStickyBottomBar: (visible: boolean) => void;
   customWhatsAppMessage: string | null;
   setCustomWhatsAppMessage: (msg: string | null) => void;
+  user: UserProfile | null;
+  login: (userData: { name: string; phone: string; email: string; city?: string; country?: string }) => void;
+  logout: () => void;
+  authModalOpen: boolean;
+  setAuthModalOpen: (open: boolean) => void;
+  openAuthModal: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -61,6 +77,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [preOrderProduct, setPreOrderProduct] = useState<Product | null>(null);
   const [hasStickyBottomBar, setHasStickyBottomBar] = useState(false);
   const [customWhatsAppMessage, setCustomWhatsAppMessage] = useState<string | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  // User auth state with demo default state (Mohammed Al-Kuwari)
+  const [user, setUser] = useState<UserProfile | null>(null);
 
   // Initialize with sample top seller to provide instant rich visual state
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -97,6 +117,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const savedCurrency = localStorage.getItem("thabt_currency") as SupportedCurrency;
       if (savedCurrency && CURRENCY_MAP[savedCurrency]) {
         setCurrencyState(savedCurrency);
+      }
+
+      const savedUser = localStorage.getItem("thabt_user");
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      } else {
+        // Default initialized demo user profile
+        setUser({
+          name: "Mohammed Al-Kuwari",
+          phone: "+974 5512 3456",
+          email: "m.alkuwari@domain.qa",
+          isLoggedIn: true,
+          city: "Doha",
+          country: "Qatar",
+        });
       }
 
       const savedCart = localStorage.getItem("thabt_cart");
@@ -187,6 +222,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return lang === "ar" ? `${formatted} ${cur?.symbol_ar || "ر.ق"}` : `${formatted} ${cur?.symbol || "QAR"}`;
   };
 
+  const login = (userData: { name: string; phone: string; email: string; city?: string; country?: string }) => {
+    const updatedUser: UserProfile = {
+      ...userData,
+      isLoggedIn: true,
+      city: userData.city || "Doha",
+      country: userData.country || "Qatar",
+    };
+    setUser(updatedUser);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("thabt_user", JSON.stringify(updatedUser));
+    }
+  };
+
+  const logout = () => {
+    const loggedOutUser: UserProfile = {
+      name: "",
+      phone: "",
+      email: "",
+      isLoggedIn: false,
+    };
+    setUser(loggedOutUser);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("thabt_user", JSON.stringify(loggedOutUser));
+    }
+  };
+
+  const openAuthModal = () => {
+    setAuthModalOpen(true);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -210,6 +275,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setHasStickyBottomBar,
         customWhatsAppMessage,
         setCustomWhatsAppMessage,
+        user,
+        login,
+        logout,
+        authModalOpen,
+        setAuthModalOpen,
+        openAuthModal,
       }}
     >
       {children}
