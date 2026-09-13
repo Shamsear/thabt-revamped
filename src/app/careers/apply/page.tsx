@@ -130,6 +130,7 @@ function CareersApplyForm() {
               label={lang === "ar" ? "الوظيفة المتقدم لها" : "Position Applied For"}
               value={selectedRole}
               onChange={(val) => setSelectedRole(val)}
+              triggerClassName="h-11 sm:h-10 text-xs bg-neutral-50/70 hover:bg-neutral-100/70 border-neutral-200"
               options={jobOptions}
               lang={lang}
             />
@@ -176,6 +177,7 @@ function CareersApplyForm() {
                   <CustomSelect
                     value={formData.phoneCode}
                     onChange={(val) => setFormData({ ...formData, phoneCode: val })}
+                    triggerClassName="h-11 sm:h-10 text-xs bg-neutral-50/70 hover:bg-neutral-100/70 border-neutral-200"
                     options={[
                       { value: "+974", label: "🇶🇦 +974" },
                       { value: "+966", label: "🇸🇦 +966" },
@@ -203,6 +205,7 @@ function CareersApplyForm() {
                 label={lang === "ar" ? "سنوات الخبرة العملية" : "Years of Experience"}
                 value={formData.experienceYears}
                 onChange={(val) => setFormData({ ...formData, experienceYears: val })}
+                triggerClassName="h-11 sm:h-10 text-xs bg-neutral-50/70 hover:bg-neutral-100/70 border-neutral-200"
                 options={[
                   { value: "0-1", label: lang === "ar" ? "أقل من سنة (خريج جديد)" : "Less than 1 year (Fresh Graduate)" },
                   { value: "1-3", label: lang === "ar" ? "1 - 3 سنوات" : "1 - 3 years" },

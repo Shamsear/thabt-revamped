@@ -347,6 +347,16 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     }
   };
 
+  const hasCustomHeight = Boolean(triggerClassName && /(?:^|\s)(?:[a-z0-9-]+:)*(?:h-|min-h-|py-)/.test(triggerClassName));
+  const hasCustomText = Boolean(triggerClassName && /(?:^|\s)(?:[a-z0-9-]+:)*text-(?:xs|sm|base|lg|xl|\d)/.test(triggerClassName));
+  const hasCustomBg = Boolean(triggerClassName && /(?:^|\s)(?:[a-z0-9-]+:)*bg-/.test(triggerClassName));
+  const hasCustomBorder = Boolean(triggerClassName && /(?:^|\s)(?:[a-z0-9-]+:)*border-/.test(triggerClassName));
+
+  const heightClasses = hasCustomHeight ? "" : "h-10 md:h-11";
+  const textClasses = hasCustomText ? "" : "text-xs md:text-sm";
+  const defaultBg = hasCustomBg ? "" : "bg-neutral-50 hover:bg-neutral-100/70";
+  const defaultBorder = hasCustomBorder ? "" : "border-neutral-200";
+
   return (
     <div className={`relative ${className}`} dir={lang === "ar" ? "rtl" : "ltr"}>
       {label && (
@@ -377,12 +387,12 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         aria-activedescendant={
           isOpen && highlightedIndex >= 0 ? `${selectId}-option-${highlightedIndex}` : undefined
         }
-        className={`w-full h-10 md:h-11 flex items-center justify-between text-xs md:text-sm rounded-xl px-3.5 border transition-all duration-150 cursor-pointer select-none text-left rtl:text-right focus:outline-none focus:ring-2 focus:ring-[#c5a059]/30 ${
+        className={`group w-full ${heightClasses} flex items-center justify-between ${textClasses} rounded-xl px-3.5 border transition-all duration-150 cursor-pointer select-none text-left rtl:text-right focus:outline-none focus:ring-2 focus:ring-[#c5a059]/30 ${
           disabled
             ? "bg-neutral-100/80 border-neutral-200/60 text-neutral-400 cursor-not-allowed"
             : isOpen
-            ? "bg-[#faf6ed] border-[#c5a059] ring-2 ring-[#c5a059]/20 text-[#9b7832] shadow-xs"
-            : "bg-neutral-50 hover:bg-neutral-100/70 border-neutral-200 text-neutral-900"
+            ? "!bg-[#faf6ed] !border-[#c5a059] ring-2 ring-[#c5a059]/20 !text-[#9b7832] shadow-xs"
+            : `${defaultBg} ${defaultBorder} text-neutral-900`
         } ${triggerClassName}`}
       >
         <span className={`truncate ${!value && !disabled ? "text-neutral-400" : ""}`}>

@@ -288,6 +288,7 @@ export default function CartPage() {
                       label={lang === "ar" ? "وجهة التوصيل" : "Delivery Destination"}
                       value={destination}
                       onChange={(val) => setDestination(val as any)}
+                      triggerClassName="h-10 text-sm sm:text-xs"
                       options={[
                         {
                           value: "QA",

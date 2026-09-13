@@ -322,6 +322,7 @@ export default function CheckoutPage() {
                       <CustomSelect
                         value={formData.phoneCode}
                         onChange={(val) => setFormData({ ...formData, phoneCode: val })}
+                        triggerClassName="h-11 sm:h-10 text-sm sm:text-xs bg-neutral-50/70 hover:bg-neutral-100/70 border-neutral-200/90"
                         options={[
                           { value: "+974", label: "🇶🇦 +974" },
                           { value: "+966", label: "🇸🇦 +966" },
@@ -375,6 +376,7 @@ export default function CheckoutPage() {
                     label={lang === "ar" ? "الدولة" : "Country"}
                     value={formData.country}
                     onChange={(val) => setFormData({ ...formData, country: val })}
+                    triggerClassName="h-11 sm:h-10 text-sm sm:text-xs bg-neutral-50/70 hover:bg-neutral-100/70 border-neutral-200/90"
                     options={[
                       { value: "Qatar", label: lang === "ar" ? "دولة قطر" : "Qatar" },
                       { value: "Saudi Arabia", label: lang === "ar" ? "المملكة العربية السعودية" : "Saudi Arabia" },
