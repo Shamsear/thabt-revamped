@@ -6,6 +6,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
 import { CustomSelect } from "@/components/CustomSelect";
+import { motion } from "framer-motion";
+import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 import {
   MapPin,
   Phone,
@@ -42,7 +44,7 @@ export default function ContactUsPage() {
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-8 sm:py-14">
+      <main className="flex-1 py-8 sm:py-14 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-6">
@@ -57,7 +59,12 @@ export default function ContactUsPage() {
           </nav>
 
           {/* Heading */}
-          <div className="max-w-2xl mb-12">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUpItemVariants}
+            className="max-w-2xl mb-12"
+          >
             <span className="text-xs uppercase tracking-[0.25em] text-[#c5a059] font-semibold mb-2 block">
               {lang === "ar" ? "فريق خدمة العملاء والتركيب" : "Customer Support & Fitment"}
             </span>
@@ -70,12 +77,18 @@ export default function ContactUsPage() {
                 ? "تفضل بزيارة معارضنا في الريان القديم وأم صلال لمعاينة قواعد برو كليبس وماونت إكس وتركيبها فورياً لسيارتك، أو تواصل مع فريقنا عبر واتساب."
                 : "Visit our flagship Doha showrooms for free fitment consultation, or contact our dedicated WhatsApp concierge team across Qatar and the GCC."}
             </p>
-          </div>
+          </motion.div>
 
           {/* Showroom Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={staggerContainerVariants}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
+          >
             {/* Showroom 1: Old Rayan */}
-            <div className="bg-white rounded-2xl border border-neutral-200/80 hover:border-neutral-900 p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between space-y-6">
+            <motion.div variants={fadeUpItemVariants} className="bg-white rounded-2xl border border-neutral-200/80 hover:border-neutral-900 p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between space-y-6">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2.5 py-0.5 rounded-full border border-[#c5a059]/30">
@@ -113,10 +126,10 @@ export default function ContactUsPage() {
                 <span>{lang === "ar" ? "فتح الموقع في خرائط Google" : "Open in Google Maps"}</span>
                 <ExternalLink size={13} className="text-[#c5a059]" />
               </a>
-            </div>
+            </motion.div>
 
             {/* Showroom 2: Umm Salal */}
-            <div className="bg-white rounded-2xl border border-neutral-200/80 hover:border-neutral-900 p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between space-y-6">
+            <motion.div variants={fadeUpItemVariants} className="bg-white rounded-2xl border border-neutral-200/80 hover:border-neutral-900 p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between space-y-6">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9b7832] bg-[#faf6ed] px-2.5 py-0.5 rounded-full border border-[#c5a059]/30">
@@ -154,11 +167,17 @@ export default function ContactUsPage() {
                 <span>{lang === "ar" ? "فتح الموقع في خرائط Google" : "Open in Google Maps"}</span>
                 <ExternalLink size={13} className="text-[#c5a059]" />
               </a>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Form & WhatsApp Concierge Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={staggerContainerVariants}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
+          >
             {/* Contact Inquiry Form (7 cols) */}
             <div className="lg:col-span-7 bg-white rounded-2xl border border-neutral-200/80 p-6 sm:p-8">
               <h3 className="text-base font-semibold text-neutral-950 mb-1">
@@ -340,7 +359,7 @@ export default function ContactUsPage() {
                 <p className="text-neutral-700">CR No. 159281 (Ministry of Commerce & Industry, Qatar)</p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </main>
 

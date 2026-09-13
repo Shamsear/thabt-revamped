@@ -6,6 +6,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
 import { ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 
 export default function PrivacyPolicyPage() {
   const { lang } = useAppContext();
@@ -15,7 +17,13 @@ export default function PrivacyPolicyPage() {
       <Header />
 
       <main className="flex-1 py-8 sm:py-14">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={fadeUpItemVariants}
+          className="max-w-4xl mx-auto px-4 sm:px-8"
+        >
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-6">
             <Link href="/" className="hover:text-neutral-900 transition">
@@ -76,7 +84,7 @@ export default function PrivacyPolicyPage() {
               </section>
             </div>
           </div>
-        </div>
+        </motion.div>
       </main>
 
       <Footer />

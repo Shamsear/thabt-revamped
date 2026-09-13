@@ -8,6 +8,7 @@ import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
 import { CustomSelect } from "@/components/CustomSelect";
 import { MOCK_ORDERS, MOCK_ALL_PRODUCTS } from "@/data/mockData";
+import { staggerContainerVariants, fadeUpItemVariants } from "@/utils/animations";
 import {
   Package,
   MapPin,
@@ -101,10 +102,15 @@ export default function ProfilePage() {
     <div className={`min-h-screen bg-white text-neutral-900 flex flex-col ${lang === "ar" ? "rtl" : "ltr"}`} dir={lang === "ar" ? "rtl" : "ltr"}>
       <Header />
 
-      <main className="flex-1 py-5 sm:py-10">
+      <motion.main
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainerVariants}
+        className="flex-1 py-5 sm:py-10 overflow-hidden"
+      >
         <div className="max-w-6xl mx-auto px-3.5 sm:px-8">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-1.5 sm:gap-2 text-xs text-neutral-400 mb-4 sm:mb-6 overflow-x-auto scrollbar-none pb-0.5">
+          <motion.nav variants={fadeUpItemVariants} className="flex items-center gap-1.5 sm:gap-2 text-xs text-neutral-400 mb-4 sm:mb-6 overflow-x-auto scrollbar-none pb-0.5">
             <Link href="/" className="hover:text-neutral-900 transition shrink-0">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
@@ -113,10 +119,10 @@ export default function ProfilePage() {
               <span className="w-1.5 h-1.5 rounded-full bg-[#c5a059]"></span>
               {lang === "ar" ? "حسابي والطلبات" : "My Account & Orders"}
             </span>
-          </nav>
+          </motion.nav>
 
           {/* Profile Header Card */}
-          <div className="bg-white rounded-2xl border border-neutral-200/80 p-4 sm:p-7 mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 shadow-2xs">
+          <motion.div variants={fadeUpItemVariants} className="bg-white rounded-2xl border border-neutral-200/80 p-4 sm:p-7 mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 shadow-2xs">
             {user?.isLoggedIn ? (
               <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 w-full sm:w-auto">
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-neutral-950 text-[#c5a059] flex items-center justify-center font-bold text-lg sm:text-xl shrink-0 ring-2 ring-[#c5a059]/30 uppercase">
@@ -189,7 +195,7 @@ export default function ProfilePage() {
                 </button>
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* Tabs Bar: Animated Sliding Pill Switcher */}
           <div ref={containerRef} className="mb-6 sm:mb-8 overflow-x-auto scrollbar-none -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
@@ -535,7 +541,7 @@ export default function ProfilePage() {
             )}
           </AnimatePresence>
         </div>
-      </main>
+      </motion.main>
 
       <Footer />
     </div>

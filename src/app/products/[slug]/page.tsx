@@ -28,6 +28,11 @@ import {
   Share2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  staggerContainerVariants,
+  fadeUpItemVariants,
+  viewportOnce,
+} from "@/utils/animations";
 
 export default function ProductDetailPage({
   params,
@@ -256,9 +261,15 @@ export default function ProductDetailPage({
       <Header />
 
       <main className="flex-1 py-3 sm:py-8 pb-28 sm:pb-8">
-        <div className="max-w-6xl mx-auto px-3.5 sm:px-6">
+        <motion.div
+          variants={staggerContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          className="max-w-6xl mx-auto px-3.5 sm:px-6"
+        >
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6 overflow-x-auto whitespace-nowrap scrollbar-none pb-1">
+          <motion.nav variants={fadeUpItemVariants} className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6 overflow-x-auto whitespace-nowrap scrollbar-none pb-1">
             <Link href="/" className="hover:text-neutral-900 transition shrink-0">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
@@ -273,12 +284,12 @@ export default function ProductDetailPage({
             <span className="text-neutral-800 font-medium truncate max-w-[140px] xs:max-w-[200px] sm:max-w-xs">
               {lang === "ar" ? product.name_ar : product.name}
             </span>
-          </nav>
+          </motion.nav>
 
           {/* Main Product Two-Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-12 mb-10 sm:mb-12 items-start">
             {/* Left: Floating Gallery (6 cols) - Sticky & Viewport Height Fitted */}
-            <div className="lg:col-span-6 lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-5.5rem)] flex flex-col justify-start space-y-2.5 sm:space-y-3">
+            <motion.div variants={fadeUpItemVariants} className="lg:col-span-6 lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-5.5rem)] flex flex-col justify-start space-y-2.5 sm:space-y-3">
               {/* Main Image Display with Touch Swipe and Left/Right Navigation Buttons */}
               <div
                 onClick={() => setIsZoomOpen(true)}
@@ -391,10 +402,10 @@ export default function ProductDetailPage({
                   })}
                 </div>
               )}
-            </div>
+            </motion.div>
 
             {/* Right: Buy Box & Product Details (6 cols) */}
-            <div className="lg:col-span-6 space-y-3.5 sm:space-y-4">
+            <motion.div variants={fadeUpItemVariants} className="lg:col-span-6 space-y-3.5 sm:space-y-4">
               <div>
                 {/* SKU, Stock & Share Action */}
                 <div className="flex items-center justify-between gap-2 text-xs mb-2">
@@ -629,12 +640,18 @@ export default function ProductDetailPage({
                   {lang === "ar" ? "أضف الاثنين" : "Add Both"}
                 </button>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Technical Specifications */}
           {product.specs && (
-            <div className="border-t border-neutral-100 pt-6 sm:pt-8 mb-6 sm:mb-8">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewportOnce}
+              variants={fadeUpItemVariants}
+              className="border-t border-neutral-100 pt-6 sm:pt-8 mb-6 sm:mb-8"
+            >
               <h2 className="text-sm font-bold text-neutral-950 mb-3 sm:mb-4 flex items-center gap-2">
                 <Layers size={15} className="text-[#c5a059]" />
                 <span>{lang === "ar" ? "المواصفات الهندسية" : "Engineering Specifications"}</span>
@@ -648,12 +665,18 @@ export default function ProductDetailPage({
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Vehicle Compatibility Strip */}
           {product.compatible_cars && (
-            <div className="border-t border-neutral-100 pt-6 sm:pt-8">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewportOnce}
+              variants={fadeUpItemVariants}
+              className="border-t border-neutral-100 pt-6 sm:pt-8"
+            >
               <h2 className="text-sm font-bold text-neutral-950 mb-1.5 flex items-center gap-2">
                 <Car size={15} className="text-[#c5a059]" />
                 <span>{lang === "ar" ? "السيارات المتوافقة المعتمدة" : "Verified Compatible Vehicles"}</span>
@@ -673,12 +696,18 @@ export default function ProductDetailPage({
                   </span>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
 
-          {/* Related Hardware Section (Matching container-less luxury style with generous separation) */}
-          <div className="border-t border-neutral-100 pt-8 sm:pt-14 mt-8 sm:mt-14">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
+          {/* Related Hardware Section */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={staggerContainerVariants}
+            className="border-t border-neutral-100 pt-8 sm:pt-14 mt-8 sm:mt-14"
+          >
+            <motion.div variants={fadeUpItemVariants} className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
               <div>
                 <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#c5a059] font-semibold mb-1">
                   {lang === "ar" ? "قطع تكميلية موصى بها" : "Complete Your Rig"}
@@ -695,12 +724,13 @@ export default function ProductDetailPage({
                 <span>{lang === "ar" ? "تصفح الكتالوج بالكامل" : "View All Hardware"}</span>
                 <ChevronRight size={13} className="rtl:rotate-180" />
               </Link>
-            </div>
+            </motion.div>
 
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-10 sm:gap-x-8 sm:gap-y-12">
               {relatedProducts.map((relProd) => (
-                <div
+                <motion.div
                   key={relProd.id}
+                  variants={fadeUpItemVariants}
                   className="h-full flex flex-col justify-between group select-none"
                 >
                   <div>
@@ -744,11 +774,11 @@ export default function ProductDetailPage({
                       <Plus size={13} />
                     </button>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </main>
 
       {/* Sticky Mobile Purchase Pill (Floating rounded rectangle, appears only when main CTA is scrolled away) */}

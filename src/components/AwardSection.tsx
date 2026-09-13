@@ -4,7 +4,7 @@ import React from "react";
 import { Trophy, Award, ShieldCheck, MapPin, Calendar, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
 
-import { fadeUpItemVariants, viewportOnce } from "@/utils/animations";
+import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 
 interface AwardSectionProps {
   lang: "en" | "ar";
@@ -50,14 +50,14 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          variants={fadeUpItemVariants}
+          variants={staggerContainerVariants}
           className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
         >
           {/* Left Column: Certification Authority & Narrative (7 cols) */}
           <div className="lg:col-span-7 space-y-5 sm:space-y-6">
             
             {/* Top Eyebrow Tag */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#faf6ed] border border-[#c5a059]/35 text-[#b38e46] text-xs font-medium tracking-wide shadow-2xs">
+            <motion.div variants={fadeUpItemVariants} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#faf6ed] border border-[#c5a059]/35 text-[#b38e46] text-xs font-medium tracking-wide shadow-2xs">
               <Trophy size={14} className="shrink-0 text-[#c5a059]" />
               <span className="hidden sm:inline">
                 {isAr
@@ -69,10 +69,10 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
                   ? "أفضل بيئات العمل في قطر™ 2026"
                   : "Best Workplaces Qatar™ 2026"}
               </span>
-            </div>
+            </motion.div>
 
             {/* Headline */}
-            <div>
+            <motion.div variants={fadeUpItemVariants}>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-neutral-900 leading-tight">
                 {isAr ? (
                   <>
@@ -95,17 +95,17 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
                 <ShieldCheck size={16} className="text-emerald-600 shrink-0" />
                 <span>Great Place To Work® · {isAr ? "منظمة معتمدة رسمياً" : "Certified Organisation"}</span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Narrative Description */}
-            <p className="text-xs sm:text-sm md:text-base text-neutral-600 font-normal leading-relaxed max-w-2xl">
+            <motion.p variants={fadeUpItemVariants} className="text-xs sm:text-sm md:text-base text-neutral-600 font-normal leading-relaxed max-w-2xl">
               {isAr
                 ? "من بين مئات الشركات في دولة قطر، حققت شركة ثابت مكانتها المرموقة ضمن المراكز الخمسة الأولى — تقديراً لثقافة الثقة المتبادلة، والاعتزاز بفريق العمل، والاهتمام الحقيقي بكل موظف. هذه ليست مجرد جائزة، بل هي مرآة لهويتنا وقيمنا الراسخة."
                 : "Out of hundreds of companies across Qatar, Thabt secured its position in the top 5 — recognised for a culture of trust, team pride, and genuine care for every employee. This is not just an award. It's a reflection of who we are."}
-            </p>
+            </motion.p>
 
             {/* Featured Rank Callout Plaque */}
-            <div className="bg-white border border-[#c5a059]/30 hover:border-[#c5a059] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden">
+            <motion.div variants={fadeUpItemVariants} className="bg-white border border-[#c5a059]/30 hover:border-[#c5a059] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
                 {/* Large Gold Rank Emblem */}
                 <div className="flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br from-[#c5a059] to-[#b38e46] text-neutral-950 font-extrabold text-3xl sm:text-4xl shadow-sm shrink-0">
@@ -126,13 +126,14 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* 4-Item Grid Metrics */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+            <motion.div variants={fadeUpItemVariants} className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
               {metrics.map((m, idx) => (
-                <div
+                <motion.div
                   key={idx}
+                  variants={fadeUpItemVariants}
                   className="bg-white border border-neutral-200/80 hover:border-[#c5a059]/60 hover:shadow-xs hover:-translate-y-0.5 rounded-xl p-3 sm:p-3.5 transition-all duration-300 shadow-2xs group"
                 >
                   <div className="flex items-center gap-1.5 mb-1 text-neutral-500 group-hover:text-[#c5a059] text-[11px] font-medium transition-colors">
@@ -142,14 +143,14 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
                   <div className="text-base sm:text-lg font-bold text-neutral-900 group-hover:text-[#b38e46] tracking-tight transition-colors">
                     {m.val}
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
           </div>
 
           {/* Right Column: Trophy Visual Showcase (5 cols) */}
-          <div className="lg:col-span-5 flex justify-center">
+          <motion.div variants={fadeUpItemVariants} className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-[290px] sm:max-w-[320px] lg:max-w-[340px] rounded-2xl overflow-hidden bg-[#0B0D11] border border-[#c5a059]/40 shadow-xl group">
               
               {/* Trophy Image: Full Uncropped 9:16 Presentation */}
@@ -180,7 +181,7 @@ export const AwardSection: React.FC<AwardSectionProps> = ({ lang }) => {
               </div>
 
             </div>
-          </div>
+          </motion.div>
 
         </motion.div>
       </div>

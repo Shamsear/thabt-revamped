@@ -17,6 +17,8 @@ import {
   Compass,
 } from "lucide-react";
 
+import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
+
 const PAGE_SIZE = 12;
 
 export default function GalleryPage() {
@@ -95,7 +97,7 @@ export default function GalleryPage() {
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-5 sm:py-14">
+      <main className="flex-1 py-5 sm:py-14 overflow-hidden">
         <div className="max-w-7xl mx-auto px-3 sm:px-8">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
@@ -110,7 +112,12 @@ export default function GalleryPage() {
           </nav>
 
           {/* Heading */}
-          <div className="text-center max-w-2xl mx-auto mb-4 sm:mb-10">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUpItemVariants}
+            className="text-center max-w-2xl mx-auto mb-4 sm:mb-10"
+          >
             <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2 block">
               {lang === "ar" ? "تركيبات حقيقية في قطر" : "Real Customer Setups"}
             </span>
@@ -123,7 +130,7 @@ export default function GalleryPage() {
                 ? "شاهد كيف تبدو قواعد برو كليبس وحوامل الهواتف بعد تركيبها بدقة متناهية على لوحة قيادة سيارات الدفع الرباعي الفاخرة بدون أي حفر أو إتلاف."
                 : "Explore real-world fitments inside luxury SUVs and desert cruisers across Qatar and the GCC without drilling a single hole."}
             </p>
-          </div>
+          </motion.div>
 
           {/* Horizontal Animated Sliding Pill Filter Bar */}
           <div ref={containerRef} className="mb-4 sm:mb-10 overflow-x-auto scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0 flex sm:justify-center">
@@ -210,15 +217,17 @@ export default function GalleryPage() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={`gallery-${selectedBrand}-${currentPage}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial="hidden"
+                animate="visible"
                 exit={{ opacity: 0, y: -10 }}
+                variants={staggerContainerVariants}
                 transition={{ duration: 0.22, ease: "easeOut" }}
                 className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6 mb-6 sm:mb-8"
               >
                 {paginatedItems.map((item) => (
-                  <div
+                  <motion.div
                     key={item.id}
+                    variants={fadeUpItemVariants}
                     onClick={() => setActiveModalItem(item)}
                     className="bg-white rounded-xl sm:rounded-2xl border border-neutral-200/80 hover:border-neutral-900 overflow-hidden transition-all duration-300 cursor-pointer group flex flex-col justify-between shadow-2xs hover:shadow-md active:scale-[0.99]"
                   >
@@ -250,7 +259,7 @@ export default function GalleryPage() {
                         <span className="truncate">{item.mounting_base} + {item.device_holder}</span>
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </motion.div>
             </AnimatePresence>

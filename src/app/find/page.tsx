@@ -15,6 +15,8 @@ import {
   MOCK_ALL_PRODUCTS,
   Product,
 } from "@/data/mockData";
+import { motion } from "framer-motion";
+import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 import {
   Car,
   Smartphone,
@@ -71,7 +73,7 @@ export default function FindPage() {
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col">
       <Header />
 
-      <main className="flex-1 py-5 sm:py-12">
+      <main className="flex-1 py-5 sm:py-12 overflow-hidden">
         <div className="max-w-7xl mx-auto px-3 sm:px-8">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
@@ -85,7 +87,12 @@ export default function FindPage() {
           </nav>
 
           {/* Minimalist Section Header (Matches Home Page Model) */}
-          <div className="mb-4 sm:mb-10">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUpItemVariants}
+            className="mb-4 sm:mb-10"
+          >
             <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2">
               {lang === "ar" ? "نظام التثبيت الثنائي" : "The 2-Part System"}
             </p>
@@ -105,10 +112,16 @@ export default function FindPage() {
                 ? "قواعد برو كليبس تصنع بدقة لكل سيارة لتثبت في فواصل الديكور بدون حفر، وتتكامل مع حوامل الهواتف الذكية."
                 : "Vehicle-specific dashboard mounts clip in tool-free, perfectly pairing with our wireless MagSafe phone holders."}
             </p>
-          </div>
+          </motion.div>
 
           {/* 2-Step Configuration Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-10 items-start mb-10 sm:mb-16">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={staggerContainerVariants}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-10 items-start mb-10 sm:mb-16"
+          >
             {/* Left Column: Step 1 & Step 2 Selectors (7 cols) */}
             <div className="lg:col-span-7 space-y-4 sm:space-y-6">
               {/* STEP 1: Vehicle Base Selection */}
@@ -434,7 +447,7 @@ export default function FindPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </main>
 

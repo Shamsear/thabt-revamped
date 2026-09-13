@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
+import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 
 interface FeaturesSectionProps {
   lang: "en" | "ar";
@@ -59,41 +61,51 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ lang }) => {
   ];
 
   return (
-    <section className="py-10 sm:py-16 md:py-24 bg-[#0b0d11] text-white">
+    <section className="py-10 sm:py-16 md:py-24 bg-[#0b0d11] text-white overflow-hidden">
       <div className="max-w-6xl mx-auto px-3 sm:px-6">
-        <div className="max-w-2xl mb-6 sm:mb-12">
-          <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#c5a059] font-medium mb-1 sm:mb-2">
-            {lang === "ar" ? "المعايير الهندسية" : "Engineering Standards"}
-          </p>
-          <h2 className="text-xl sm:text-4xl font-light tracking-tight text-white">
-            {lang === "ar" ? (
-              <>
-                الدقة في كل <span className="font-semibold">تفصيل</span>
-              </>
-            ) : (
-              <>
-                Precision in every <span className="font-semibold">detail</span>
-              </>
-            )}
-          </h2>
-        </div>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={staggerContainerVariants}
+        >
+          {/* Section Header */}
+          <motion.div variants={fadeUpItemVariants} className="max-w-2xl mb-6 sm:mb-12">
+            <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#c5a059] font-medium mb-1 sm:mb-2">
+              {lang === "ar" ? "المعايير الهندسية" : "Engineering Standards"}
+            </p>
+            <h2 className="text-xl sm:text-4xl font-light tracking-tight text-white">
+              {lang === "ar" ? (
+                <>
+                  الدقة في كل <span className="font-semibold">تفصيل</span>
+                </>
+              ) : (
+                <>
+                  Precision in every <span className="font-semibold">detail</span>
+                </>
+              )}
+            </h2>
+          </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
-          {specs.map((spec) => (
-            <div
-              key={spec.num}
-              className="p-3 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col justify-between"
-            >
-              <span className="text-[10px] sm:text-xs font-mono text-[#c5a059] tracking-wider mb-2 sm:mb-4">
-                {spec.num}
-              </span>
-              <div>
-                <h3 className="text-xs sm:text-base font-semibold text-white mb-1 sm:mb-2 leading-snug">{spec.title}</h3>
-                <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed">{spec.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+          {/* Specifications Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
+            {specs.map((spec) => (
+              <motion.div
+                key={spec.num}
+                variants={fadeUpItemVariants}
+                className="p-3 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col justify-between"
+              >
+                <span className="text-[10px] sm:text-xs font-mono text-[#c5a059] tracking-wider mb-2 sm:mb-4">
+                  {spec.num}
+                </span>
+                <div>
+                  <h3 className="text-xs sm:text-base font-semibold text-white mb-1 sm:mb-2 leading-snug">{spec.title}</h3>
+                  <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed">{spec.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

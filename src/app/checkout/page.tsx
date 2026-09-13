@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context/AppContext";
 import { CustomSelect } from "@/components/CustomSelect";
 import { CheckoutStepper } from "@/components/CheckoutStepper";
+import { motion } from "framer-motion";
+import { staggerContainerVariants, fadeUpItemVariants } from "@/utils/animations";
 import {
   ShieldCheck,
   Lock,
@@ -118,9 +120,16 @@ export default function CheckoutPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-3.5 sm:px-8 py-5 sm:py-10">
+      <motion.main
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainerVariants}
+        className="max-w-6xl mx-auto px-3.5 sm:px-8 py-5 sm:py-10 overflow-hidden"
+      >
         {/* Responsive Checkout Stepper */}
-        <CheckoutStepper currentStep={1} lang={lang} />
+        <motion.div variants={fadeUpItemVariants}>
+          <CheckoutStepper currentStep={1} lang={lang} />
+        </motion.div>
 
         {/* Mobile Compact Order Summary Collapsible (< lg) */}
         <div className="lg:hidden mb-5 bg-white rounded-2xl border border-neutral-200/80 overflow-hidden shadow-2xs">
@@ -198,7 +207,7 @@ export default function CheckoutPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           {/* Left Form: Contact & Address (7 cols) */}
-          <div className="lg:col-span-7">
+          <motion.div variants={fadeUpItemVariants} className="lg:col-span-7">
             {/* 1-Tap Fast Auth / Auto-Fill Banner */}
             <div className="mb-4 p-3.5 rounded-2xl bg-[#faf6ed]/90 border border-[#c5a059]/40 flex items-center justify-between gap-3 shadow-2xs">
               <div className="flex items-center gap-2.5 min-w-0">
@@ -465,10 +474,10 @@ export default function CheckoutPage() {
                 </p>
               </div>
             </form>
-          </div>
+          </motion.div>
 
           {/* Right Summary Sidebar (5 cols, desktop only) */}
-          <div className="hidden lg:block lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-4">
+          <motion.div variants={fadeUpItemVariants} className="hidden lg:block lg:col-span-5 lg:sticky lg:top-24 lg:self-start space-y-4">
             <div className="bg-white rounded-2xl border border-neutral-200/80 p-6">
               <h3 className="text-sm font-semibold text-neutral-950 pb-3 border-b border-neutral-100 flex items-center justify-between">
                 <span>{lang === "ar" ? "طلبك" : "Your Order"} ({cartItems.length})</span>
@@ -537,9 +546,9 @@ export default function CheckoutPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </main>
+      </motion.main>
     </div>
   );
 }

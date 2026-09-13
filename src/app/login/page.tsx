@@ -7,6 +7,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
 import { Smartphone, Mail, User, ArrowRight, CheckCircle2, Sparkles, KeyRound, ShieldCheck, Lock } from "lucide-react";
+import { motion } from "framer-motion";
+import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -65,9 +67,14 @@ export default function LoginPage() {
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 w-full flex items-center justify-center">
-        <div className="w-full max-w-md bg-white border border-neutral-200/90 rounded-2xl shadow-xl p-6 sm:p-8 space-y-6 relative overflow-hidden">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainerVariants}
+          className="w-full max-w-md bg-white border border-neutral-200/90 rounded-2xl shadow-xl p-6 sm:p-8 space-y-6 relative overflow-hidden"
+        >
           {/* Top Brand & Title */}
-          <div className="text-center space-y-2">
+          <motion.div variants={fadeUpItemVariants} className="text-center space-y-2">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#faf6ed] text-[#c5a059] border border-[#c5a059]/30 mb-1">
               <Lock size={22} />
             </div>
@@ -79,10 +86,10 @@ export default function LoginPage() {
                 ? "سجّل دخولك برقم الجوال مباشرة بدون كلمات مرور معقدة"
                 : "Sign in with your GCC mobile number in 1 simple step."}
             </p>
-          </div>
+          </motion.div>
 
           {/* Quick Demo Shortcut Banner */}
-          <div className="p-3 rounded-xl bg-[#faf6ed]/80 border border-[#c5a059]/30 flex items-center justify-between gap-2">
+          <motion.div variants={fadeUpItemVariants} className="p-3 rounded-xl bg-[#faf6ed]/80 border border-[#c5a059]/30 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-xs text-neutral-800">
               <Sparkles size={15} className="text-[#c5a059] shrink-0" />
               <span className="text-[11px] font-semibold">
@@ -96,10 +103,10 @@ export default function LoginPage() {
             >
               {lang === "ar" ? "⚡ تعبئة نموذج تجريبي" : "⚡ Auto-Fill Demo"}
             </button>
-          </div>
+          </motion.div>
 
           {/* Mode Switcher Tabs */}
-          <div className="grid grid-cols-2 gap-1.5 p-1 bg-neutral-100/80 rounded-xl text-xs font-semibold">
+          <motion.div variants={fadeUpItemVariants} className="grid grid-cols-2 gap-1.5 p-1 bg-neutral-100/80 rounded-xl text-xs font-semibold">
             <button
               type="button"
               onClick={() => {
@@ -125,7 +132,7 @@ export default function LoginPage() {
             >
               {lang === "ar" ? "إنشاء حساب جديد" : "Quick Register"}
             </button>
-          </div>
+          </motion.div>
 
           {/* Form Content */}
           {isSuccess ? (
@@ -278,11 +285,11 @@ export default function LoginPage() {
           )}
 
           {/* Security Assurance Footer */}
-          <div className="pt-3 border-t border-neutral-100 flex items-center justify-center gap-1.5 text-[11px] text-neutral-400">
+          <motion.div variants={fadeUpItemVariants} className="pt-3 border-t border-neutral-100 flex items-center justify-center gap-1.5 text-[11px] text-neutral-400">
             <ShieldCheck size={14} className="text-[#c5a059]" />
             <span>{lang === "ar" ? "حماية وتشفير عالي الأمان 256-bit SSL" : "256-bit Encrypted GCC Fast Auth"}</span>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </main>
 
       <Footer />

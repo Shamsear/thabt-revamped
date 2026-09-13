@@ -2,6 +2,8 @@
 
 import React from "react";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { scaleUpVariants, viewportOnce } from "@/utils/animations";
 
 interface MiddleBannerSectionProps {
   lang?: "en" | "ar";
@@ -9,9 +11,15 @@ interface MiddleBannerSectionProps {
 
 export const MiddleBannerSection: React.FC<MiddleBannerSectionProps> = ({ lang = "en" }) => {
   return (
-    <section className="py-8 sm:py-16 md:py-20 bg-white border-b border-neutral-100">
+    <section className="py-8 sm:py-16 md:py-20 bg-white border-b border-neutral-100 overflow-hidden">
       <div className="max-w-6xl mx-auto px-3 sm:px-6">
-        <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-neutral-900">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={scaleUpVariants}
+          className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-neutral-900"
+        >
           <img
             src="/user/images/home_page_Banner.png"
             alt="Thabt Interior Fit"
@@ -42,7 +50,7 @@ export const MiddleBannerSection: React.FC<MiddleBannerSectionProps> = ({ lang =
               </a>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -19,6 +19,8 @@ import {
   ShoppingBag,
   ChevronDown,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 
 export default function DummyPayPage() {
   const router = useRouter();
@@ -120,8 +122,11 @@ export default function DummyPayPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-3.5 sm:px-8 py-5 sm:py-10 flex-1 w-full">
-        {/* Responsive Stepper */}
-        <CheckoutStepper currentStep={2} lang={lang} />
+        <motion.div initial="hidden" animate="visible" variants={staggerContainerVariants}>
+          {/* Responsive Stepper */}
+          <motion.div variants={fadeUpItemVariants}>
+            <CheckoutStepper currentStep={2} lang={lang} />
+          </motion.div>
 
         {/* Mobile Top Brief Summary Card (< lg) */}
         <div className="lg:hidden mb-4 bg-white rounded-2xl border border-neutral-200/80 overflow-hidden shadow-2xs">
@@ -559,7 +564,8 @@ export default function DummyPayPage() {
             </div>
           </div>
         </div>
-      </main>
+      </motion.div>
+    </main>
     </div>
   );
 }

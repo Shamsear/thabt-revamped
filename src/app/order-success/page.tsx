@@ -13,6 +13,8 @@ import {
   ArrowRight,
   ShieldCheck,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 
 export default function OrderSuccessPage() {
   const { lang, formatPrice } = useAppContext();
@@ -72,12 +74,19 @@ export default function OrderSuccessPage() {
       <Header />
 
       <main className="flex-1 py-5 sm:py-10">
-        <div className="max-w-3xl mx-auto px-3.5 sm:px-8">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainerVariants}
+          className="max-w-3xl mx-auto px-3.5 sm:px-8"
+        >
           {/* Responsive Stepper */}
-          <CheckoutStepper currentStep={3} lang={lang} />
+          <motion.div variants={fadeUpItemVariants}>
+            <CheckoutStepper currentStep={3} lang={lang} />
+          </motion.div>
 
           {/* Success Banner */}
-          <div className="bg-white rounded-2xl border border-neutral-200/80 p-5 sm:p-8 text-center mb-6 shadow-2xs">
+          <motion.div variants={fadeUpItemVariants} className="bg-white rounded-2xl border border-neutral-200/80 p-5 sm:p-8 text-center mb-6 shadow-2xs">
             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#faf6ed] text-[#c5a059] flex items-center justify-center mx-auto mb-3.5 border border-[#c5a059]/30">
               <CheckCircle2 size={28} className="stroke-[2.2]" />
             </div>
@@ -109,7 +118,7 @@ export default function OrderSuccessPage() {
                 <span className="font-bold text-[#9b7832]">{orderInfo.trackingCode}</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Delivery Timeline Progress */}
           <div className="bg-white rounded-2xl border border-neutral-200/80 p-4 sm:p-6 mb-6 shadow-2xs">
@@ -276,7 +285,7 @@ export default function OrderSuccessPage() {
           </div>
 
           {/* Action Links */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <motion.div variants={fadeUpItemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/"
               className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-neutral-900 hover:bg-[#c5a059] text-white hover:text-neutral-950 text-xs font-semibold text-center transition-colors cursor-pointer shadow-xs"
@@ -289,8 +298,8 @@ export default function OrderSuccessPage() {
             >
               {lang === "ar" ? "عرض جميع طلباتي في حسابي" : "View Order in My Account"}
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </main>
 
       <Footer />

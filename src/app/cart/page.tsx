@@ -8,6 +8,7 @@ import { Footer } from "@/components/Footer";
 import { CustomSelect } from "@/components/CustomSelect";
 import { useAppContext } from "@/context/AppContext";
 import { motion } from "framer-motion";
+import { staggerContainerVariants, fadeUpItemVariants } from "@/utils/animations";
 import {
   ShoppingBag,
   Trash2,
@@ -99,14 +100,14 @@ export default function CartPage() {
       <Header />
 
       <motion.main
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.15 }}
-        className="flex-1 py-5 sm:py-12"
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainerVariants}
+        className="flex-1 py-5 sm:py-12 overflow-hidden"
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-8">
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
+          <motion.nav variants={fadeUpItemVariants} className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
             <Link href="/" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
@@ -114,10 +115,10 @@ export default function CartPage() {
             <span className="text-neutral-900 font-semibold truncate max-w-[180px] sm:max-w-none">
               {lang === "ar" ? "سلة المشتريات" : "Shopping Cart"}
             </span>
-          </nav>
+          </motion.nav>
 
           {/* Minimalist Section Header */}
-          <div className="flex items-center justify-between mb-4 sm:mb-10">
+          <motion.div variants={fadeUpItemVariants} className="flex items-center justify-between mb-4 sm:mb-10">
             <div>
               <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2">
                 {lang === "ar" ? "الحقيبة الشخصية" : "Shopping Bag"}
@@ -139,12 +140,12 @@ export default function CartPage() {
                 {cartItems.reduce((acc, item) => acc + item.quantity, 0)} {lang === "ar" ? "منتجات" : "items"}
               </span>
             )}
-          </div>
+          </motion.div>
 
           {cartItems.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-10 items-start">
               {/* Left Column: Cart Items (8 cols) */}
-              <div className="lg:col-span-8 space-y-3 sm:space-y-4">
+              <motion.div variants={fadeUpItemVariants} className="lg:col-span-8 space-y-3 sm:space-y-4">
                 {/* 2-Part Fitment Advice Banner */}
                 {showTwoPartWarning && (
                   <div className="p-3 sm:p-4 rounded-xl bg-neutral-50 border border-neutral-200/80 flex items-start gap-2.5 text-xs">
@@ -272,10 +273,10 @@ export default function CartPage() {
                     </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Right Column: Order Summary (4 cols) */}
-              <div className="lg:col-span-4 space-y-4 sticky top-24">
+              <motion.div variants={fadeUpItemVariants} className="lg:col-span-4 space-y-4 sticky top-24">
                 <div className="bg-white rounded-2xl border border-neutral-200/80 p-5 sm:p-6 space-y-4">
                   <h3 className="text-sm font-bold text-neutral-950 pb-3 border-b border-neutral-100">
                     {lang === "ar" ? "ملخص الطلب" : "Order Summary"}
@@ -404,7 +405,7 @@ export default function CartPage() {
                     {lang === "ar" ? "دفع آمن وتوصيل مباشر في قطر والخليج" : "Secure payment & fast GCC delivery"}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
           ) : (
             /* Empty Cart State */

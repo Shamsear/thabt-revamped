@@ -15,6 +15,11 @@ import {
   VEHICLE_BRANDS,
 } from "@/data/mockData";
 import {
+  staggerContainerVariants,
+  fadeUpItemVariants,
+  viewportOnce,
+} from "@/utils/animations";
+import {
   Search,
   ChevronRight,
   Plus,
@@ -188,9 +193,15 @@ export default function CategoryPage({
       <Header />
 
       <main className="flex-1 py-5 sm:py-12">
-        <div className="max-w-7xl mx-auto px-3 sm:px-8">
+        <motion.div
+          variants={staggerContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          className="max-w-7xl mx-auto px-3 sm:px-8"
+        >
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-neutral-500 mb-3 sm:mb-6">
+          <motion.nav variants={fadeUpItemVariants} className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-neutral-500 mb-3 sm:mb-6">
             <Link href="/" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
@@ -202,10 +213,10 @@ export default function CategoryPage({
             <span className="text-neutral-900 font-semibold truncate max-w-[150px] sm:max-w-none">
               {lang === "ar" ? category.category_ar : category.category}
             </span>
-          </nav>
+          </motion.nav>
 
           {/* Minimalist Section Header (Matches Home Page Model) */}
-          <div className="mb-4 sm:mb-10">
+          <motion.div variants={fadeUpItemVariants} className="mb-4 sm:mb-10">
             <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2">
               {lang === "ar" ? "الفئة الأصلية المعتمدة" : "Official Collection"}
             </p>
@@ -226,10 +237,10 @@ export default function CategoryPage({
             <p className="text-xs sm:text-base text-neutral-600 max-w-xl leading-relaxed">
               {lang === "ar" ? category.descriptionar : category.description}
             </p>
-          </div>
+          </motion.div>
 
           {/* Unified Horizontal Filtering System */}
-          <div ref={productGridRef} className="space-y-4 mb-8">
+          <motion.div variants={fadeUpItemVariants} ref={productGridRef} className="space-y-4 mb-8">
             {/* Category Tabs Pill Carousel */}
             <div className="relative">
               <div
@@ -341,7 +352,7 @@ export default function CategoryPage({
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Active Filter Chips & Counter Header */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-3 border-b border-neutral-100">
@@ -408,9 +419,10 @@ export default function CategoryPage({
               <div>
                 <motion.div
                   key={`cat-grid-${activeSlug}-${selectedVehicle}-${searchQuery}-${onlyInStock}-${sortBy}-${currentPage}`}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial="hidden"
+                  animate="visible"
                   exit={{ opacity: 0, y: -6 }}
+                  variants={staggerContainerVariants}
                   transition={{ duration: 0.18, ease: "easeOut" }}
                   className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:gap-x-10 lg:gap-y-14 mb-8"
                 >
@@ -419,8 +431,9 @@ export default function CategoryPage({
                     const isAdded = justAddedId === product.id;
 
                     return (
-                      <div
+                      <motion.div
                         key={product.id}
+                        variants={fadeUpItemVariants}
                         className="h-full flex flex-col justify-between group select-none"
                       >
                         <div>
@@ -502,7 +515,7 @@ export default function CategoryPage({
                             </button>
                           )}
                         </div>
-                      </div>
+                      </motion.div>
                     );
                   })}
                 </motion.div>
@@ -595,7 +608,7 @@ export default function CategoryPage({
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </main>
 
       <Footer />

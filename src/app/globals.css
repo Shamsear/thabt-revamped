@@ -286,5 +286,15 @@ a:active, button:active, [role="button"]:active {
   content: '';
 }
 
+/* Low-End Device Hardware Compositing & GPU Acceleration */
+@supports (transform: translateZ(0)) {
+  .motion-gpu,
+  [style*="transform"] {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+
+
 
 

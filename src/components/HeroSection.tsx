@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
 import { motion, LayoutGroup } from "framer-motion";
 import { CustomSelect } from "@/components/CustomSelect";
+import { staggerContainerVariants, fadeUpItemVariants } from "@/utils/animations";
 import {
   VEHICLE_BRANDS,
   VEHICLE_MODELS,
@@ -46,12 +47,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
           {/* Left Column: Headline & The Front-and-Center Matcher Console (7 cols) */}
           <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainerVariants}
             className="lg:col-span-7 space-y-4 sm:space-y-4.5 lg:space-y-3.5"
           >
-            <div>
+            <motion.div variants={fadeUpItemVariants}>
               <p className="text-[11px] uppercase tracking-[0.22em] text-[#c5a059] font-semibold mb-1 sm:mb-1.5">
                 {lang === "ar" ? "قواعد تثبيت مخصصة بدون حفر" : "Vehicle-Specific Dashboard Mounts"}
               </p>
@@ -73,10 +74,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                   ? "تثبيت محكم بالضغط داخل فواصل لوحة القيادة الأصلية. ثبات تام على الكثبان الرملية بدون أي تلف لمقصورة السيارة."
                   : "Precision snap-fit directly into factory dashboard panel seams. Unshakeable stability on desert dunes with zero drilling or adhesive damage."}
               </p>
-            </div>
+            </motion.div>
 
             {/* The Front-and-Center Selector Console */}
-            <div className="bg-neutral-50/90 border border-neutral-200/90 rounded-2xl p-4 sm:p-4.5 shadow-xs">
+            <motion.div variants={fadeUpItemVariants} className="bg-neutral-50/90 border border-neutral-200/90 rounded-2xl p-4 sm:p-4.5 shadow-xs">
               {/* Tab Toggles with Calibrated Animated Gold Sliding Indicator */}
               <LayoutGroup id="heroTabSelector">
                 <div className="flex border-b border-neutral-200/80 mb-3 relative">
@@ -268,10 +269,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                   </form>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Feature Badges: Clean 3-tile grid on mobile, inline checkmark row on desktop */}
-            <div className="grid grid-cols-3 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-1.5 text-[11px] sm:text-xs text-neutral-600 pt-0.5">
+            <motion.div variants={fadeUpItemVariants} className="grid grid-cols-3 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-1.5 text-[11px] sm:text-xs text-neutral-600 pt-0.5">
               <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-1.5 bg-neutral-100/80 sm:bg-transparent py-2 px-1 sm:p-0 rounded-xl sm:rounded-none border border-neutral-200/50 sm:border-transparent hover:border-[#c5a059]/40 transition-colors duration-200 select-none">
                 <Check size={13} className="text-[#c5a059] shrink-0" />
                 <span className="leading-tight font-medium sm:font-normal">{lang === "ar" ? "تركيب بلمسة" : "30s Snap Fit"}</span>
@@ -284,14 +285,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
                 <Check size={13} className="text-[#c5a059] shrink-0" />
                 <span className="leading-tight font-medium sm:font-normal">{lang === "ar" ? "حرارة 60°م" : "60°C Proof"}</span>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Right Column: Architectural Visual Framing (5 cols) with Live Dynamic Sync */}
           <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 24, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-5"
           >
             <div className="relative rounded-2xl overflow-hidden bg-white border border-neutral-200/80 shadow-md group">

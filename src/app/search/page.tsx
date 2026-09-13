@@ -3,7 +3,12 @@
 import React, { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  staggerContainerVariants,
+  fadeUpItemVariants,
+  viewportOnce,
+} from "@/utils/animations";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CustomSelect } from "@/components/CustomSelect";
@@ -154,9 +159,15 @@ function SearchCatalogContent() {
       <Header />
 
       <main className="flex-1 py-5 sm:py-12">
-        <div className="max-w-7xl mx-auto px-3 sm:px-8">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={staggerContainerVariants}
+          className="max-w-7xl mx-auto px-3 sm:px-8"
+        >
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
+          <motion.nav variants={fadeUpItemVariants} className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-neutral-400 mb-3 sm:mb-6">
             <Link href="/" className="hover:text-neutral-900 transition">
               {lang === "ar" ? "الرئيسية" : "Home"}
             </Link>
@@ -164,10 +175,10 @@ function SearchCatalogContent() {
             <span className="text-neutral-900 font-semibold truncate max-w-[180px] sm:max-w-none">
               {lang === "ar" ? "كتالوج المنتجات والبحث" : "Product Catalog & Search"}
             </span>
-          </nav>
+          </motion.nav>
 
           {/* Minimalist Section Header (Matches Home Page Model) */}
-          <div className="mb-4 sm:mb-10">
+          <motion.div variants={fadeUpItemVariants} className="mb-4 sm:mb-10">
             <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#c5a059] font-semibold mb-1 sm:mb-2">
               {lang === "ar" ? "الكتالوج الشامل" : "Full Catalog"}
             </p>
@@ -187,10 +198,10 @@ function SearchCatalogContent() {
                 ? "تصفح أحدث قواعد التثبيت المخصصة وحوامل الهواتف المتوافقة مع أجهزة آبل وسامسونج وغيرها."
                 : "Explore factory-fit custom mounts and MagSafe wireless charging holders engineered for GCC conditions."}
             </p>
-          </div>
+          </motion.div>
 
           {/* Unified Horizontal Filtering System (Brand, Category, Search, Sort) */}
-          <div ref={productGridRef} className="space-y-4 mb-8">
+          <motion.div variants={fadeUpItemVariants} ref={productGridRef} className="space-y-4 mb-8">
             {/* Category Tabs Pill Carousel */}
             <div className="relative">
               <div
@@ -317,7 +328,7 @@ function SearchCatalogContent() {
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Results Counter & Active Filter Chips Bar */}
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs mb-4 sm:mb-6">
@@ -394,9 +405,10 @@ function SearchCatalogContent() {
               <div>
                 <motion.div
                   key={`grid-${selectedCategory}-${selectedBrand}-${searchQuery}-${onlyInStock}-${sortBy}-${currentPage}`}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial="hidden"
+                  animate="visible"
                   exit={{ opacity: 0, y: -6 }}
+                  variants={staggerContainerVariants}
                   transition={{ duration: 0.18, ease: "easeOut" }}
                   className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:gap-x-10 lg:gap-y-14 mb-8"
                 >
@@ -405,8 +417,9 @@ function SearchCatalogContent() {
                     const isAdded = justAddedId === product.id;
 
                     return (
-                      <div
+                      <motion.div
                         key={product.id}
+                        variants={fadeUpItemVariants}
                         className="h-full flex flex-col justify-between group select-none"
                       >
                         <div>
@@ -488,7 +501,7 @@ function SearchCatalogContent() {
                             </button>
                           )}
                         </div>
-                      </div>
+                      </motion.div>
                     );
                   })}
                 </motion.div>
@@ -583,7 +596,7 @@ function SearchCatalogContent() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </main>
 
       <Footer />

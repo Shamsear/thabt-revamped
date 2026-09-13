@@ -11,7 +11,7 @@ import "swiper/css/navigation";
 import "swiper/css/free-mode";
 import { Plus, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { motion } from "framer-motion";
-import { fadeUpItemVariants, viewportOnce } from "@/utils/animations";
+import { staggerContainerVariants, fadeUpItemVariants, viewportOnce } from "@/utils/animations";
 
 interface TopSellingSectionProps {
   products: Product[];
@@ -99,7 +99,13 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
         </motion.div>
 
         {/* Swiper Carousel */}
-        <div className="relative">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={staggerContainerVariants}
+          className="relative"
+        >
           <Swiper
             key={lang}
             dir={lang === "ar" ? "rtl" : "ltr"}
@@ -148,7 +154,8 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
 
               return (
                 <SwiperSlide key={product.id} className="h-auto">
-                  <div
+                  <motion.div
+                    variants={fadeUpItemVariants}
                     onClick={() => handleProductNavigate(product.slug)}
                     className="h-full flex flex-col justify-between group select-none cursor-pointer p-1"
                   >
@@ -230,12 +237,12 @@ export const TopSellingSection: React.FC<TopSellingSectionProps> = ({
                         </button>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                 </SwiperSlide>
               );
             })}
           </Swiper>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
